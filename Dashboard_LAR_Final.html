@@ -111,17 +111,9 @@
   text-align:center;margin-top:20px;
   font-family:'Aileron',Arial,sans-serif;
 }
-
-.kc-link {
-  cursor: pointer;
-  transition: border-color .2s, transform .15s, box-shadow .2s;
-}
-.kc-link:hover {
-  border-color: #00A8B4 !important;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0,168,180,0.18);
-}
-.kc-link:hover .kl { color: #00A8B4; }
+.kc-link{cursor:pointer;transition:border-color .2s,transform .15s,box-shadow .2s}
+.kc-link:hover{border-color:#00A8B4!important;transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,168,180,.18)}
+.kc-link:hover .kl{color:#00A8B4}
 </style>
 <script>
 (function(){
@@ -315,16 +307,21 @@ body.present-mode .header { padding: 16px 0 12px; }
 </div>
 <div class="header">
   <h1>Panel de <span>Ocupación</span></h1>
-  <div class="sub">Datos al 06/05/2026 | Fuente: unidades.xlsx | Target global: 95%</div>
+  <div class="sub">Datos al 08/05/2026 | Fuente: unidades.xlsx | Target global: 95%</div>
 </div>
 
 <div class="kg" style="grid-template-columns:repeat(6,1fr)">
-  <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas por Proyecto"><div class="kl">Total Unidades</div><div class="kv">3,573</div><div class="ks">Departamentos en cartera</div></div>
-  <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas por Proyecto"><div class="kl">Arrendadas</div><div class="kv gr">2,877</div><div class="ks">Estado: Arrendado</div></div>
-  <div class="kc kc-link" onclick="irA('sec-disponibles')" title="Ver Unidades Disponibles"><div class="kl">Disponibles</div><div class="kv or">489</div><div class="ks">Libres para arrendar</div></div>
-  <div class="kc kc-link" onclick="irA('sec-pipeline')" title="Ver Pipeline de Acción"><div class="kl">No Disponibles</div><div class="kv re">207</div><div class="ks">Incl. En Obra (5)</div></div>
-  <div class="kc kc-link" onclick="irA('sec-ocupacion')" title="Ver Ocupación Global"><div class="kl">% Ocupaci&oacute;n Global</div><div class="kv ac">80.5%</div><div class="ks">Target: 95% | Gap: 14.5pp</div></div>
-  <div class="kc kc-link" onclick="irA('sec-por-liberar')" title="Ver Por Liberar"><div class="kl">Por Liberar</div><div class="kv re">83</div><div class="ks">10 proyectos afectados</div></div>
+  <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas"><div class="kl">Total Unidades</div><div class="kv">3,575</div><div class="ks">Departamentos en cartera</div></div>
+  <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas"><div class="kl">Arrendadas</div><div class="kv gr">2,881</div><div class="ks">Estado: Arrendado</div></div>
+  <div class="kc kc-link" onclick="irA('sec-disponibles')" title="Ver Disponibles"><div class="kl">Disponibles</div><div class="kv or">488</div><div class="ks">Libres para arrendar</div></div>
+  <div class="kc kc-link" onclick="irA('sec-pipeline')" title="Ver Pipeline"><div class="kl">No Disponibles</div><div class="kv re">206</div><div class="ks">Incl. En Obra (2)</div></div>
+  <div class="kc kc-link" onclick="irA('sec-ocupacion')" title="Ver Ocupaci&oacute;n"><div class="kl">% Ocupaci&oacute;n Global</div><div class="kv ac">80.6%</div><div class="ks">Target: 95% | Gap: -14.4pp</div></div>
+  <div class="kc kc-link" onclick="irA('sec-por-liberar')" title="Ver Por Liberar"><div class="kl">Por Liberar</div><div class="kv re">81</div><div class="ks">10 proyectos afectados</div></div>
+</div>
+  <div class="kc"><div class="kl">Arrendadas</div><div class="kv gr">2,877</div><div class="ks">Estado: Arrendado</div></div>
+  <div class="kc"><div class="kl">Disponibles</div><div class="kv or">489</div><div class="ks">Libres para arrendar</div></div>
+  <div class="kc"><div class="kl">No Disponibles</div><div class="kv re">207</div><div class="ks">Incl. En Obra (5)</div></div>
+  <div class="kc"><div class="kl">% Ocupaci&oacute;n Global</div><div class="kv ac">80.5%</div><div class="ks">Target: 95% | Gap: 14.5pp</div></div>
 </div>
 
 <div class="filter-bar">
@@ -400,14 +397,14 @@ body.present-mode .header { padding: 16px 0 12px; }
 
 <div class="sec">FASE 3 &mdash; Pipeline de Acci&oacute;n</div>
 <div class="kg" style="grid-template-columns:repeat(5,1fr)">
-  <div class="kc"><div class="kl">Por Arrendar</div><div class="kv or">35</div><div class="ks">Disponibles activos</div></div>
-  <div class="kc"><div class="kl">Por Liberar</div><div class="kv re">87</div><div class="ks">Riesgo de baja ocupaci&oacute;n</div></div>
-  <div class="kc"><div class="kl">Por Renovar</div><div class="kv ac">51</div><div class="ks">Contratos por vencer</div></div>
-  <div class="kc"><div class="kl">Reservadas</div><div class="kv gr">56</div><div class="ks">En proceso de firma</div></div>
+  <div class="kc"><div class="kl">Por Arrendar</div><div class="kv or">34</div><div class="ks">Disponibles activos</div></div>
+  <div class="kc"><div class="kl">Por Liberar</div><div class="kv re">81</div><div class="ks">Riesgo de baja ocupaci&oacute;n</div></div>
+  <div class="kc"><div class="kl">Por Renovar</div><div class="kv ac">60</div><div class="ks">Contratos por vencer</div></div>
+  <div class="kc"><div class="kl">Reservadas</div><div class="kv gr">68</div><div class="ks">En proceso de firma</div></div>
   <div class="kc"><div class="kl">En Obra</div><div class="kv" style="color:#747678">5</div><div class="ks">No disponibles temp.</div></div>
 </div>
 
-<div class="ab">&#x26A0;&#xFE0F; <span><b>83 unidades Por Liberar</b> en 10 proyectos. Mayor riesgo: <b>Central Santiago</b> con <b>21 unidades</b>.</span></div>
+<div class="ab">&#x26A0;&#xFE0F; <span><b>81 unidades Por Liberar</b> en 10 proyectos. Mayor riesgo: <b>Central Santiago</b> con <b>21 unidades</b>.</span></div>
 
 <div class="cr">
   <div class="cc"><div id="stacked_pipeline" style="height:420px"></div></div>
@@ -417,14 +414,14 @@ body.present-mode .header { padding: 16px 0 12px; }
 
 
 <div id="sec-por-liberar" class="sec">Por Liberar &mdash; Detalle por Proyecto y Tipolog&iacute;a</div>
-<div class="sec-sub">Unidades arrendadas con subestado Por Liberar en POP Estate &mdash; Datos al 06/05/2026</div>
+<div class="sec-sub">Unidades arrendadas con subestado Por Liberar en POP Estate &mdash; Datos al 08/05/2026</div>
 <div class="sec-sub" style="color:#747678;font-size:.75rem;margin-top:4px">* Collective Bustamante, Blend Apoquindo y Boldo Club de Campo no registran unidades Por Liberar en POP Estate.</div>
 
 <div class="kg" style="grid-template-columns:repeat(1,1fr);max-width:220px">
-  <div class="kc"><div class="kl">Total Por Liberar</div><div class="kv re">83</div><div class="ks">10 de 13 proyectos</div></div>
+  <div class="kc"><div class="kl">Total Por Liberar</div><div class="kv re">81</div><div class="ks">10 de 13 proyectos</div></div>
 </div>
 
-<div class="ab">&#x26A0;&#xFE0F; <span><b>Central Santiago</b> concentra el mayor riesgo con <b>21 unidades</b>, seguido de <b>Brooklyn La Florida</b> con <b>15</b>. El <b>70% son tipolog&iacute;a 1D1B</b> &mdash; requieren campa&ntilde;a de reemplazo anticipada.</span></div>
+<div class="ab">&#x26A0;&#xFE0F; <span><b>Central Santiago</b> concentra el mayor riesgo con <b>21 unidades</b>. El <b>72% son tipolog&iacute;a 1D1B</b> &mdash; requieren campa&ntilde;a de reemplazo anticipada.</span></div>
 
 <div class="cr">
   <div class="cc"><div id="pol_bar_proj" style="height:420px"></div></div>
@@ -435,33 +432,14 @@ body.present-mode .header { padding: 16px 0 12px; }
 <div class="cf" style="margin-top:16px">
   <table>
     <thead>
-      <tr>
-        <th>Proyecto</th>
-        <th style="text-align:center">1D1B</th>
-        <th style="text-align:center">2D2B</th>
-        <th style="text-align:center">2D1B</th>
-        <th style="text-align:center">S/I</th>
-        <th style="text-align:center;color:#FC8181"><b>Total</b></th>
-      </tr>
+      <tr><th>Proyecto</th><th style="text-align:center">1D1B</th><th style="text-align:center">2D1B</th><th style="text-align:center">2D2B</th><th style="text-align:center">S/I</th><th style="text-align:center;color:#FC8181"><b>Total</b></th></tr>
     </thead>
     <tbody>
-      <tr><td>Central Santiago</td><td style="text-align:center">19</td><td style="text-align:center">1</td><td style="text-align:center">1</td><td style="text-align:center">0</td><td style="text-align:center"><b style="color:#FC8181">21</b></td></tr>
-      <tr><td>Brooklyn La Florida</td><td style="text-align:center">8</td><td style="text-align:center">7</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center"><b style="color:#FC8181">15</b></td></tr>
-      <tr><td>Nomad Holley</td><td style="text-align:center">5</td><td style="text-align:center">4</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center"><b style="color:#FC8181">9</b></td></tr>
-      <tr><td>Nativo Riesco</td><td style="text-align:center">7</td><td style="text-align:center">1</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center"><b style="color:#FC8181">8</b></td></tr>
-      <tr><td>Park Santiago</td><td style="text-align:center">4</td><td style="text-align:center">3</td><td style="text-align:center">0</td><td style="text-align:center">1</td><td style="text-align:center"><b style="color:#FC8181">8</b></td></tr>
-      <tr><td>IMU San Crist&oacute;bal</td><td style="text-align:center">4</td><td style="text-align:center">0</td><td style="text-align:center">1</td><td style="text-align:center">1</td><td style="text-align:center"><b style="color:#FC8181">6</b></td></tr>
-      <tr><td>Nomad Bellet</td><td style="text-align:center">3</td><td style="text-align:center">2</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center"><b style="color:#FC8181">5</b></td></tr>
-      <tr><td>Spot Residence</td><td style="text-align:center">4</td><td style="text-align:center">1</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center"><b style="color:#FC8181">5</b></td></tr>
-      <tr><td>Spot Nueva Kennedy</td><td style="text-align:center">3</td><td style="text-align:center">1</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center"><b style="color:#FC8181">4</b></td></tr>
-      <tr><td>Soho Barrio Italia</td><td style="text-align:center">1</td><td style="text-align:center">1</td><td style="text-align:center">0</td><td style="text-align:center">0</td><td style="text-align:center"><b style="color:#FC8181">2</b></td></tr>
-      <tr style="border-top:2px solid #2D3748;font-weight:bold">
-        <td><b>TOTAL</b></td>
-        <td style="text-align:center;color:#00A8B4"><b>58</b></td>
-        <td style="text-align:center;color:#00A8B4"><b>21</b></td>
-        <td style="text-align:center;color:#00A8B4"><b>2</b></td>
-        <td style="text-align:center;color:#747678"><b>2</b></td>
-        <td style="text-align:center"><b style="color:#FC8181">83</b></td>
+      <tr><td>Central Santiago</td><td style="text-align:center">19</td><td style="text-align:center">1</td><td style="text-align:center">1</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">21</b></td></tr><tr><td>Brooklyn La Florida</td><td style="text-align:center">8</td><td style="text-align:center">-</td><td style="text-align:center">7</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">15</b></td></tr><tr><td>Nomad Holley</td><td style="text-align:center">5</td><td style="text-align:center">-</td><td style="text-align:center">4</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">9</b></td></tr><tr><td>Nativo Riesco</td><td style="text-align:center">7</td><td style="text-align:center">-</td><td style="text-align:center">1</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">8</b></td></tr><tr><td>Park Santiago</td><td style="text-align:center">4</td><td style="text-align:center">-</td><td style="text-align:center">3</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">7</b></td></tr><tr><td>IMU San Cristóbal</td><td style="text-align:center">4</td><td style="text-align:center">1</td><td style="text-align:center">-</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">5</b></td></tr><tr><td>Nomad Bellet</td><td style="text-align:center">3</td><td style="text-align:center">-</td><td style="text-align:center">2</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">5</b></td></tr><tr><td>Spot Residence</td><td style="text-align:center">4</td><td style="text-align:center">-</td><td style="text-align:center">1</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">5</b></td></tr><tr><td>Spot Nueva Kennedy</td><td style="text-align:center">3</td><td style="text-align:center">-</td><td style="text-align:center">1</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">4</b></td></tr><tr><td>Soho Barrio Italia</td><td style="text-align:center">1</td><td style="text-align:center">-</td><td style="text-align:center">1</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">2</b></td></tr>
+      <tr style="border-top:2px solid #2D3748">
+        <td><b>TOTAL</b></td><td style="text-align:center;color:#00A8B4"><b>58</b></td><td style="text-align:center;color:#00A8B4"><b>2</b></td><td style="text-align:center;color:#00A8B4"><b>21</b></td>
+        <td style="text-align:center;color:#747678"><b></b></td>
+        <td style="text-align:center"><b style="color:#FC8181">81</b></td>
       </tr>
     </tbody>
   </table>
@@ -487,22 +465,22 @@ body.present-mode .header { padding: 16px 0 12px; }
 <div class="sec">FASE 4 &mdash; Evoluci&oacute;n Hist&oacute;rica</div>
 <div class="cf"><div id="hist_line" style="height:350px"></div></div>
 
-<div class="ft">Datos al 06/05/2026 | Fuente: unidades.xlsx | Target global: 95% | LAR GROUP — Tu nueva forma de arrendar</div>
+<div class="ft">Datos al 08/05/2026 | Fuente: unidades.xlsx | Target global: 95% | LAR GROUP — Tu nueva forma de arrendar</div>
 
 <script>
-var P="[{"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 92.0, "Disponibles": 4.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 1.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9583, "Gap": -0.0083, "Uds_Needed": 0.0}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 300.0, "Disponibles": 13.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 0.0, "Por_Liberar": 5.0, "Por_Renovar": 5.0, "Pct_Ocup": 0.9554, "Gap": -0.0054, "Uds_Needed": 0.0}, {"Propiedad": "Boldo Club de Campo", "Total": 126.0, "Arrendados": 120.0, "Disponibles": 5.0, "No_Disp": 1.0, "En_Obra": 3.0, "Reservadas": 0.0, "Por_Arrendar": 1.0, "Por_Liberar": 1.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9524, "Gap": -0.0024, "Uds_Needed": 0.0}, {"Propiedad": "Nativo Riesco", "Total": 254.0, "Arrendados": 240.0, "Disponibles": 13.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 9.0, "Por_Arrendar": 1.0, "Por_Liberar": 12.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9449, "Gap": 0.0051, "Uds_Needed": 2.0}, {"Propiedad": "Nomad Bellet", "Total": 133.0, "Arrendados": 125.0, "Disponibles": 7.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 1.0, "Por_Liberar": 3.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9398, "Gap": 0.0102, "Uds_Needed": 2.0}, {"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 195.0, "Disponibles": 10.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 2.0, "Por_Liberar": 10.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9375, "Gap": 0.0125, "Uds_Needed": 3.0}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 519.0, "Disponibles": 40.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 6.0, "Por_Arrendar": 5.0, "Por_Liberar": 21.0, "Por_Renovar": 16.0, "Pct_Ocup": 0.9235, "Gap": 0.0265, "Uds_Needed": 15.0}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 267.0, "Disponibles": 26.0, "No_Disp": 3.0, "En_Obra": 1.0, "Reservadas": 10.0, "Por_Arrendar": 4.0, "Por_Liberar": 6.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.902, "Gap": 0.048, "Uds_Needed": 15.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 423.0, "Disponibles": 44.0, "No_Disp": 11.0, "En_Obra": 0.0, "Reservadas": 3.0, "Por_Arrendar": 2.0, "Por_Liberar": 18.0, "Por_Renovar": 18.0, "Pct_Ocup": 0.8849, "Gap": 0.0651, "Uds_Needed": 32.0}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 158.0, "Disponibles": 23.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 10.0, "Por_Arrendar": 5.0, "Por_Liberar": 5.0, "Por_Renovar": 8.0, "Pct_Ocup": 0.8404, "Gap": 0.1096, "Uds_Needed": 21.0}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 317.0, "Disponibles": 67.0, "No_Disp": 69.0, "En_Obra": 0.0, "Reservadas": 10.0, "Por_Arrendar": 3.0, "Por_Liberar": 5.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.6998, "Gap": 0.2502, "Uds_Needed": 114.0}, {"Propiedad": "Blend Apoquindo", "Total": 95.0, "Arrendados": 53.0, "Disponibles": 22.0, "No_Disp": 20.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 1.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.5579, "Gap": 0.3921, "Uds_Needed": 38.0}, {"Propiedad": "Collective Bustamante", "Total": 370.0, "Arrendados": 68.0, "Disponibles": 215.0, "No_Disp": 87.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 8.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.1838, "Gap": 0.7662, "Uds_Needed": 284.0}]",A="[{"Propiedad": "Collective Bustamante", "Total": 370.0, "Arrendados": 68.0, "Disponibles": 215.0, "No_Disp": 87.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 8.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.1838, "Gap": 0.7662, "Uds_Needed": 284.0}, {"Propiedad": "Blend Apoquindo", "Total": 95.0, "Arrendados": 53.0, "Disponibles": 22.0, "No_Disp": 20.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 1.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.5579, "Gap": 0.3921, "Uds_Needed": 38.0}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 317.0, "Disponibles": 67.0, "No_Disp": 69.0, "En_Obra": 0.0, "Reservadas": 10.0, "Por_Arrendar": 3.0, "Por_Liberar": 5.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.6998, "Gap": 0.2502, "Uds_Needed": 114.0}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 158.0, "Disponibles": 23.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 10.0, "Por_Arrendar": 5.0, "Por_Liberar": 5.0, "Por_Renovar": 8.0, "Pct_Ocup": 0.8404, "Gap": 0.1096, "Uds_Needed": 21.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 423.0, "Disponibles": 44.0, "No_Disp": 11.0, "En_Obra": 0.0, "Reservadas": 3.0, "Por_Arrendar": 2.0, "Por_Liberar": 18.0, "Por_Renovar": 18.0, "Pct_Ocup": 0.8849, "Gap": 0.0651, "Uds_Needed": 32.0}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 267.0, "Disponibles": 26.0, "No_Disp": 3.0, "En_Obra": 1.0, "Reservadas": 10.0, "Por_Arrendar": 4.0, "Por_Liberar": 6.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.902, "Gap": 0.048, "Uds_Needed": 15.0}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 519.0, "Disponibles": 40.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 6.0, "Por_Arrendar": 5.0, "Por_Liberar": 21.0, "Por_Renovar": 16.0, "Pct_Ocup": 0.9235, "Gap": 0.0265, "Uds_Needed": 15.0}, {"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 195.0, "Disponibles": 10.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 2.0, "Por_Liberar": 10.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9375, "Gap": 0.0125, "Uds_Needed": 3.0}, {"Propiedad": "Nomad Bellet", "Total": 133.0, "Arrendados": 125.0, "Disponibles": 7.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 1.0, "Por_Liberar": 3.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9398, "Gap": 0.0102, "Uds_Needed": 2.0}, {"Propiedad": "Nativo Riesco", "Total": 254.0, "Arrendados": 240.0, "Disponibles": 13.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 9.0, "Por_Arrendar": 1.0, "Por_Liberar": 12.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9449, "Gap": 0.0051, "Uds_Needed": 2.0}, {"Propiedad": "Boldo Club de Campo", "Total": 126.0, "Arrendados": 120.0, "Disponibles": 5.0, "No_Disp": 1.0, "En_Obra": 3.0, "Reservadas": 0.0, "Por_Arrendar": 1.0, "Por_Liberar": 1.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9524, "Gap": -0.0024, "Uds_Needed": 0.0}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 300.0, "Disponibles": 13.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 0.0, "Por_Liberar": 5.0, "Por_Renovar": 5.0, "Pct_Ocup": 0.9554, "Gap": -0.0054, "Uds_Needed": 0.0}, {"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 92.0, "Disponibles": 4.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 1.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9583, "Gap": -0.0083, "Uds_Needed": 0.0}]";
+var P=[{"Propiedad": "Nativo Riesco", "Total": 254.0, "Arrendados": 242.0, "Disponibles": 11.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 9.0, "Por_Arrendar": 0.0, "Por_Liberar": 8.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.9528, "Gap": 0.0028, "Uds_Needed": 0.0}, {"Propiedad": "Boldo Club de Campo", "Total": 126.0, "Arrendados": 120.0, "Disponibles": 5.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 1.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9524, "Gap": 0.0024, "Uds_Needed": 0.0}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 298.0, "Disponibles": 15.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 7.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.949, "Gap": -0.001, "Uds_Needed": 0.0}, {"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 91.0, "Disponibles": 5.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 1.0, "Por_Liberar": 2.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9479, "Gap": -0.0021, "Uds_Needed": 0.0}, {"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 195.0, "Disponibles": 10.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 3.0, "Por_Liberar": 9.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9375, "Gap": -0.0125, "Uds_Needed": 3.0}, {"Propiedad": "Nomad Bellet", "Total": 134.0, "Arrendados": 125.0, "Disponibles": 7.0, "No_Disp": 2.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 1.0, "Por_Liberar": 5.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9328, "Gap": -0.0172, "Uds_Needed": 2.0}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 519.0, "Disponibles": 40.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 4.0, "Por_Arrendar": 5.0, "Por_Liberar": 21.0, "Por_Renovar": 18.0, "Pct_Ocup": 0.9235, "Gap": -0.0265, "Uds_Needed": 15.0}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 266.0, "Disponibles": 28.0, "No_Disp": 2.0, "En_Obra": 1.0, "Reservadas": 12.0, "Por_Arrendar": 2.0, "Por_Liberar": 4.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.8986, "Gap": -0.0514, "Uds_Needed": 15.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 427.0, "Disponibles": 41.0, "No_Disp": 10.0, "En_Obra": 0.0, "Reservadas": 8.0, "Por_Arrendar": 4.0, "Por_Liberar": 15.0, "Por_Renovar": 24.0, "Pct_Ocup": 0.8933, "Gap": -0.0567, "Uds_Needed": 27.0}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 158.0, "Disponibles": 23.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 10.0, "Por_Arrendar": 4.0, "Por_Liberar": 5.0, "Por_Renovar": 8.0, "Pct_Ocup": 0.8404, "Gap": -0.1096, "Uds_Needed": 21.0}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 315.0, "Disponibles": 69.0, "No_Disp": 69.0, "En_Obra": 0.0, "Reservadas": 17.0, "Por_Arrendar": 3.0, "Por_Liberar": 5.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.6954, "Gap": -0.2546, "Uds_Needed": 115.0}, {"Propiedad": "Blend Apoquindo", "Total": 95.0, "Arrendados": 54.0, "Disponibles": 21.0, "No_Disp": 20.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.5684, "Gap": -0.3816, "Uds_Needed": 36.0}, {"Propiedad": "Collective Bustamante", "Total": 371.0, "Arrendados": 71.0, "Disponibles": 213.0, "No_Disp": 87.0, "En_Obra": 0.0, "Reservadas": 3.0, "Por_Arrendar": 6.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.1914, "Gap": -0.7586, "Uds_Needed": 281.0}];
 </script>
 <script>
 var PAPER="#1E2130",GRID="#2D3748",FONT="#E2E8F0",AXIS="#747678";
-var gpct=0.8052;
-var proj_desc=[{"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 92.0, "Disponibles": 4.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 1.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9583, "Gap": -0.0083, "Uds_Needed": 0.0}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 300.0, "Disponibles": 13.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 0.0, "Por_Liberar": 5.0, "Por_Renovar": 5.0, "Pct_Ocup": 0.9554, "Gap": -0.0054, "Uds_Needed": 0.0}, {"Propiedad": "Boldo Club de Campo", "Total": 126.0, "Arrendados": 120.0, "Disponibles": 5.0, "No_Disp": 1.0, "En_Obra": 3.0, "Reservadas": 0.0, "Por_Arrendar": 1.0, "Por_Liberar": 1.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9524, "Gap": -0.0024, "Uds_Needed": 0.0}, {"Propiedad": "Nativo Riesco", "Total": 254.0, "Arrendados": 240.0, "Disponibles": 13.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 9.0, "Por_Arrendar": 1.0, "Por_Liberar": 12.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9449, "Gap": 0.0051, "Uds_Needed": 2.0}, {"Propiedad": "Nomad Bellet", "Total": 133.0, "Arrendados": 125.0, "Disponibles": 7.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 1.0, "Por_Liberar": 3.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9398, "Gap": 0.0102, "Uds_Needed": 2.0}, {"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 195.0, "Disponibles": 10.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 2.0, "Por_Liberar": 10.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9375, "Gap": 0.0125, "Uds_Needed": 3.0}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 519.0, "Disponibles": 40.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 6.0, "Por_Arrendar": 5.0, "Por_Liberar": 21.0, "Por_Renovar": 16.0, "Pct_Ocup": 0.9235, "Gap": 0.0265, "Uds_Needed": 15.0}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 267.0, "Disponibles": 26.0, "No_Disp": 3.0, "En_Obra": 1.0, "Reservadas": 10.0, "Por_Arrendar": 4.0, "Por_Liberar": 6.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.902, "Gap": 0.048, "Uds_Needed": 15.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 423.0, "Disponibles": 44.0, "No_Disp": 11.0, "En_Obra": 0.0, "Reservadas": 3.0, "Por_Arrendar": 2.0, "Por_Liberar": 18.0, "Por_Renovar": 18.0, "Pct_Ocup": 0.8849, "Gap": 0.0651, "Uds_Needed": 32.0}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 158.0, "Disponibles": 23.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 10.0, "Por_Arrendar": 5.0, "Por_Liberar": 5.0, "Por_Renovar": 8.0, "Pct_Ocup": 0.8404, "Gap": 0.1096, "Uds_Needed": 21.0}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 317.0, "Disponibles": 67.0, "No_Disp": 69.0, "En_Obra": 0.0, "Reservadas": 10.0, "Por_Arrendar": 3.0, "Por_Liberar": 5.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.6998, "Gap": 0.2502, "Uds_Needed": 114.0}, {"Propiedad": "Blend Apoquindo", "Total": 95.0, "Arrendados": 53.0, "Disponibles": 22.0, "No_Disp": 20.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 1.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.5579, "Gap": 0.3921, "Uds_Needed": 38.0}, {"Propiedad": "Collective Bustamante", "Total": 370.0, "Arrendados": 68.0, "Disponibles": 215.0, "No_Disp": 87.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 8.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.1838, "Gap": 0.7662, "Uds_Needed": 284.0}];
-var proj_asc=[{"Propiedad": "Collective Bustamante", "Total": 370.0, "Arrendados": 68.0, "Disponibles": 215.0, "No_Disp": 87.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 8.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.1838, "Gap": 0.7662, "Uds_Needed": 284.0}, {"Propiedad": "Blend Apoquindo", "Total": 95.0, "Arrendados": 53.0, "Disponibles": 22.0, "No_Disp": 20.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 1.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.5579, "Gap": 0.3921, "Uds_Needed": 38.0}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 317.0, "Disponibles": 67.0, "No_Disp": 69.0, "En_Obra": 0.0, "Reservadas": 10.0, "Por_Arrendar": 3.0, "Por_Liberar": 5.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.6998, "Gap": 0.2502, "Uds_Needed": 114.0}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 158.0, "Disponibles": 23.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 10.0, "Por_Arrendar": 5.0, "Por_Liberar": 5.0, "Por_Renovar": 8.0, "Pct_Ocup": 0.8404, "Gap": 0.1096, "Uds_Needed": 21.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 423.0, "Disponibles": 44.0, "No_Disp": 11.0, "En_Obra": 0.0, "Reservadas": 3.0, "Por_Arrendar": 2.0, "Por_Liberar": 18.0, "Por_Renovar": 18.0, "Pct_Ocup": 0.8849, "Gap": 0.0651, "Uds_Needed": 32.0}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 267.0, "Disponibles": 26.0, "No_Disp": 3.0, "En_Obra": 1.0, "Reservadas": 10.0, "Por_Arrendar": 4.0, "Por_Liberar": 6.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.902, "Gap": 0.048, "Uds_Needed": 15.0}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 519.0, "Disponibles": 40.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 6.0, "Por_Arrendar": 5.0, "Por_Liberar": 21.0, "Por_Renovar": 16.0, "Pct_Ocup": 0.9235, "Gap": 0.0265, "Uds_Needed": 15.0}, {"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 195.0, "Disponibles": 10.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 2.0, "Por_Liberar": 10.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9375, "Gap": 0.0125, "Uds_Needed": 3.0}, {"Propiedad": "Nomad Bellet", "Total": 133.0, "Arrendados": 125.0, "Disponibles": 7.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 1.0, "Por_Liberar": 3.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9398, "Gap": 0.0102, "Uds_Needed": 2.0}, {"Propiedad": "Nativo Riesco", "Total": 254.0, "Arrendados": 240.0, "Disponibles": 13.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 9.0, "Por_Arrendar": 1.0, "Por_Liberar": 12.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9449, "Gap": 0.0051, "Uds_Needed": 2.0}, {"Propiedad": "Boldo Club de Campo", "Total": 126.0, "Arrendados": 120.0, "Disponibles": 5.0, "No_Disp": 1.0, "En_Obra": 3.0, "Reservadas": 0.0, "Por_Arrendar": 1.0, "Por_Liberar": 1.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9524, "Gap": -0.0024, "Uds_Needed": 0.0}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 300.0, "Disponibles": 13.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 0.0, "Por_Liberar": 5.0, "Por_Renovar": 5.0, "Pct_Ocup": 0.9554, "Gap": -0.0054, "Uds_Needed": 0.0}, {"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 92.0, "Disponibles": 4.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 1.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9583, "Gap": -0.0083, "Uds_Needed": 0.0}];
-var hm_pct=[[20.3, 18.8, 7.5], [69.4, 30.3, null], [90.2, 51.1, 80.0], [86.4, 80.8, null], [93.9, 82.0, null], [91.9, 88.5, null], [93.3, 71.4, 66.7], [93.3, 94.5, null], [95.4, 87.5, null], [96.7, 91.3, null], [98.2, 92.9, null], [96.5, 93.1, null], [96.1, 95.0, null]];
-var hm_proj=["Collective Bustamante", "Blend Apoquindo", "IMU San Cristóbal", "Spot Residence", "Brooklyn La Florida", "Spot Nueva Kennedy", "Central Santiago", "Nomad Holley", "Nomad Bellet", "Nativo Riesco", "Boldo Club de Campo", "Park Santiago", "Soho Barrio Italia"];
-var hm_tip=["1D1B", "2D2B", "2D1B"];
-var pipe_data=[{"Propiedad": "Central Santiago", "Por_Arrendar": 5, "Por_Liberar": 21, "Por_Renovar": 16, "Reservadas": 6, "En_Obra": 0, "Total_Pipe": 48}, {"Propiedad": "Brooklyn La Florida", "Por_Arrendar": 2, "Por_Liberar": 18, "Por_Renovar": 18, "Reservadas": 3, "En_Obra": 0, "Total_Pipe": 41}, {"Propiedad": "Spot Residence", "Por_Arrendar": 5, "Por_Liberar": 5, "Por_Renovar": 8, "Reservadas": 10, "En_Obra": 1, "Total_Pipe": 29}, {"Propiedad": "Nativo Riesco", "Por_Arrendar": 1, "Por_Liberar": 12, "Por_Renovar": 1, "Reservadas": 9, "En_Obra": 0, "Total_Pipe": 23}, {"Propiedad": "Spot Nueva Kennedy", "Por_Arrendar": 4, "Por_Liberar": 6, "Por_Renovar": 0, "Reservadas": 10, "En_Obra": 1, "Total_Pipe": 21}, {"Propiedad": "IMU San Cristóbal", "Por_Arrendar": 3, "Por_Liberar": 5, "Por_Renovar": 3, "Reservadas": 10, "En_Obra": 0, "Total_Pipe": 21}, {"Propiedad": "Nomad Holley", "Por_Arrendar": 2, "Por_Liberar": 10, "Por_Renovar": 0, "Reservadas": 1, "En_Obra": 0, "Total_Pipe": 13}, {"Propiedad": "Park Santiago", "Por_Arrendar": 0, "Por_Liberar": 5, "Por_Renovar": 5, "Reservadas": 2, "En_Obra": 0, "Total_Pipe": 12}, {"Propiedad": "Collective Bustamante", "Por_Arrendar": 8, "Por_Liberar": 0, "Por_Renovar": 0, "Reservadas": 2, "En_Obra": 0, "Total_Pipe": 10}, {"Propiedad": "Nomad Bellet", "Por_Arrendar": 1, "Por_Liberar": 3, "Por_Renovar": 0, "Reservadas": 1, "En_Obra": 0, "Total_Pipe": 5}, {"Propiedad": "Boldo Club de Campo", "Por_Arrendar": 1, "Por_Liberar": 1, "Por_Renovar": 0, "Reservadas": 0, "En_Obra": 3, "Total_Pipe": 5}, {"Propiedad": "Blend Apoquindo", "Por_Arrendar": 1, "Por_Liberar": 0, "Por_Renovar": 0, "Reservadas": 2, "En_Obra": 0, "Total_Pipe": 3}, {"Propiedad": "Soho Barrio Italia", "Por_Arrendar": 2, "Por_Liberar": 1, "Por_Renovar": 0, "Reservadas": 0, "En_Obra": 0, "Total_Pipe": 3}];
-var risk_data=[{"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 195.0, "Disponibles": 10.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 2.0, "Por_Liberar": 10.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9375, "Gap": 0.0125, "Uds_Needed": 3.0, "Risk_Pct": 5.1}, {"Propiedad": "Nativo Riesco", "Total": 254.0, "Arrendados": 240.0, "Disponibles": 13.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 9.0, "Por_Arrendar": 1.0, "Por_Liberar": 12.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9449, "Gap": 0.0051, "Uds_Needed": 2.0, "Risk_Pct": 5.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 423.0, "Disponibles": 44.0, "No_Disp": 11.0, "En_Obra": 0.0, "Reservadas": 3.0, "Por_Arrendar": 2.0, "Por_Liberar": 18.0, "Por_Renovar": 18.0, "Pct_Ocup": 0.8849, "Gap": 0.0651, "Uds_Needed": 32.0, "Risk_Pct": 4.3}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 519.0, "Disponibles": 40.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 6.0, "Por_Arrendar": 5.0, "Por_Liberar": 21.0, "Por_Renovar": 16.0, "Pct_Ocup": 0.9235, "Gap": 0.0265, "Uds_Needed": 15.0, "Risk_Pct": 4.0}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 158.0, "Disponibles": 23.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 10.0, "Por_Arrendar": 5.0, "Por_Liberar": 5.0, "Por_Renovar": 8.0, "Pct_Ocup": 0.8404, "Gap": 0.1096, "Uds_Needed": 21.0, "Risk_Pct": 3.2}, {"Propiedad": "Nomad Bellet", "Total": 133.0, "Arrendados": 125.0, "Disponibles": 7.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 1.0, "Por_Liberar": 3.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9398, "Gap": 0.0102, "Uds_Needed": 2.0, "Risk_Pct": 2.4}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 267.0, "Disponibles": 26.0, "No_Disp": 3.0, "En_Obra": 1.0, "Reservadas": 10.0, "Por_Arrendar": 4.0, "Por_Liberar": 6.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.902, "Gap": 0.048, "Uds_Needed": 15.0, "Risk_Pct": 2.2}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 300.0, "Disponibles": 13.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 0.0, "Por_Liberar": 5.0, "Por_Renovar": 5.0, "Pct_Ocup": 0.9554, "Gap": -0.0054, "Uds_Needed": 0.0, "Risk_Pct": 1.7}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 317.0, "Disponibles": 67.0, "No_Disp": 69.0, "En_Obra": 0.0, "Reservadas": 10.0, "Por_Arrendar": 3.0, "Por_Liberar": 5.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.6998, "Gap": 0.2502, "Uds_Needed": 114.0, "Risk_Pct": 1.6}, {"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 92.0, "Disponibles": 4.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 1.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9583, "Gap": -0.0083, "Uds_Needed": 0.0, "Risk_Pct": 1.1}, {"Propiedad": "Boldo Club de Campo", "Total": 126.0, "Arrendados": 120.0, "Disponibles": 5.0, "No_Disp": 1.0, "En_Obra": 3.0, "Reservadas": 0.0, "Por_Arrendar": 1.0, "Por_Liberar": 1.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9524, "Gap": -0.0024, "Uds_Needed": 0.0, "Risk_Pct": 0.8}, {"Propiedad": "Collective Bustamante", "Total": 370.0, "Arrendados": 68.0, "Disponibles": 215.0, "No_Disp": 87.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 8.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.1838, "Gap": 0.7662, "Uds_Needed": 284.0, "Risk_Pct": 0.0}, {"Propiedad": "Blend Apoquindo", "Total": 95.0, "Arrendados": 53.0, "Disponibles": 22.0, "No_Disp": 20.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 1.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.5579, "Gap": 0.3921, "Uds_Needed": 38.0, "Risk_Pct": 0.0}];
-var cb_pct=18.38,imu_pct=69.98,blend_pct=55.79;
+var gpct=0.8059;
+var proj_desc=[{"Propiedad": "Nativo Riesco", "Total": 254.0, "Arrendados": 242.0, "Disponibles": 11.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 9.0, "Por_Arrendar": 0.0, "Por_Liberar": 8.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.9528, "Gap": 0.0028, "Uds_Needed": 0.0}, {"Propiedad": "Boldo Club de Campo", "Total": 126.0, "Arrendados": 120.0, "Disponibles": 5.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 1.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9524, "Gap": 0.0024, "Uds_Needed": 0.0}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 298.0, "Disponibles": 15.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 7.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.949, "Gap": -0.001, "Uds_Needed": 0.0}, {"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 91.0, "Disponibles": 5.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 1.0, "Por_Liberar": 2.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9479, "Gap": -0.0021, "Uds_Needed": 0.0}, {"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 195.0, "Disponibles": 10.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 3.0, "Por_Liberar": 9.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9375, "Gap": -0.0125, "Uds_Needed": 3.0}, {"Propiedad": "Nomad Bellet", "Total": 134.0, "Arrendados": 125.0, "Disponibles": 7.0, "No_Disp": 2.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 1.0, "Por_Liberar": 5.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9328, "Gap": -0.0172, "Uds_Needed": 2.0}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 519.0, "Disponibles": 40.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 4.0, "Por_Arrendar": 5.0, "Por_Liberar": 21.0, "Por_Renovar": 18.0, "Pct_Ocup": 0.9235, "Gap": -0.0265, "Uds_Needed": 15.0}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 266.0, "Disponibles": 28.0, "No_Disp": 2.0, "En_Obra": 1.0, "Reservadas": 12.0, "Por_Arrendar": 2.0, "Por_Liberar": 4.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.8986, "Gap": -0.0514, "Uds_Needed": 15.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 427.0, "Disponibles": 41.0, "No_Disp": 10.0, "En_Obra": 0.0, "Reservadas": 8.0, "Por_Arrendar": 4.0, "Por_Liberar": 15.0, "Por_Renovar": 24.0, "Pct_Ocup": 0.8933, "Gap": -0.0567, "Uds_Needed": 27.0}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 158.0, "Disponibles": 23.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 10.0, "Por_Arrendar": 4.0, "Por_Liberar": 5.0, "Por_Renovar": 8.0, "Pct_Ocup": 0.8404, "Gap": -0.1096, "Uds_Needed": 21.0}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 315.0, "Disponibles": 69.0, "No_Disp": 69.0, "En_Obra": 0.0, "Reservadas": 17.0, "Por_Arrendar": 3.0, "Por_Liberar": 5.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.6954, "Gap": -0.2546, "Uds_Needed": 115.0}, {"Propiedad": "Blend Apoquindo", "Total": 95.0, "Arrendados": 54.0, "Disponibles": 21.0, "No_Disp": 20.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.5684, "Gap": -0.3816, "Uds_Needed": 36.0}, {"Propiedad": "Collective Bustamante", "Total": 371.0, "Arrendados": 71.0, "Disponibles": 213.0, "No_Disp": 87.0, "En_Obra": 0.0, "Reservadas": 3.0, "Por_Arrendar": 6.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.1914, "Gap": -0.7586, "Uds_Needed": 281.0}];
+var proj_asc=[{"Propiedad": "Collective Bustamante", "Total": 371.0, "Arrendados": 71.0, "Disponibles": 213.0, "No_Disp": 87.0, "En_Obra": 0.0, "Reservadas": 3.0, "Por_Arrendar": 6.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.1914, "Gap": -0.7586, "Uds_Needed": 281.0}, {"Propiedad": "Blend Apoquindo", "Total": 95.0, "Arrendados": 54.0, "Disponibles": 21.0, "No_Disp": 20.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.5684, "Gap": -0.3816, "Uds_Needed": 36.0}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 315.0, "Disponibles": 69.0, "No_Disp": 69.0, "En_Obra": 0.0, "Reservadas": 17.0, "Por_Arrendar": 3.0, "Por_Liberar": 5.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.6954, "Gap": -0.2546, "Uds_Needed": 115.0}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 158.0, "Disponibles": 23.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 10.0, "Por_Arrendar": 4.0, "Por_Liberar": 5.0, "Por_Renovar": 8.0, "Pct_Ocup": 0.8404, "Gap": -0.1096, "Uds_Needed": 21.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 427.0, "Disponibles": 41.0, "No_Disp": 10.0, "En_Obra": 0.0, "Reservadas": 8.0, "Por_Arrendar": 4.0, "Por_Liberar": 15.0, "Por_Renovar": 24.0, "Pct_Ocup": 0.8933, "Gap": -0.0567, "Uds_Needed": 27.0}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 266.0, "Disponibles": 28.0, "No_Disp": 2.0, "En_Obra": 1.0, "Reservadas": 12.0, "Por_Arrendar": 2.0, "Por_Liberar": 4.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.8986, "Gap": -0.0514, "Uds_Needed": 15.0}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 519.0, "Disponibles": 40.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 4.0, "Por_Arrendar": 5.0, "Por_Liberar": 21.0, "Por_Renovar": 18.0, "Pct_Ocup": 0.9235, "Gap": -0.0265, "Uds_Needed": 15.0}, {"Propiedad": "Nomad Bellet", "Total": 134.0, "Arrendados": 125.0, "Disponibles": 7.0, "No_Disp": 2.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 1.0, "Por_Liberar": 5.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9328, "Gap": -0.0172, "Uds_Needed": 2.0}, {"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 195.0, "Disponibles": 10.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 3.0, "Por_Liberar": 9.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9375, "Gap": -0.0125, "Uds_Needed": 3.0}, {"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 91.0, "Disponibles": 5.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 1.0, "Por_Liberar": 2.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9479, "Gap": -0.0021, "Uds_Needed": 0.0}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 298.0, "Disponibles": 15.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 7.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.949, "Gap": -0.001, "Uds_Needed": 0.0}, {"Propiedad": "Boldo Club de Campo", "Total": 126.0, "Arrendados": 120.0, "Disponibles": 5.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 1.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9524, "Gap": 0.0024, "Uds_Needed": 0.0}, {"Propiedad": "Nativo Riesco", "Total": 254.0, "Arrendados": 242.0, "Disponibles": 11.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 9.0, "Por_Arrendar": 0.0, "Por_Liberar": 8.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.9528, "Gap": 0.0028, "Uds_Needed": 0.0}];
+var hm_pct=[[20.9, null, 9.4, 18.8, null], [71.0, null, null, 30.3, null], [89.3, null, 80.0, 51.1, 0.0], [87.3, null, null, 79.5, null], [93.9, null, null, 83.9, null], [90.5, null, null, 89.2, null], [93.1, null, 73.3, 71.4, null], [94.5, null, null, 87.5, null], [94.0, 100.0, null, 93.2, null], [94.7, null, null, 95.0, null], [96.0, null, null, 92.0, null], [98.2, null, null, 92.9, null], [97.3, null, null, 92.3, null]];
+var hm_proj=["Collective Bustamante", "Blend Apoquindo", "IMU San Cristóbal", "Spot Residence", "Brooklyn La Florida", "Spot Nueva Kennedy", "Central Santiago", "Nomad Bellet", "Nomad Holley", "Soho Barrio Italia", "Park Santiago", "Boldo Club de Campo", "Nativo Riesco"];
+var hm_tip=["1D1B", "1D2B", "2D1B", "2D2B", "3D3B"];
+var pipe_data=[{"Propiedad": "Brooklyn La Florida", "En_Obra": 0, "Reservadas": 8, "Por_Arrendar": 4, "Por_Liberar": 15, "Por_Renovar": 24, "Total_Pipe": 51}, {"Propiedad": "Central Santiago", "En_Obra": 0, "Reservadas": 4, "Por_Arrendar": 5, "Por_Liberar": 21, "Por_Renovar": 18, "Total_Pipe": 48}, {"Propiedad": "IMU San Cristóbal", "En_Obra": 0, "Reservadas": 17, "Por_Arrendar": 3, "Por_Liberar": 5, "Por_Renovar": 3, "Total_Pipe": 28}, {"Propiedad": "Spot Residence", "En_Obra": 1, "Reservadas": 10, "Por_Arrendar": 4, "Por_Liberar": 5, "Por_Renovar": 8, "Total_Pipe": 28}, {"Propiedad": "Nativo Riesco", "En_Obra": 0, "Reservadas": 9, "Por_Arrendar": 0, "Por_Liberar": 8, "Por_Renovar": 3, "Total_Pipe": 20}, {"Propiedad": "Spot Nueva Kennedy", "En_Obra": 1, "Reservadas": 12, "Por_Arrendar": 2, "Por_Liberar": 4, "Por_Renovar": 0, "Total_Pipe": 19}, {"Propiedad": "Nomad Holley", "En_Obra": 0, "Reservadas": 2, "Por_Arrendar": 3, "Por_Liberar": 9, "Por_Renovar": 0, "Total_Pipe": 14}, {"Propiedad": "Park Santiago", "En_Obra": 0, "Reservadas": 0, "Por_Arrendar": 2, "Por_Liberar": 7, "Por_Renovar": 3, "Total_Pipe": 12}, {"Propiedad": "Collective Bustamante", "En_Obra": 0, "Reservadas": 3, "Por_Arrendar": 6, "Por_Liberar": 0, "Por_Renovar": 0, "Total_Pipe": 9}, {"Propiedad": "Nomad Bellet", "En_Obra": 0, "Reservadas": 1, "Por_Arrendar": 1, "Por_Liberar": 5, "Por_Renovar": 0, "Total_Pipe": 7}, {"Propiedad": "Soho Barrio Italia", "En_Obra": 0, "Reservadas": 2, "Por_Arrendar": 1, "Por_Liberar": 2, "Por_Renovar": 1, "Total_Pipe": 6}, {"Propiedad": "Blend Apoquindo", "En_Obra": 0, "Reservadas": 0, "Por_Arrendar": 2, "Por_Liberar": 0, "Por_Renovar": 0, "Total_Pipe": 2}, {"Propiedad": "Boldo Club de Campo", "En_Obra": 0, "Reservadas": 0, "Por_Arrendar": 1, "Por_Liberar": 0, "Por_Renovar": 0, "Total_Pipe": 1}];
+var risk_data=[{"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 195.0, "Disponibles": 10.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 3.0, "Por_Liberar": 9.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9375, "Gap": -0.0125, "Uds_Needed": 3.0, "Risk_Pct": 4.6}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 519.0, "Disponibles": 40.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 4.0, "Por_Arrendar": 5.0, "Por_Liberar": 21.0, "Por_Renovar": 18.0, "Pct_Ocup": 0.9235, "Gap": -0.0265, "Uds_Needed": 15.0, "Risk_Pct": 4.0}, {"Propiedad": "Nomad Bellet", "Total": 134.0, "Arrendados": 125.0, "Disponibles": 7.0, "No_Disp": 2.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 1.0, "Por_Liberar": 5.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9328, "Gap": -0.0172, "Uds_Needed": 2.0, "Risk_Pct": 4.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 427.0, "Disponibles": 41.0, "No_Disp": 10.0, "En_Obra": 0.0, "Reservadas": 8.0, "Por_Arrendar": 4.0, "Por_Liberar": 15.0, "Por_Renovar": 24.0, "Pct_Ocup": 0.8933, "Gap": -0.0567, "Uds_Needed": 27.0, "Risk_Pct": 3.5}, {"Propiedad": "Nativo Riesco", "Total": 254.0, "Arrendados": 242.0, "Disponibles": 11.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 9.0, "Por_Arrendar": 0.0, "Por_Liberar": 8.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.9528, "Gap": 0.0028, "Uds_Needed": 0.0, "Risk_Pct": 3.3}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 158.0, "Disponibles": 23.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 10.0, "Por_Arrendar": 4.0, "Por_Liberar": 5.0, "Por_Renovar": 8.0, "Pct_Ocup": 0.8404, "Gap": -0.1096, "Uds_Needed": 21.0, "Risk_Pct": 3.2}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 298.0, "Disponibles": 15.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 7.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.949, "Gap": -0.001, "Uds_Needed": 0.0, "Risk_Pct": 2.3}, {"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 91.0, "Disponibles": 5.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 1.0, "Por_Liberar": 2.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9479, "Gap": -0.0021, "Uds_Needed": 0.0, "Risk_Pct": 2.2}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 315.0, "Disponibles": 69.0, "No_Disp": 69.0, "En_Obra": 0.0, "Reservadas": 17.0, "Por_Arrendar": 3.0, "Por_Liberar": 5.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.6954, "Gap": -0.2546, "Uds_Needed": 115.0, "Risk_Pct": 1.6}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 266.0, "Disponibles": 28.0, "No_Disp": 2.0, "En_Obra": 1.0, "Reservadas": 12.0, "Por_Arrendar": 2.0, "Por_Liberar": 4.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.8986, "Gap": -0.0514, "Uds_Needed": 15.0, "Risk_Pct": 1.5}];
+var cb_pct=19.14;
 
 function bc(p){return p>=0.95?"#48BB78":p>=0.80?"#ED8936":"#FC8181";}
 var base={paper_bgcolor:PAPER,plot_bgcolor:PAPER,font:{family:"Aileron",color:FONT}};
@@ -912,57 +890,6 @@ initTable();
   }
 })();
 
-
-
-// ── Por Liberar: charts ──
-var pol_projs = ["Central Santiago","Brooklyn La Florida","Nomad Holley","Nativo Riesco","Park Santiago","IMU San Crist\u00f3bal","Nomad Bellet","Spot Residence","Spot Nueva Kennedy","Soho Barrio Italia"];
-var pol_totals = [21,15,9,8,8,6,5,5,4,2];
-var pol_1d1b   = [19,8,5,7,4,4,3,4,3,1];
-var pol_2d2b   = [1,7,4,1,3,0,2,1,1,1];
-var pol_2d1b   = [1,0,0,0,0,1,0,0,0,0];
-
-Plotly.newPlot("pol_bar_proj",[
-  {type:"bar",orientation:"h",
-   y:pol_projs.slice().reverse(),
-   x:pol_totals.slice().reverse(),
-   marker:{color:pol_totals.slice().reverse().map(v=>v>=15?"#FC8181":v>=8?"#ED8936":"#F6AD55")},
-   text:pol_totals.slice().reverse().map(String),textposition:"outside",
-   hovertemplate:"%{y}: %{x} unidades<extra></extra>"}
-],{...base,
-  title:{text:"Por Liberar por Proyecto",font:{size:13}},
-  xaxis:{gridcolor:GRID,color:AXIS,title:"Unidades",dtick:5},
-  yaxis:{gridcolor:GRID,color:AXIS},
-  margin:{t:50,b:60,l:200,r:80},height:420
-});
-
-Plotly.newPlot("pol_donut_tipo",[
-  {type:"pie",hole:0.6,
-   values:[58,21,2,2],
-   labels:["1D1B","2D2B","2D1B","S/I"],
-   marker:{colors:["#FC8181","#ED8936","#F6AD55","#747678"]},
-   textinfo:"label+percent",
-   hovertemplate:"%{label}: %{value} uds (%{percent})<extra></extra>"}
-],{...base,
-  title:{text:"Distribuci\u00f3n por Tipolog\u00eda",font:{size:13}},
-  annotations:[{x:0.5,y:0.5,showarrow:false,align:"center",
-    text:"<b><span style='font-size:24px;color:#FC8181'>83</span></b><br><span style='font-size:10px;color:#E2E8F0'>total</span>"}],
-  showlegend:true,legend:{orientation:"h",y:-0.1},
-  margin:{t:50,b:60,l:20,r:20},height:420
-});
-
-Plotly.newPlot("pol_stacked",[
-  {type:"bar",name:"1D1B",x:pol_projs,y:pol_1d1b,marker:{color:"#FC8181"}},
-  {type:"bar",name:"2D2B",x:pol_projs,y:pol_2d2b,marker:{color:"#ED8936"}},
-  {type:"bar",name:"2D1B",x:pol_projs,y:pol_2d1b,marker:{color:"#F6AD55"}}
-],{...base,
-  title:{text:"Por Liberar: Desglose por Proyecto y Tipolog\u00eda",font:{size:13}},
-  barmode:"stack",
-  xaxis:{gridcolor:GRID,color:AXIS,tickangle:-40},
-  yaxis:{gridcolor:GRID,color:AXIS,title:"Unidades"},
-  legend:{orientation:"h",y:-0.3},
-  margin:{t:50,b:140,l:60,r:20},height:380
-});
-
 </script>
 
 <!-- Improvement 5: Modo Presentación -->
@@ -1000,10 +927,50 @@ function exportPDF() {
 }
 </script>
 <script>
-function irA(id) {
-  var el = document.getElementById(id);
-  if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
-}
+
+// Por Liberar charts
+var pol_projs  = ["Central Santiago", "Brooklyn La Florida", "Nomad Holley", "Nativo Riesco", "Park Santiago", "IMU San Cristóbal", "Nomad Bellet", "Spot Residence", "Spot Nueva Kennedy", "Soho Barrio Italia"];
+var pol_totals = [21, 15, 9, 8, 7, 5, 5, 5, 4, 2];
+Plotly.newPlot("pol_bar_proj",[
+  {type:"bar",orientation:"h",
+   y:pol_projs.slice().reverse(),
+   x:pol_totals.slice().reverse(),
+   marker:{color:pol_totals.slice().reverse().map(v=>v>=15?"#FC8181":v>=8?"#ED8936":"#F6AD55")},
+   text:pol_totals.slice().reverse().map(String),textposition:"outside",
+   hovertemplate:"%{y}: %{x} unidades<extra></extra>"}
+],{...base,
+  title:{text:"Por Liberar por Proyecto",font:{size:13}},
+  xaxis:{gridcolor:GRID,color:AXIS,title:"Unidades",dtick:5},
+  yaxis:{gridcolor:GRID,color:AXIS},
+  margin:{t:50,b:60,l:200,r:80},height:420
+});
+Plotly.newPlot("pol_donut_tipo",[
+  {type:"pie",hole:0.6,
+   values:[58, 21, 2],labels:["1D1B", "2D2B", "2D1B"],
+   marker:{colors:["#FC8181","#ED8936","#F6AD55","#747678","#00A8B4"]},
+   textinfo:"label+percent",
+   hovertemplate:"%{label}: %{value} uds (%{percent})<extra></extra>"}
+],{...base,
+  title:{text:"Distribuci\u00f3n por Tipolog\u00eda",font:{size:13}},
+  annotations:[{x:0.5,y:0.5,showarrow:false,align:"center",
+    text:"<b><span style='font-size:24px;color:#FC8181'>81</span></b><br><span style='font-size:10px;color:#E2E8F0'>total</span>"}],
+  showlegend:true,legend:{orientation:"h",y:-0.1},
+  margin:{t:50,b:60,l:20,r:20},height:420
+});
+Plotly.newPlot("pol_stacked",[
+  {type:"bar",name:"1D1B",x:pol_projs,y:[19, 8, 5, 7, 4, 4, 3, 4, 3, 1],marker:{color:"#FC8181"}},
+  {type:"bar",name:"2D1B",x:pol_projs,y:[1, 0, 0, 0, 0, 1, 0, 0, 0, 0],marker:{color:"#ED8936"}},
+  {type:"bar",name:"2D2B",x:pol_projs,y:[1, 7, 4, 1, 3, 0, 2, 1, 1, 1],marker:{color:"#F6AD55"}},
+],{...base,
+  title:{text:"Por Liberar: Desglose por Proyecto y Tipolog\u00eda",font:{size:13}},
+  barmode:"stack",
+  xaxis:{gridcolor:GRID,color:AXIS,tickangle:-40},
+  yaxis:{gridcolor:GRID,color:AXIS,title:"Unidades"},
+  legend:{orientation:"h",y:-0.3},
+  margin:{t:50,b:140,l:60,r:20},height:380
+});
+
+function irA(id){var el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
 </script>
 </body>
 </html>
