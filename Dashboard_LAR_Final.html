@@ -3,7 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <title>LAR GROUP Panel de Ocupacion</title>
-<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js">
+function scrollTo(id) {
+  var el = document.getElementById(id);
+  if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+</script>
 <style>
 /* ── GATE BRANDED ── */
 #gate{
@@ -111,6 +116,17 @@
   text-align:center;margin-top:20px;
   font-family:'Aileron',Arial,sans-serif;
 }
+
+.kc-link {
+  cursor: pointer;
+  transition: border-color .2s, transform .15s, box-shadow .2s;
+}
+.kc-link:hover {
+  border-color: #00A8B4 !important;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,168,180,0.18);
+}
+.kc-link:hover .kl { color: #00A8B4; }
 </style>
 <script>
 (function(){
@@ -307,12 +323,13 @@ body.present-mode .header { padding: 16px 0 12px; }
   <div class="sub">Datos al 06/05/2026 | Fuente: unidades.xlsx | Target global: 95%</div>
 </div>
 
-<div class="kg">
-  <div class="kc"><div class="kl">Total Unidades</div><div class="kv">3,573</div><div class="ks">Departamentos en cartera</div></div>
-  <div class="kc"><div class="kl">Arrendadas</div><div class="kv gr">2,877</div><div class="ks">Estado: Arrendado</div></div>
-  <div class="kc"><div class="kl">Disponibles</div><div class="kv or">489</div><div class="ks">Libres para arrendar</div></div>
-  <div class="kc"><div class="kl">No Disponibles</div><div class="kv re">207</div><div class="ks">Incl. En Obra (5)</div></div>
-  <div class="kc"><div class="kl">% Ocupaci&oacute;n Global</div><div class="kv ac">80.5%</div><div class="ks">Target: 95% | Gap: 14.5pp</div></div>
+<div class="kg" style="grid-template-columns:repeat(6,1fr)">
+  <div class="kc kc-link" onclick="scrollTo('sec-alertas')" title="Ver Alertas por Proyecto"><div class="kl">Total Unidades</div><div class="kv">3,573</div><div class="ks">Departamentos en cartera</div></div>
+  <div class="kc kc-link" onclick="scrollTo('sec-alertas')" title="Ver Alertas por Proyecto"><div class="kl">Arrendadas</div><div class="kv gr">2,877</div><div class="ks">Estado: Arrendado</div></div>
+  <div class="kc kc-link" onclick="scrollTo('sec-disponibles')" title="Ver Unidades Disponibles"><div class="kl">Disponibles</div><div class="kv or">489</div><div class="ks">Libres para arrendar</div></div>
+  <div class="kc kc-link" onclick="scrollTo('sec-pipeline')" title="Ver Pipeline de Acción"><div class="kl">No Disponibles</div><div class="kv re">207</div><div class="ks">Incl. En Obra (5)</div></div>
+  <div class="kc kc-link" onclick="scrollTo('sec-ocupacion')" title="Ver Ocupación Global"><div class="kl">% Ocupaci&oacute;n Global</div><div class="kv ac">80.5%</div><div class="ks">Target: 95% | Gap: 14.5pp</div></div>
+  <div class="kc kc-link" onclick="scrollTo('sec-por-liberar')" title="Ver Por Liberar"><div class="kl">Por Liberar</div><div class="kv re">83</div><div class="ks">10 proyectos afectados</div></div>
 </div>
 
 <div class="filter-bar">
@@ -326,13 +343,13 @@ body.present-mode .header { padding: 16px 0 12px; }
 <div class="sec">Resumen Ejecutivo</div>
 <div id="exec-summary" class="exec-card"></div>
 
-<div class="sec">Ocupación Global</div>
+<div id="sec-ocupacion" class="sec">Ocupación Global</div>
 <div class="cr">
   <div class="cc"><div id="donut_gauge" style="height:350px"></div></div>
   <div class="cc"><div id="bar_proj" style="height:350px"></div></div>
 </div>
 
-<div class="sec">Alertas por Proyecto</div>
+<div id="sec-alertas" class="sec">Alertas por Proyecto</div>
 <div class="cf">
 <table><thead><tr><th>Proyecto</th><th>% Ocup</th><th>Gap al 95%</th><th>Uds. Necesarias</th><th>Estado</th></tr></thead>
 <tbody><tr><td style="font-weight:500">Collective Bustamante</td><td><b>18.4%</b></td><td>+76.6pp</td><td>284 uds.</td><td><span class="badge badge-red">&#x1F534; Cr&iacute;tico</span></td></tr>
@@ -369,7 +386,7 @@ body.present-mode .header { padding: 16px 0 12px; }
 </div>
 
 
-<div class="sec">Unidades Disponibles por Proyecto</div>
+<div id="sec-disponibles" class="sec">Unidades Disponibles por Proyecto</div>
 <div class="sec-sub">490 unidades disponibles para arrendar — filtrar por proyecto y tipología</div>
 <div class="cf">
   <div class="table-filters">
@@ -404,7 +421,7 @@ body.present-mode .header { padding: 16px 0 12px; }
 
 
 
-<div class="sec">Por Liberar &mdash; Detalle por Proyecto y Tipolog&iacute;a</div>
+<div id="sec-por-liberar" class="sec">Por Liberar &mdash; Detalle por Proyecto y Tipolog&iacute;a</div>
 <div class="sec-sub">Unidades arrendadas con subestado Por Liberar en POP Estate &mdash; Datos al 06/05/2026</div>
 <div class="sec-sub" style="color:#747678;font-size:.75rem;margin-top:4px">* Collective Bustamante, Blend Apoquindo y Boldo Club de Campo no registran unidades Por Liberar en POP Estate.</div>
 
