@@ -3,12 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>LAR GROUP Panel de Ocupacion</title>
-<script src="https://cdn.plot.ly/plotly-2.27.0.min.js">
-function irA(id) {
-  var el = document.getElementById(id);
-  if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
-}
-</script>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 <style>
 /* ── GATE BRANDED ── */
 #gate{
@@ -1002,6 +997,12 @@ function exportPDF() {
       if (!prevMode) document.body.classList.remove('present-mode');
     }, 1000);
   }, 300);
+}
+</script>
+<script>
+function irA(id) {
+  var el = document.getElementById(id);
+  if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
 }
 </script>
 </body>
