@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>LAR GROUP Panel de Ocupacion</title>
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js">
-function scrollTo(id) {
+function irA(id) {
   var el = document.getElementById(id);
   if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
 }
@@ -324,12 +324,12 @@ body.present-mode .header { padding: 16px 0 12px; }
 </div>
 
 <div class="kg" style="grid-template-columns:repeat(6,1fr)">
-  <div class="kc kc-link" onclick="scrollTo('sec-alertas')" title="Ver Alertas por Proyecto"><div class="kl">Total Unidades</div><div class="kv">3,573</div><div class="ks">Departamentos en cartera</div></div>
-  <div class="kc kc-link" onclick="scrollTo('sec-alertas')" title="Ver Alertas por Proyecto"><div class="kl">Arrendadas</div><div class="kv gr">2,877</div><div class="ks">Estado: Arrendado</div></div>
-  <div class="kc kc-link" onclick="scrollTo('sec-disponibles')" title="Ver Unidades Disponibles"><div class="kl">Disponibles</div><div class="kv or">489</div><div class="ks">Libres para arrendar</div></div>
-  <div class="kc kc-link" onclick="scrollTo('sec-pipeline')" title="Ver Pipeline de Acción"><div class="kl">No Disponibles</div><div class="kv re">207</div><div class="ks">Incl. En Obra (5)</div></div>
-  <div class="kc kc-link" onclick="scrollTo('sec-ocupacion')" title="Ver Ocupación Global"><div class="kl">% Ocupaci&oacute;n Global</div><div class="kv ac">80.5%</div><div class="ks">Target: 95% | Gap: 14.5pp</div></div>
-  <div class="kc kc-link" onclick="scrollTo('sec-por-liberar')" title="Ver Por Liberar"><div class="kl">Por Liberar</div><div class="kv re">83</div><div class="ks">10 proyectos afectados</div></div>
+  <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas por Proyecto"><div class="kl">Total Unidades</div><div class="kv">3,573</div><div class="ks">Departamentos en cartera</div></div>
+  <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas por Proyecto"><div class="kl">Arrendadas</div><div class="kv gr">2,877</div><div class="ks">Estado: Arrendado</div></div>
+  <div class="kc kc-link" onclick="irA('sec-disponibles')" title="Ver Unidades Disponibles"><div class="kl">Disponibles</div><div class="kv or">489</div><div class="ks">Libres para arrendar</div></div>
+  <div class="kc kc-link" onclick="irA('sec-pipeline')" title="Ver Pipeline de Acción"><div class="kl">No Disponibles</div><div class="kv re">207</div><div class="ks">Incl. En Obra (5)</div></div>
+  <div class="kc kc-link" onclick="irA('sec-ocupacion')" title="Ver Ocupación Global"><div class="kl">% Ocupaci&oacute;n Global</div><div class="kv ac">80.5%</div><div class="ks">Target: 95% | Gap: 14.5pp</div></div>
+  <div class="kc kc-link" onclick="irA('sec-por-liberar')" title="Ver Por Liberar"><div class="kl">Por Liberar</div><div class="kv re">83</div><div class="ks">10 proyectos afectados</div></div>
 </div>
 
 <div class="filter-bar">
