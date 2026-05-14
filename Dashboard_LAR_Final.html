@@ -307,7 +307,7 @@ body.present-mode .header { padding: 16px 0 12px; }
 </div>
 <div class="header">
   <h1>Panel de <span>Ocupación</span></h1>
-  <div class="sub">Datos al 11/05/2026 | Fuente: unidades.xlsx | Target global: 95%</div>
+  <div class="sub">Datos al 14/05/2026 | Fuente: unidades.xlsx | Target global: 95%</div>
 </div>
 
 <div class="kg" style="grid-template-columns:repeat(6,1fr)">
@@ -400,7 +400,7 @@ body.present-mode .header { padding: 16px 0 12px; }
   <div class="kc"><div class="kl">Por Arrendar</div><div class="kv or">33</div><div class="ks">Disponibles activos</div></div>
   <div class="kc"><div class="kl">Por Liberar</div><div class="kv re">79</div><div class="ks">Riesgo de baja ocupaci&oacute;n</div></div>
   <div class="kc"><div class="kl">Por Renovar</div><div class="kv ac">60</div><div class="ks">Contratos por vencer</div></div>
-  <div class="kc"><div class="kl">Reservadas</div><div class="kv gr">69</div><div class="ks">En proceso de firma</div></div>
+  <div class="kc kc-link" onclick="irA('sec-reservadas')" title="Ver Reservadas"><div class="kl">Reservadas</div><div class="kv gr">69</div><div class="ks">En proceso de firma</div></div>
   <div class="kc"><div class="kl">En Obra</div><div class="kv" style="color:#747678">5</div><div class="ks">No disponibles temp.</div></div>
 </div>
 
@@ -413,8 +413,39 @@ body.present-mode .header { padding: 16px 0 12px; }
 
 
 
+<div id="sec-reservadas" class="sec">Reservadas &mdash; Detalle por Proyecto y Tipolog&iacute;a</div>
+<div class="sec-sub">Unidades con subestado Reservada en POP Estate &mdash; Datos al 14/05/2026</div>
+
+<div class="kg" style="grid-template-columns:repeat(1,1fr);max-width:220px">
+  <div class="kc"><div class="kl">Total Reservadas</div><div class="kv gr">69</div><div class="ks">10 proyectos</div></div>
+</div>
+
+<div class="ab" style="border-left-color:#48BB78">&#x1F4CB; <span><b>IMU San Cristóbal</b> lidera con <b>18 unidades</b> reservadas. El <b>62% son tipolog&iacute;a 1D1B</b>.</span></div>
+
+<div class="cr">
+  <div class="cc"><div id="res_bar_proj" style="height:420px"></div></div>
+  <div class="cc"><div id="res_donut_tipo" style="height:420px"></div></div>
+</div>
+<div class="cf"><div id="res_stacked" style="height:380px"></div></div>
+
+<div class="cf" style="margin-top:16px">
+  <table>
+    <thead>
+      <tr><th>Proyecto</th><th style="text-align:center">1D1B</th><th style="text-align:center">2D2B</th><th style="text-align:center;color:#48BB78"><b>Total</b></th></tr>
+    </thead>
+    <tbody>
+      <tr><td>IMU San Cristóbal</td><td style="text-align:center">11</td><td style="text-align:center">7</td><td style="text-align:center"><b style="color:#48BB78">18</b></td></tr><tr><td>Spot Nueva Kennedy</td><td style="text-align:center">6</td><td style="text-align:center">6</td><td style="text-align:center"><b style="color:#48BB78">12</b></td></tr><tr><td>Nativo Riesco</td><td style="text-align:center">5</td><td style="text-align:center">5</td><td style="text-align:center"><b style="color:#48BB78">10</b></td></tr><tr><td>Brooklyn La Florida</td><td style="text-align:center">6</td><td style="text-align:center">3</td><td style="text-align:center"><b style="color:#48BB78">9</b></td></tr><tr><td>Spot Residence</td><td style="text-align:center">4</td><td style="text-align:center">4</td><td style="text-align:center"><b style="color:#48BB78">8</b></td></tr><tr><td>Central Santiago</td><td style="text-align:center">5</td><td style="text-align:center">-</td><td style="text-align:center"><b style="color:#48BB78">5</b></td></tr><tr><td>Collective Bustamante</td><td style="text-align:center">3</td><td style="text-align:center">-</td><td style="text-align:center"><b style="color:#48BB78">3</b></td></tr><tr><td>Soho Barrio Italia</td><td style="text-align:center">1</td><td style="text-align:center">1</td><td style="text-align:center"><b style="color:#48BB78">2</b></td></tr><tr><td>Nomad Bellet</td><td style="text-align:center">1</td><td style="text-align:center">-</td><td style="text-align:center"><b style="color:#48BB78">1</b></td></tr><tr><td>Nomad Holley</td><td style="text-align:center">1</td><td style="text-align:center">-</td><td style="text-align:center"><b style="color:#48BB78">1</b></td></tr>
+      <tr style="border-top:2px solid #2D3748">
+        <td><b>TOTAL</b></td><td style="text-align:center;color:#00A8B4"><b>43</b></td><td style="text-align:center;color:#00A8B4"><b>26</b></td>
+        <td style="text-align:center"><b style="color:#48BB78">69</b></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
 <div id="sec-por-liberar" class="sec">Por Liberar &mdash; Detalle por Proyecto y Tipolog&iacute;a</div>
-<div class="sec-sub">Unidades arrendadas con subestado Por Liberar en POP Estate &mdash; Datos al 11/05/2026</div>
+<div class="sec-sub">Unidades arrendadas con subestado Por Liberar en POP Estate &mdash; Datos al 14/05/2026</div>
 <div class="sec-sub" style="color:#747678;font-size:.75rem;margin-top:4px">* Collective Bustamante, Blend Apoquindo y Boldo Club de Campo no registran unidades Por Liberar en POP Estate.</div>
 
 <div class="kg" style="grid-template-columns:repeat(1,1fr);max-width:220px">
@@ -465,7 +496,7 @@ body.present-mode .header { padding: 16px 0 12px; }
 <div class="sec">FASE 4 &mdash; Evoluci&oacute;n Hist&oacute;rica</div>
 <div class="cf"><div id="hist_line" style="height:350px"></div></div>
 
-<div class="ft">Datos al 11/05/2026 | Fuente: unidades.xlsx | Target global: 95% | LAR GROUP — Tu nueva forma de arrendar</div>
+<div class="ft">Datos al 14/05/2026 | Fuente: unidades.xlsx | Target global: 95% | LAR GROUP — Tu nueva forma de arrendar</div>
 
 <script>
 var P=[{"Propiedad": "Nativo Riesco", "Total": 254.0, "Arrendados": 242.0, "Disponibles": 11.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 10.0, "Por_Arrendar": 0.0, "Por_Liberar": 7.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.9528, "Gap": 0.0028, "Uds_Needed": 0.0}, {"Propiedad": "Boldo Club de Campo", "Total": 126.0, "Arrendados": 120.0, "Disponibles": 5.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9524, "Gap": 0.0024, "Uds_Needed": 0.0}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 298.0, "Disponibles": 15.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 7.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.949, "Gap": -0.001, "Uds_Needed": 0.0}, {"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 91.0, "Disponibles": 5.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 1.0, "Por_Liberar": 2.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9479, "Gap": -0.0021, "Uds_Needed": 0.0}, {"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 195.0, "Disponibles": 10.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 3.0, "Por_Liberar": 10.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9375, "Gap": -0.0125, "Uds_Needed": 3.0}, {"Propiedad": "Nomad Bellet", "Total": 134.0, "Arrendados": 124.0, "Disponibles": 8.0, "No_Disp": 2.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 1.0, "Por_Liberar": 6.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9254, "Gap": -0.0246, "Uds_Needed": 3.0}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 518.0, "Disponibles": 41.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 5.0, "Por_Arrendar": 4.0, "Por_Liberar": 19.0, "Por_Renovar": 18.0, "Pct_Ocup": 0.9217, "Gap": -0.0283, "Uds_Needed": 16.0}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 267.0, "Disponibles": 27.0, "No_Disp": 2.0, "En_Obra": 1.0, "Reservadas": 12.0, "Por_Arrendar": 1.0, "Por_Liberar": 4.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.902, "Gap": -0.048, "Uds_Needed": 14.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 427.0, "Disponibles": 41.0, "No_Disp": 10.0, "En_Obra": 0.0, "Reservadas": 9.0, "Por_Arrendar": 4.0, "Por_Liberar": 15.0, "Por_Renovar": 24.0, "Pct_Ocup": 0.8933, "Gap": -0.0567, "Uds_Needed": 27.0}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 159.0, "Disponibles": 22.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 8.0, "Por_Arrendar": 4.0, "Por_Liberar": 5.0, "Por_Renovar": 8.0, "Pct_Ocup": 0.8457, "Gap": -0.1043, "Uds_Needed": 20.0}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 315.0, "Disponibles": 69.0, "No_Disp": 69.0, "En_Obra": 0.0, "Reservadas": 18.0, "Por_Arrendar": 3.0, "Por_Liberar": 4.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.6954, "Gap": -0.2546, "Uds_Needed": 115.0}, {"Propiedad": "Blend Apoquindo", "Total": 95.0, "Arrendados": 54.0, "Disponibles": 21.0, "No_Disp": 20.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.5684, "Gap": -0.3816, "Uds_Needed": 36.0}, {"Propiedad": "Collective Bustamante", "Total": 371.0, "Arrendados": 71.0, "Disponibles": 213.0, "No_Disp": 87.0, "En_Obra": 0.0, "Reservadas": 3.0, "Por_Arrendar": 6.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.1914, "Gap": -0.7586, "Uds_Needed": 281.0}];
@@ -928,6 +959,48 @@ function exportPDF() {
 }
 </script>
 <script>
+
+// Reservadas charts
+var res_projs  = ["IMU San Cristóbal", "Spot Nueva Kennedy", "Nativo Riesco", "Brooklyn La Florida", "Spot Residence", "Central Santiago", "Collective Bustamante", "Soho Barrio Italia", "Nomad Bellet", "Nomad Holley"];
+var res_totals = [18, 12, 10, 9, 8, 5, 3, 2, 1, 1];
+Plotly.newPlot("res_bar_proj",[
+  {type:"bar",orientation:"h",
+   y:res_projs.slice().reverse(),
+   x:res_totals.slice().reverse(),
+   marker:{color:res_totals.slice().reverse().map(v=>v>=15?"#48BB78":v>=8?"#68D391":"#9AE6B4")},
+   text:res_totals.slice().reverse().map(String),textposition:"outside",
+   hovertemplate:"%{y}: %{x} unidades<extra></extra>"}
+],{...base,
+  title:{text:"Reservadas por Proyecto",font:{size:13}},
+  xaxis:{gridcolor:GRID,color:AXIS,title:"Unidades",dtick:5},
+  yaxis:{gridcolor:GRID,color:AXIS},
+  margin:{t:50,b:60,l:200,r:80},height:420
+});
+Plotly.newPlot("res_donut_tipo",[
+  {type:"pie",hole:0.6,
+   values:[43, 26],labels:["1D1B", "2D2B"],
+   marker:{colors:["#48BB78","#68D391","#9AE6B4","#00A8B4","#F6AD55"]},
+   textinfo:"label+percent",
+   hovertemplate:"%{label}: %{value} uds (%{percent})<extra></extra>"}
+],{...base,
+  title:{text:"Distribuci\u00f3n por Tipolog\u00eda",font:{size:13}},
+  annotations:[{x:0.5,y:0.5,showarrow:false,align:"center",
+    text:"<b><span style='font-size:24px;color:#48BB78'>69</span></b><br><span style='font-size:10px;color:#E2E8F0'>total</span>"}],
+  showlegend:true,legend:{orientation:"h",y:-0.1},
+  margin:{t:50,b:60,l:20,r:20},height:420
+});
+Plotly.newPlot("res_stacked",[
+  {type:"bar",name:"1D1B",x:res_projs,y:[11, 6, 5, 6, 4, 5, 3, 1, 1, 1],marker:{color:"#48BB78"}},
+  {type:"bar",name:"2D2B",x:res_projs,y:[7, 6, 5, 3, 4, 0, 0, 1, 0, 0],marker:{color:"#68D391"}},
+],{...base,
+  title:{text:"Reservadas: Desglose por Proyecto y Tipolog\u00eda",font:{size:13}},
+  barmode:"stack",
+  xaxis:{gridcolor:GRID,color:AXIS,tickangle:-40},
+  yaxis:{gridcolor:GRID,color:AXIS,title:"Unidades"},
+  legend:{orientation:"h",y:-0.3},
+  margin:{t:50,b:140,l:60,r:20},height:380
+});
+
 
 // Por Liberar charts
 var pol_projs  = ["Central Santiago", "Brooklyn La Florida", "Nomad Holley", "Nativo Riesco", "Park Santiago", "Nomad Bellet", "Spot Residence", "IMU San Cristóbal", "Spot Nueva Kennedy", "Soho Barrio Italia"];
