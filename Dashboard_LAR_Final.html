@@ -114,6 +114,131 @@
 .kc-link{cursor:pointer;transition:border-color .2s,transform .15s,box-shadow .2s}
 .kc-link:hover{border-color:#00A8B4!important;transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,168,180,.18)}
 .kc-link:hover .kl{color:#00A8B4}
+
+/* ════ TEMA CLARO LAR GROUP ════ */
+:root{--bg:#F1F5F9;--surface:#FFFFFF;--border:#E2E8F0;--text:#1A202C;
+      --muted:#64748B;--teal:#00A8B4;--sbw:228px;}
+
+body{background:var(--bg);color:var(--text);}
+
+/* Gate claro */
+#gate{background:linear-gradient(135deg,#EEF2FF 0%,#E0F2FE 100%);}
+.gate-card{background:#fff;box-shadow:0 8px 40px rgba(0,0,0,.12);border:1px solid var(--border);}
+.gate-header{background:#F8FAFC;border-bottom:1px solid var(--border);}
+.gate-brand-name,.gate-brand-group,.gate-title,.gate-subtitle,.gate-slogan
+  {color:var(--text)!important;}
+.gate-brand-name{color:var(--teal)!important;}
+#gate-inp,#gate-input{background:#F8FAFC!important;border:1px solid var(--border)!important;
+  color:var(--text)!important;}
+#gate-btn{background:var(--teal)!important;}
+#gate-err{color:#DC2626!important;}
+.gate-logo img,.gate-header img{filter:none!important;}
+
+/* Sidebar */
+#sb{position:fixed;top:0;left:0;width:var(--sbw);height:100vh;
+    background:#fff;border-right:1px solid var(--border);z-index:900;
+    overflow-y:auto;display:none;flex-direction:column;
+    box-shadow:2px 0 12px rgba(0,0,0,.07);}
+#sb.vis{display:flex;}
+#sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);}
+#sb-logo .lg-brand{font-size:.65rem;font-weight:800;letter-spacing:.14em;
+    color:var(--teal);text-transform:uppercase;}
+#sb-logo .lg-sub{font-size:.72rem;color:var(--muted);margin-top:3px;}
+#sb-date{padding:7px 16px;font-size:.68rem;color:var(--muted);
+    background:#F8FAFC;border-bottom:1px solid var(--border);}
+#sb-date b{color:var(--teal);}
+.sbn{padding:10px 0;flex:1;}
+.sbl{display:flex;align-items:center;gap:8px;padding:8px 16px;
+    font-size:.76rem;color:var(--muted);cursor:pointer;
+    border-left:3px solid transparent;transition:all .15s;
+    text-decoration:none;user-select:none;}
+.sbl:hover{background:#F1F5F9;color:var(--text);}
+.sbl.on{border-left-color:var(--teal);color:var(--teal);
+    background:#F0FDFE;font-weight:600;}
+.sbl .ico{font-size:.85rem;width:16px;text-align:center;}
+#main-wrap{margin-left:var(--sbw);padding:20px 28px 40px;transition:margin .2s;}
+#sb-ham{display:none;position:fixed;top:10px;left:10px;z-index:1000;
+    background:var(--teal);color:#fff;border:none;border-radius:6px;
+    padding:6px 10px;cursor:pointer;font-size:1rem;line-height:1;}
+
+/* KPI cards */
+.kc{background:#fff;border:1px solid var(--border);
+    box-shadow:0 1px 4px rgba(0,0,0,.06);border-radius:10px;}
+.kl{color:var(--muted)!important;}
+.kv{color:var(--text)!important;}
+.kv.gr{color:#16A34A!important;}
+.kv.or{color:#D97706!important;}
+.kv.re{color:#DC2626!important;}
+.kv.ac{color:var(--teal)!important;}
+.ks{color:var(--muted)!important;}
+.kc-link:hover{border-color:var(--teal)!important;
+    box-shadow:0 4px 16px rgba(0,168,180,.15)!important;}
+.kc-link:hover .kl{color:var(--teal)!important;}
+
+/* Sections */
+.sec{color:var(--text)!important;border-bottom:2px solid var(--teal);
+    padding-bottom:6px;font-size:.95rem;font-weight:700;}
+.sec-sub{color:var(--muted)!important;}
+
+/* Chart containers */
+.cr,.cc,.cf{background:#fff;border:1px solid var(--border);
+    border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.05);padding:14px;}
+.cr{display:grid;gap:14px;}
+
+/* Alert box */
+.ab{background:#FFFBEB!important;border-left:4px solid #F59E0B!important;
+    color:#92400E!important;}
+
+/* Tables */
+table{background:#fff;border-radius:10px;overflow:hidden;width:100%;
+    box-shadow:0 1px 4px rgba(0,0,0,.06);}
+thead tr{background:#F8FAFC;}
+th{color:var(--muted);font-size:.7rem;letter-spacing:.04em;
+    border-bottom:2px solid var(--border)!important;padding:10px 12px!important;}
+td{color:var(--text);border-bottom:1px solid var(--border)!important;
+    font-size:.79rem;padding:8px 12px!important;}
+tr:hover td{background:#F0FDFE;}
+
+/* Filter control */
+#proj-filter{background:#fff!important;color:var(--text)!important;
+    border:1px solid var(--border)!important;border-radius:8px;}
+#proj-filter:focus{border-color:var(--teal)!important;}
+.filter-badge{background:rgba(0,168,180,.1)!important;color:var(--teal)!important;
+    border:1px solid var(--teal)!important;}
+
+/* Semáforo */
+.sem{display:inline-block;width:9px;height:9px;border-radius:50%;
+    margin-right:5px;vertical-align:middle;flex-shrink:0;}
+.sem-g{background:#16A34A;}.sem-y{background:#D97706;}.sem-r{background:#DC2626;}
+
+/* Buscador de tablas */
+.tbl-wrap{position:relative;}
+.tbl-search{width:100%;max-width:300px;padding:6px 12px;
+    border:1px solid var(--border);border-radius:6px;font-size:.78rem;
+    margin-bottom:10px;background:#fff;color:var(--text);outline:none;display:block;}
+.tbl-search:focus{border-color:var(--teal);box-shadow:0 0 0 2px rgba(0,168,180,.12);}
+
+/* Export btn */
+.btn-exp{padding:5px 14px;background:var(--teal);color:#fff;border:none;
+    border-radius:6px;font-size:.73rem;cursor:pointer;float:right;
+    margin-bottom:8px;transition:background .15s;}
+.btn-exp:hover{background:#008C96;}
+
+/* Badge fecha */
+#date-badge{display:inline-block;padding:3px 10px;background:rgba(0,168,180,.1);
+    color:var(--teal);border:1px solid var(--teal);border-radius:99px;
+    font-size:.68rem;font-weight:600;margin-left:10px;vertical-align:middle;}
+
+/* Responsive */
+@media(max-width:768px){
+  #sb{transform:translateX(-110%);transition:transform .25s;display:flex;}
+  #sb.open{transform:translateX(0);}
+  #main-wrap{margin-left:0!important;padding:12px!important;}
+  #sb-ham{display:block;}
+  .kg{grid-template-columns:repeat(2,1fr)!important;}
+  .cr{grid-template-columns:1fr!important;}
+}
+
 </style>
 <script>
 (function(){
@@ -125,7 +250,7 @@
     function check(){
       if(inp.value==='Lar2026'){
         sessionStorage.setItem('lar_auth','ok');
-        gate.style.display='none';
+        gate.style.display='none';document.getElementById('sb').classList.add('vis');document.getElementById('main-wrap').style.marginLeft='var(--sbw)';
       } else {
         err.textContent='Contraseña incorrecta. Intentá de nuevo.';
         inp.value='';
@@ -332,7 +457,7 @@ body.present-mode .header { padding: 16px 0 12px; }
   <span id="filter-badge" class="filter-badge" style="display:none"></span>
 </div>
 
-<div class="sec">Resumen Ejecutivo</div>
+<div id="sec-resumen" class="sec">Resumen Ejecutivo</div>
 <div id="exec-summary" class="exec-card"></div>
 
 <div id="sec-ocupacion" class="sec">Ocupación Global</div>
@@ -359,6 +484,26 @@ body.present-mode .header { padding: 16px 0 12px; }
 <tr><td style="font-weight:500">Soho Barrio Italia</td><td><b>95.8%</b></td><td>&mdash;</td><td>&mdash;</td><td><span class="badge badge-green">&#x2705; Cumple</span></td></tr>
 </tbody></table>
 </div>
+
+<button id="sb-ham" onclick="toggleSb()" title="Menu">&#9776;</button>
+<nav id="sb">
+  <div id="sb-logo">
+    <div class="lg-brand">LAR GROUP</div>
+    <div class="lg-sub">Panel de Ocupaci&oacute;n</div>
+  </div>
+  <div id="sb-date">Actualizado: <b>14/05/2026</b></div>
+  <div class="sbn">
+    <div class="sbl" onclick="irA('sec-resumen')"><span class="ico">&#128202;</span>Resumen Ejecutivo</div>
+    <div class="sbl" onclick="irA('sec-ocupacion')"><span class="ico">&#127970;</span>Ocupaci&oacute;n Global</div>
+    <div class="sbl" onclick="irA('sec-alertas')"><span class="ico">&#9888;</span>Alertas por Proyecto</div>
+    <div class="sbl" onclick="irA('sec-disponibles')"><span class="ico">&#128994;</span>Disponibles</div>
+    <div class="sbl" onclick="irA('sec-reservadas')"><span class="ico">&#128203;</span>Reservadas</div>
+    <div class="sbl" onclick="irA('sec-por-liberar')"><span class="ico">&#128308;</span>Por Liberar</div>
+    <div class="sbl" onclick="irA('sec-pipeline')"><span class="ico">&#128260;</span>Pipeline</div>
+  </div>
+</nav>
+<div id="main-wrap">
+
 
 <div class="sec">Composici&oacute;n por Tipolog&iacute;a &mdash; Unidades y Ocupaci&oacute;n</div>
 <div class="sec-sub">Altura del pilar = unidades totales | Texto = % ocupaci&oacute;n por tipolog&iacute;a</div>
@@ -502,7 +647,7 @@ body.present-mode .header { padding: 16px 0 12px; }
 var P=[{"Propiedad": "Nativo Riesco", "Total": 254.0, "Arrendados": 242.0, "Disponibles": 11.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 10.0, "Por_Arrendar": 0.0, "Por_Liberar": 7.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.9528, "Gap": 0.0028, "Uds_Needed": 0.0}, {"Propiedad": "Boldo Club de Campo", "Total": 126.0, "Arrendados": 120.0, "Disponibles": 5.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9524, "Gap": 0.0024, "Uds_Needed": 0.0}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 298.0, "Disponibles": 15.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 7.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.949, "Gap": -0.001, "Uds_Needed": 0.0}, {"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 91.0, "Disponibles": 5.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 1.0, "Por_Liberar": 2.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9479, "Gap": -0.0021, "Uds_Needed": 0.0}, {"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 195.0, "Disponibles": 10.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 3.0, "Por_Liberar": 10.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9375, "Gap": -0.0125, "Uds_Needed": 3.0}, {"Propiedad": "Nomad Bellet", "Total": 134.0, "Arrendados": 124.0, "Disponibles": 8.0, "No_Disp": 2.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 1.0, "Por_Liberar": 6.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9254, "Gap": -0.0246, "Uds_Needed": 3.0}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 518.0, "Disponibles": 41.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 5.0, "Por_Arrendar": 4.0, "Por_Liberar": 19.0, "Por_Renovar": 18.0, "Pct_Ocup": 0.9217, "Gap": -0.0283, "Uds_Needed": 16.0}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 267.0, "Disponibles": 27.0, "No_Disp": 2.0, "En_Obra": 1.0, "Reservadas": 12.0, "Por_Arrendar": 1.0, "Por_Liberar": 4.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.902, "Gap": -0.048, "Uds_Needed": 14.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 427.0, "Disponibles": 41.0, "No_Disp": 10.0, "En_Obra": 0.0, "Reservadas": 9.0, "Por_Arrendar": 4.0, "Por_Liberar": 15.0, "Por_Renovar": 24.0, "Pct_Ocup": 0.8933, "Gap": -0.0567, "Uds_Needed": 27.0}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 159.0, "Disponibles": 22.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 8.0, "Por_Arrendar": 4.0, "Por_Liberar": 5.0, "Por_Renovar": 8.0, "Pct_Ocup": 0.8457, "Gap": -0.1043, "Uds_Needed": 20.0}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 315.0, "Disponibles": 69.0, "No_Disp": 69.0, "En_Obra": 0.0, "Reservadas": 18.0, "Por_Arrendar": 3.0, "Por_Liberar": 4.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.6954, "Gap": -0.2546, "Uds_Needed": 115.0}, {"Propiedad": "Blend Apoquindo", "Total": 95.0, "Arrendados": 54.0, "Disponibles": 21.0, "No_Disp": 20.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.5684, "Gap": -0.3816, "Uds_Needed": 36.0}, {"Propiedad": "Collective Bustamante", "Total": 371.0, "Arrendados": 71.0, "Disponibles": 213.0, "No_Disp": 87.0, "En_Obra": 0.0, "Reservadas": 3.0, "Por_Arrendar": 6.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.1914, "Gap": -0.7586, "Uds_Needed": 281.0}];
 </script>
 <script>
-var PAPER="#1E2130",GRID="#2D3748",FONT="#E2E8F0",AXIS="#747678";
+var PAPER="#FFFFFF",GRID="#E2E8F0",FONT="#1A202C",AXIS="#4A5568";
 var gpct=0.8059;
 var proj_desc=[{"Propiedad": "Nativo Riesco", "Total": 254.0, "Arrendados": 242.0, "Disponibles": 11.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 10.0, "Por_Arrendar": 0.0, "Por_Liberar": 7.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.9528, "Gap": 0.0028, "Uds_Needed": 0.0}, {"Propiedad": "Boldo Club de Campo", "Total": 126.0, "Arrendados": 120.0, "Disponibles": 5.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9524, "Gap": 0.0024, "Uds_Needed": 0.0}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 298.0, "Disponibles": 15.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 7.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.949, "Gap": -0.001, "Uds_Needed": 0.0}, {"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 91.0, "Disponibles": 5.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 1.0, "Por_Liberar": 2.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9479, "Gap": -0.0021, "Uds_Needed": 0.0}, {"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 195.0, "Disponibles": 10.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 3.0, "Por_Liberar": 10.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9375, "Gap": -0.0125, "Uds_Needed": 3.0}, {"Propiedad": "Nomad Bellet", "Total": 134.0, "Arrendados": 124.0, "Disponibles": 8.0, "No_Disp": 2.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 1.0, "Por_Liberar": 6.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9254, "Gap": -0.0246, "Uds_Needed": 3.0}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 518.0, "Disponibles": 41.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 5.0, "Por_Arrendar": 4.0, "Por_Liberar": 19.0, "Por_Renovar": 18.0, "Pct_Ocup": 0.9217, "Gap": -0.0283, "Uds_Needed": 16.0}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 267.0, "Disponibles": 27.0, "No_Disp": 2.0, "En_Obra": 1.0, "Reservadas": 12.0, "Por_Arrendar": 1.0, "Por_Liberar": 4.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.902, "Gap": -0.048, "Uds_Needed": 14.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 427.0, "Disponibles": 41.0, "No_Disp": 10.0, "En_Obra": 0.0, "Reservadas": 9.0, "Por_Arrendar": 4.0, "Por_Liberar": 15.0, "Por_Renovar": 24.0, "Pct_Ocup": 0.8933, "Gap": -0.0567, "Uds_Needed": 27.0}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 159.0, "Disponibles": 22.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 8.0, "Por_Arrendar": 4.0, "Por_Liberar": 5.0, "Por_Renovar": 8.0, "Pct_Ocup": 0.8457, "Gap": -0.1043, "Uds_Needed": 20.0}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 315.0, "Disponibles": 69.0, "No_Disp": 69.0, "En_Obra": 0.0, "Reservadas": 18.0, "Por_Arrendar": 3.0, "Por_Liberar": 4.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.6954, "Gap": -0.2546, "Uds_Needed": 115.0}, {"Propiedad": "Blend Apoquindo", "Total": 95.0, "Arrendados": 54.0, "Disponibles": 21.0, "No_Disp": 20.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.5684, "Gap": -0.3816, "Uds_Needed": 36.0}, {"Propiedad": "Collective Bustamante", "Total": 371.0, "Arrendados": 71.0, "Disponibles": 213.0, "No_Disp": 87.0, "En_Obra": 0.0, "Reservadas": 3.0, "Por_Arrendar": 6.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.1914, "Gap": -0.7586, "Uds_Needed": 281.0}];
 var proj_asc=[{"Propiedad": "Collective Bustamante", "Total": 371.0, "Arrendados": 71.0, "Disponibles": 213.0, "No_Disp": 87.0, "En_Obra": 0.0, "Reservadas": 3.0, "Por_Arrendar": 6.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.1914, "Gap": -0.7586, "Uds_Needed": 281.0}, {"Propiedad": "Blend Apoquindo", "Total": 95.0, "Arrendados": 54.0, "Disponibles": 21.0, "No_Disp": 20.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.5684, "Gap": -0.3816, "Uds_Needed": 36.0}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 315.0, "Disponibles": 69.0, "No_Disp": 69.0, "En_Obra": 0.0, "Reservadas": 18.0, "Por_Arrendar": 3.0, "Por_Liberar": 4.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.6954, "Gap": -0.2546, "Uds_Needed": 115.0}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 159.0, "Disponibles": 22.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 8.0, "Por_Arrendar": 4.0, "Por_Liberar": 5.0, "Por_Renovar": 8.0, "Pct_Ocup": 0.8457, "Gap": -0.1043, "Uds_Needed": 20.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 427.0, "Disponibles": 41.0, "No_Disp": 10.0, "En_Obra": 0.0, "Reservadas": 9.0, "Por_Arrendar": 4.0, "Por_Liberar": 15.0, "Por_Renovar": 24.0, "Pct_Ocup": 0.8933, "Gap": -0.0567, "Uds_Needed": 27.0}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 267.0, "Disponibles": 27.0, "No_Disp": 2.0, "En_Obra": 1.0, "Reservadas": 12.0, "Por_Arrendar": 1.0, "Por_Liberar": 4.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.902, "Gap": -0.048, "Uds_Needed": 14.0}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 518.0, "Disponibles": 41.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 5.0, "Por_Arrendar": 4.0, "Por_Liberar": 19.0, "Por_Renovar": 18.0, "Pct_Ocup": 0.9217, "Gap": -0.0283, "Uds_Needed": 16.0}, {"Propiedad": "Nomad Bellet", "Total": 134.0, "Arrendados": 124.0, "Disponibles": 8.0, "No_Disp": 2.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 1.0, "Por_Liberar": 6.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9254, "Gap": -0.0246, "Uds_Needed": 3.0}, {"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 195.0, "Disponibles": 10.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 3.0, "Por_Liberar": 10.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9375, "Gap": -0.0125, "Uds_Needed": 3.0}, {"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 91.0, "Disponibles": 5.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 1.0, "Por_Liberar": 2.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9479, "Gap": -0.0021, "Uds_Needed": 0.0}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 298.0, "Disponibles": 15.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 7.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.949, "Gap": -0.001, "Uds_Needed": 0.0}, {"Propiedad": "Boldo Club de Campo", "Total": 126.0, "Arrendados": 120.0, "Disponibles": 5.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 2.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9524, "Gap": 0.0024, "Uds_Needed": 0.0}, {"Propiedad": "Nativo Riesco", "Total": 254.0, "Arrendados": 242.0, "Disponibles": 11.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 10.0, "Por_Arrendar": 0.0, "Por_Liberar": 7.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.9528, "Gap": 0.0028, "Uds_Needed": 0.0}];
@@ -958,6 +1103,157 @@ function exportPDF() {
   }, 300);
 }
 </script>
+</div><!-- /main-wrap -->
+
+<script>
+// ── Sidebar toggle (mobile) ──
+function toggleSb(){
+  var sb=document.getElementById('sb');
+  sb.classList.toggle('open');
+}
+
+// ── Active sidebar link on scroll ──
+(function(){
+  var ids=['sec-resumen','sec-ocupacion','sec-alertas','sec-disponibles',
+           'sec-reservadas','sec-por-liberar','sec-pipeline'];
+  var links=document.querySelectorAll('.sbl');
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(l){l.classList.remove('on');});
+        ids.forEach(function(id,i){
+          if(id===e.target.id && links[i]) links[i].classList.add('on');
+        });
+      }
+    });
+  },{threshold:0.25});
+  ids.forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) obs.observe(el);
+  });
+})();
+
+// ── Semáforo por proyecto ──
+(function(){
+  function pct(p){ return p && p.Pct_Ocup ? p.Pct_Ocup*100 : null; }
+  function semColor(v){ return v===null?'':v>=0.90?'sem-g':v>=0.75?'sem-y':'sem-r'; }
+  if(typeof proj_desc==='undefined') return;
+  var map={};
+  proj_desc.forEach(function(p){ map[p.Propiedad]={pct:p.Pct_Ocup,gap:p.Gap}; });
+  document.querySelectorAll('table td:first-child').forEach(function(td){
+    var k=td.textContent.trim();
+    if(map[k]){
+      var v=map[k].pct;
+      var cls=v>=0.90?'sem-g':v>=0.75?'sem-y':'sem-r';
+      var dot=document.createElement('span');
+      dot.className='sem '+cls;
+      dot.title=(v*100).toFixed(1)+'% ocupación';
+      td.insertBefore(dot,td.firstChild);
+    }
+  });
+})();
+
+// ── Buscador de tablas ──
+function addSearch(tableId,label){
+  var tbl=document.getElementById(tableId);
+  if(!tbl) tbl=document.querySelector('table');
+  if(!tbl) return;
+  var inp=document.createElement('input');
+  inp.className='tbl-search';
+  inp.placeholder=label||'Buscar...';
+  inp.addEventListener('keyup',function(){
+    var q=inp.value.toLowerCase();
+    tbl.querySelectorAll('tbody tr').forEach(function(tr){
+      tr.style.display=tr.textContent.toLowerCase().includes(q)?'':'none';
+    });
+  });
+  tbl.parentNode.insertBefore(inp,tbl);
+}
+
+// ── Exportar tabla a CSV ──
+function exportCSV(tableId,filename){
+  var tbl=document.getElementById(tableId)||document.querySelector('table');
+  if(!tbl) return;
+  var rows=[],all=tbl.querySelectorAll('tr');
+  all.forEach(function(r){
+    var cols=[];
+    r.querySelectorAll('th,td').forEach(function(c){
+      cols.push('"'+c.textContent.replace(/"/g,'""').trim()+'"');
+    });
+    rows.push(cols.join(','));
+  });
+  var a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(rows.join('\n'));
+  a.download=(filename||'export')+'.csv';
+  a.click();
+}
+
+// Aplicar buscadores y botones export a cada sección de tabla
+window.addEventListener('load',function(){
+  // Disponibles
+  var dispSec=document.getElementById('sec-disponibles');
+  if(dispSec){
+    var tbl=dispSec.nextElementSibling;
+    while(tbl && tbl.tagName!=='TABLE') tbl=tbl.nextElementSibling;
+    if(tbl){
+      var inp=document.createElement('input');
+      inp.className='tbl-search'; inp.placeholder='Buscar unidad, proyecto, tipología...';
+      inp.addEventListener('keyup',function(){
+        var q=inp.value.toLowerCase();
+        tbl.querySelectorAll('tbody tr').forEach(function(r){
+          r.style.display=r.textContent.toLowerCase().includes(q)?'':'none';
+        });
+      });
+      var btn=document.createElement('button');
+      btn.className='btn-exp'; btn.textContent='⬇ Exportar CSV';
+      btn.onclick=function(){exportCSV(null,'Disponibles_LAR');};
+      tbl.parentNode.insertBefore(btn,tbl);
+      tbl.parentNode.insertBefore(inp,tbl);
+    }
+  }
+  // Por Liberar
+  var polSec=document.getElementById('sec-por-liberar');
+  if(polSec){
+    var tbls=polSec.parentNode.querySelectorAll('table');
+    tbls.forEach(function(tbl,i){
+      if(i>0) return;
+      var btn=document.createElement('button');
+      btn.className='btn-exp'; btn.textContent='⬇ Exportar CSV';
+      btn.onclick=function(){exportCSV(null,'PorLiberar_LAR');};
+      tbl.parentNode.insertBefore(btn,tbl);
+    });
+  }
+  // Reservadas
+  var resSec=document.getElementById('sec-reservadas');
+  if(resSec){
+    var tbls2=document.querySelectorAll('#sec-reservadas ~ div table, #sec-reservadas ~ .cf table');
+    if(tbls2.length){
+      var btn2=document.createElement('button');
+      btn2.className='btn-exp'; btn2.textContent='⬇ Exportar CSV';
+      btn2.onclick=function(){exportCSV(null,'Reservadas_LAR');};
+      tbls2[0].parentNode.insertBefore(btn2,tbls2[0]);
+    }
+  }
+  // Semáforo (re-run después de carga completa)
+  if(typeof proj_desc!=='undefined'){
+    var map2={};
+    proj_desc.forEach(function(p){ map2[p.Propiedad]=p.Pct_Ocup; });
+    document.querySelectorAll('table td:first-child').forEach(function(td){
+      if(td.querySelector('.sem')) return;
+      var k=td.textContent.trim();
+      if(map2[k]!==undefined){
+        var v=map2[k];
+        var cls=v>=0.90?'sem-g':v>=0.75?'sem-y':'sem-r';
+        var dot=document.createElement('span');
+        dot.className='sem '+cls;
+        dot.title=(v*100).toFixed(1)+'% ocupación';
+        td.insertBefore(dot,td.firstChild);
+      }
+    });
+  }
+});
+</script>
+
 <script>
 
 // Reservadas charts
