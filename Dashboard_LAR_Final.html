@@ -421,6 +421,7 @@ tr:hover td{background:#F0FDFE!important;}
     transform:translateY(-3px);}
 .proj-stat{font-size:.67rem;color:#6B7A8D;background:#F8FAFC;padding:3px 8px;
     border-radius:99px;}
+.proj-logo-box img{display:block;}
 @media(max-width:768px){
   #page-content{padding:0 12px 32px!important;}
   .kg{grid-template-columns:repeat(2,1fr)!important;}
@@ -658,23 +659,38 @@ tr:hover td{background:#F0FDFE!important;}
 
 
 <div id="sec-proyectos" class="sec">Vista por Proyecto</div>
-<div class="sec-sub">Selecciona un proyecto para ver su detalle completo &mdash; Datos al 15/05/2026</div>
+<div class="sec-sub">Selecciona un proyecto para ver su detalle &mdash; Datos al 15/05/2026</div>
 
 <div style="margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
   <input id="proj-card-search" type="text" placeholder="&#128269; Buscar proyecto..."
          oninput="filtrarProjCards()"
          style="padding:6px 12px;border:1px solid #E2E8F0;border-radius:8px;font-size:.78rem;
-                width:240px;background:#fff;color:#1E2A38;outline:none">
-  <span style="font-size:.72rem;color:#6B7A8D">13 proyectos &mdash; haz clic en una card para ver el detalle</span>
+                width:210px;background:#fff;color:#1E2A38;outline:none">
+  <select id="proj-sort" onchange="sortProjCards(this.value)"
+          style="padding:6px 10px;border:1px solid #E2E8F0;border-radius:8px;font-size:.75rem;
+                 background:#fff;color:#374151;cursor:pointer;outline:none">
+    <option value="alpha">A &#8594; Z</option>
+    <option value="ocup_desc">&#8595; Ocupaci&oacute;n</option>
+    <option value="ocup_asc">&#8593; Ocupaci&oacute;n</option>
+    <option value="pol">&#8595; Por Liberar</option>
+    <option value="venc">&#8595; Vencimientos</option>
+  </select>
+  <button id="proj-view-btn" onclick="toggleProjView()"
+          style="padding:6px 10px;border:1px solid #E2E8F0;border-radius:8px;font-size:.78rem;
+                 background:#fff;color:#374151;cursor:pointer;white-space:nowrap">
+    &#9776; Lista
+  </button>
+  <span style="font-size:.72rem;color:#6B7A8D">13 proyectos &mdash; clic en una card para ver detalle</span>
 </div>
 
 <div id="proj-cards-grid"
      style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:32px">
   
 <div class="proj-card" onclick="openProjDrawer('Blend Apoquindo')"
+     data-name="Blend Apoquindo" data-pct="56.8" data-pol="0" data-venc="0"
      style="border-top:4px solid #008E9F">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#008E9F"/><text x="24" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="white" letter-spacing=".5">BA</text></svg>
+    <div class="proj-logo-box" data-init="BA" data-color="#008E9F" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/06/LOGO-BLEND-100X100.svg" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
     <div>
       <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Blend Apoquindo</div>
       <div style="font-size:.67rem;color:#6B7A8D">95 departamentos</div>
@@ -696,9 +712,10 @@ tr:hover td{background:#F0FDFE!important;}
   </div>
 </div>
 <div class="proj-card" onclick="openProjDrawer('Boldo Club de Campo')"
+     data-name="Boldo Club de Campo" data-pct="96.0" data-pol="0" data-venc="18"
      style="border-top:4px solid #0369A1">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#0369A1"/><text x="24" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="white" letter-spacing=".5">BC</text></svg>
+    <div class="proj-logo-box" data-init="BC" data-color="#0369A1" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-boldo.svg" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
     <div>
       <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Boldo Club de Campo</div>
       <div style="font-size:.67rem;color:#6B7A8D">126 departamentos</div>
@@ -720,9 +737,10 @@ tr:hover td{background:#F0FDFE!important;}
   </div>
 </div>
 <div class="proj-card" onclick="openProjDrawer('Brooklyn La Florida')"
+     data-name="Brooklyn La Florida" data-pct="90.8" data-pol="15" data-venc="38"
      style="border-top:4px solid #7C3AED">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#7C3AED"/><text x="24" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="white" letter-spacing=".5">BL</text></svg>
+    <div class="proj-logo-box" data-init="BL" data-color="#7C3AED" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-brooklyn-200x200-1.jpg" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
     <div>
       <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Brooklyn La Florida</div>
       <div style="font-size:.67rem;color:#6B7A8D">478 departamentos</div>
@@ -744,9 +762,10 @@ tr:hover td{background:#F0FDFE!important;}
   </div>
 </div>
 <div class="proj-card" onclick="openProjDrawer('Central Santiago')"
+     data-name="Central Santiago" data-pct="92.3" data-pol="22" data-venc="48"
      style="border-top:4px solid #DB2777">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#DB2777"/><text x="24" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="white" letter-spacing=".5">CS</text></svg>
+    <div style="width:44px;height:44px;flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" rx="10" fill="#DB2777"/><text x="22" y="28" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="800" fill="white" letter-spacing=".5">CS</text></svg></div>
     <div>
       <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Central Santiago</div>
       <div style="font-size:.67rem;color:#6B7A8D">562 departamentos</div>
@@ -768,9 +787,10 @@ tr:hover td{background:#F0FDFE!important;}
   </div>
 </div>
 <div class="proj-card" onclick="openProjDrawer('Collective Bustamante')"
+     data-name="Collective Bustamante" data-pct="19.1" data-pol="0" data-venc="0"
      style="border-top:4px solid #059669">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#059669"/><text x="24" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="white" letter-spacing=".5">CB</text></svg>
+    <div class="proj-logo-box" data-init="CB" data-color="#059669" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/12/LOGO-CB-WEB.svg" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
     <div>
       <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Collective Bustamante</div>
       <div style="font-size:.67rem;color:#6B7A8D">371 departamentos</div>
@@ -792,9 +812,10 @@ tr:hover td{background:#F0FDFE!important;}
   </div>
 </div>
 <div class="proj-card" onclick="openProjDrawer('IMU San Cristóbal')"
+     data-name="IMU San Cristóbal" data-pct="69.3" data-pol="4" data-venc="18"
      style="border-top:4px solid #D97706">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#D97706"/><text x="24" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="white" letter-spacing=".5">IS</text></svg>
+    <div class="proj-logo-box" data-init="IS" data-color="#D97706" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/12/IMU-Positivo-.png" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
     <div>
       <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">IMU San Cristóbal</div>
       <div style="font-size:.67rem;color:#6B7A8D">453 departamentos</div>
@@ -816,9 +837,10 @@ tr:hover td{background:#F0FDFE!important;}
   </div>
 </div>
 <div class="proj-card" onclick="openProjDrawer('Nativo Riesco')"
+     data-name="Nativo Riesco" data-pct="95.3" data-pol="8" data-venc="27"
      style="border-top:4px solid #DC2626">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#DC2626"/><text x="24" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="white" letter-spacing=".5">NR</text></svg>
+    <div class="proj-logo-box" data-init="NR" data-color="#DC2626" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-nativo.png" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
     <div>
       <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Nativo Riesco</div>
       <div style="font-size:.67rem;color:#6B7A8D">255 departamentos</div>
@@ -840,9 +862,10 @@ tr:hover td{background:#F0FDFE!important;}
   </div>
 </div>
 <div class="proj-card" onclick="openProjDrawer('Nomad Bellet')"
+     data-name="Nomad Bellet" data-pct="92.5" data-pol="5" data-venc="12"
      style="border-top:4px solid #0891B2">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#0891B2"/><text x="24" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="white" letter-spacing=".5">NB</text></svg>
+    <div class="proj-logo-box" data-init="NB" data-color="#0891B2" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-nomad-bellet.svg" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
     <div>
       <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Nomad Bellet</div>
       <div style="font-size:.67rem;color:#6B7A8D">134 departamentos</div>
@@ -864,9 +887,10 @@ tr:hover td{background:#F0FDFE!important;}
   </div>
 </div>
 <div class="proj-card" onclick="openProjDrawer('Nomad Holley')"
+     data-name="Nomad Holley" data-pct="93.8" data-pol="10" data-venc="16"
      style="border-top:4px solid #4F46E5">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#4F46E5"/><text x="24" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="white" letter-spacing=".5">NH</text></svg>
+    <div class="proj-logo-box" data-init="NH" data-color="#4F46E5" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-nomad-holley.svg" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
     <div>
       <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Nomad Holley</div>
       <div style="font-size:.67rem;color:#6B7A8D">208 departamentos</div>
@@ -888,9 +912,10 @@ tr:hover td{background:#F0FDFE!important;}
   </div>
 </div>
 <div class="proj-card" onclick="openProjDrawer('Park Santiago')"
+     data-name="Park Santiago" data-pct="94.9" data-pol="13" data-venc="32"
      style="border-top:4px solid #BE123C">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#BE123C"/><text x="24" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="white" letter-spacing=".5">PS</text></svg>
+    <div style="width:44px;height:44px;flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" rx="10" fill="#BE123C"/><text x="22" y="28" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="800" fill="white" letter-spacing=".5">PS</text></svg></div>
     <div>
       <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Park Santiago</div>
       <div style="font-size:.67rem;color:#6B7A8D">314 departamentos</div>
@@ -912,9 +937,10 @@ tr:hover td{background:#F0FDFE!important;}
   </div>
 </div>
 <div class="proj-card" onclick="openProjDrawer('Soho Barrio Italia')"
+     data-name="Soho Barrio Italia" data-pct="94.8" data-pol="3" data-venc="15"
      style="border-top:4px solid #15803D">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#15803D"/><text x="24" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="white" letter-spacing=".5">SB</text></svg>
+    <div style="width:44px;height:44px;flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" rx="10" fill="#15803D"/><text x="22" y="28" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="800" fill="white" letter-spacing=".5">SB</text></svg></div>
     <div>
       <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Soho Barrio Italia</div>
       <div style="font-size:.67rem;color:#6B7A8D">96 departamentos</div>
@@ -936,9 +962,10 @@ tr:hover td{background:#F0FDFE!important;}
   </div>
 </div>
 <div class="proj-card" onclick="openProjDrawer('Spot Nueva Kennedy')"
+     data-name="Spot Nueva Kennedy" data-pct="90.2" data-pol="7" data-venc="35"
      style="border-top:4px solid #B45309">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#B45309"/><text x="24" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="white" letter-spacing=".5">SN</text></svg>
+    <div class="proj-logo-box" data-init="SN" data-color="#B45309" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-spot.svg" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
     <div>
       <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Spot Nueva Kennedy</div>
       <div style="font-size:.67rem;color:#6B7A8D">296 departamentos</div>
@@ -960,9 +987,10 @@ tr:hover td{background:#F0FDFE!important;}
   </div>
 </div>
 <div class="proj-card" onclick="openProjDrawer('Spot Residence')"
+     data-name="Spot Residence" data-pct="84.0" data-pol="5" data-venc="16"
      style="border-top:4px solid #1D4ED8">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 48 48"><rect width="48" height="48" rx="10" fill="#1D4ED8"/><text x="24" y="30" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" font-weight="800" fill="white" letter-spacing=".5">SR</text></svg>
+    <div class="proj-logo-box" data-init="SR" data-color="#1D4ED8" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2024/12/logo-spot-residence-1.png" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
     <div>
       <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Spot Residence</div>
       <div style="font-size:.67rem;color:#6B7A8D">188 departamentos</div>
@@ -985,18 +1013,18 @@ tr:hover td{background:#F0FDFE!important;}
 </div>
 </div>
 
-<!-- Drawer backdrop -->
+<!-- Backdrop -->
 <div id="proj-drawer-backdrop"
      style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:1500;cursor:pointer"
      onclick="closeProjDrawer()"></div>
 
-<!-- Drawer panel -->
+<!-- Drawer -->
 <div id="proj-drawer"
-     style="display:none;position:fixed;top:0;right:0;width:460px;max-width:100vw;
+     style="display:none;position:fixed;top:0;right:0;width:490px;max-width:100vw;
             height:100vh;background:#fff;z-index:1600;overflow-y:auto;
-            box-shadow:-6px 0 40px rgba(0,0,0,.16);
+            box-shadow:-6px 0 40px rgba(0,0,0,.18);
             transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1)">
-  <div id="proj-drawer-inner" style="padding:24px 22px 32px"></div>
+  <div id="proj-drawer-inner" style="padding:24px 22px 40px"></div>
 </div>
 
 <div id="sec-vencimientos" class="sec">Vencimientos de Contratos</div>
