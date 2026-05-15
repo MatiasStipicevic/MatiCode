@@ -2417,9 +2417,9 @@ function _buildDetailHTML(projName) {
     +'&#8592; Volver</button>';
   var pe=projName.replace(/'/g,"\'");
   h+='<div style="display:flex;gap:8px">';
-  h+='<button onclick='if(typeof setProjFilter!=="undefined")setProjFilter("'+pe+'")' '
+  h+='<button onclick="setProjFilter(&apos;'+pe+'&apos;)" '
     +'style="padding:7px 12px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;font-size:.75rem;color:#374151;cursor:pointer">&#128204; Filtrar</button>';
-  h+='<button onclick='exportProjData("'+pe+'")' '
+  h+='<button onclick="exportProjData(&apos;'+pe+'&apos;)" '
     +'style="padding:7px 14px;background:#0369A1;color:#fff;border:none;border-radius:8px;font-size:.75rem;cursor:pointer;font-weight:600">&#8595; Exportar</button>';
   h+='</div></div>';
 
