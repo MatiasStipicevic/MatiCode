@@ -2249,6 +2249,464 @@ function irA(id){var el=document.getElementById(id);if(el)el.scrollIntoView({beh
 </script>
 <script>
 
+// ── Vista por Proyecto v3 ────────────────────────────────────────────────────
+var PROJ_COLORS  = {"Blend Apoquindo": "#008E9F", "Boldo Club de Campo": "#0369A1", "Brooklyn La Florida": "#7C3AED", "Central Santiago": "#DB2777", "Collective Bustamante": "#059669", "IMU San Cristóbal": "#D97706", "Nativo Riesco": "#DC2626", "Nomad Bellet": "#0891B2", "Nomad Holley": "#4F46E5", "Park Santiago": "#BE123C", "Soho Barrio Italia": "#15803D", "Spot Nueva Kennedy": "#B45309", "Spot Residence": "#1D4ED8"};
+var PROJ_LOGOS   = {"Blend Apoquindo": "https://largroup.cl/wp-content/uploads/2025/06/LOGO-BLEND-100X100.svg", "Boldo Club de Campo": "https://largroup.cl/wp-content/uploads/2025/03/logo-boldo.svg", "Brooklyn La Florida": "https://largroup.cl/wp-content/uploads/2025/03/logo-brooklyn-200x200-1.jpg", "Central Santiago": "", "Collective Bustamante": "https://largroup.cl/wp-content/uploads/2025/12/LOGO-CB-WEB.svg", "IMU San Cristóbal": "https://largroup.cl/wp-content/uploads/2025/12/IMU-Positivo-.png", "Nativo Riesco": "https://largroup.cl/wp-content/uploads/2025/03/logo-nativo.png", "Nomad Bellet": "https://largroup.cl/wp-content/uploads/2025/03/logo-nomad-bellet.svg", "Nomad Holley": "https://largroup.cl/wp-content/uploads/2025/03/logo-nomad-holley.svg", "Park Santiago": "", "Soho Barrio Italia": "", "Spot Nueva Kennedy": "https://largroup.cl/wp-content/uploads/2025/03/logo-spot.svg", "Spot Residence": "https://largroup.cl/wp-content/uploads/2024/12/logo-spot-residence-1.png"};
+var PROJ_VENC_MO = {"Blend Apoquindo": {"labels": [], "values": []}, "Boldo Club de Campo": {"labels": ["May 2026", "Jun 2026", "Jul 2026"], "values": [2, 10, 6]}, "Brooklyn La Florida": {"labels": ["May 2026", "Jun 2026", "Jul 2026"], "values": [6, 21, 11]}, "Central Santiago": {"labels": ["May 2026", "Jun 2026", "Jul 2026"], "values": [10, 25, 13]}, "Collective Bustamante": {"labels": [], "values": []}, "IMU San Cristóbal": {"labels": ["May 2026", "Jun 2026", "Jul 2026"], "values": [2, 12, 4]}, "Nativo Riesco": {"labels": ["May 2026", "Jun 2026", "Jul 2026"], "values": [3, 21, 3]}, "Nomad Bellet": {"labels": ["Jun 2026", "Jul 2026"], "values": [8, 4]}, "Nomad Holley": {"labels": ["May 2026", "Jun 2026", "Jul 2026"], "values": [1, 8, 7]}, "Park Santiago": {"labels": ["May 2026", "Jun 2026", "Jul 2026"], "values": [6, 18, 8]}, "Soho Barrio Italia": {"labels": ["May 2026", "Jun 2026", "Jul 2026"], "values": [3, 10, 2]}, "Spot Nueva Kennedy": {"labels": ["May 2026", "Jun 2026", "Jul 2026"], "values": [6, 20, 9]}, "Spot Residence": {"labels": ["May 2026", "Jun 2026", "Jul 2026"], "values": [5, 10, 1]}};
+var PROJ_PRECIOS = {"Blend Apoquindo": {"1D1B": {"min": 18.13, "divisa": "UF"}, "2D2B": {"min": 31.56, "divisa": "UF"}}, "Boldo Club de Campo": {"1D1B": {"min": 21.53, "divisa": "UF"}, "2D2B": {"min": 37.66, "divisa": "UF"}}, "Brooklyn La Florida": {"1D1B": {"min": 9.15, "divisa": "UF"}, "2D2B": {"min": 11.82, "divisa": "UF"}}, "Central Santiago": {"1D1B": {"min": 7.05, "divisa": "UF"}, "2D1B": {"min": 11.6, "divisa": "UF"}, "2D2B": {"min": 15.15, "divisa": "UF"}}, "IMU San Cristóbal": {"1D1B": {"min": 13.03, "divisa": "UF"}, "2D1B": {"min": 19.25, "divisa": "UF"}, "2D2B": {"min": 18.53, "divisa": "UF"}}, "Nativo Riesco": {"1D1B": {"min": 22.93, "divisa": "UF"}, "2D2B": {"min": 29.06, "divisa": "UF"}}, "Nomad Bellet": {"1D1B": {"min": 13.65, "divisa": "UF"}, "2D2B": {"min": 25.1, "divisa": "UF"}}, "Nomad Holley": {"1D1B": {"min": 17.33, "divisa": "UF"}, "2D2B": {"min": 23.74, "divisa": "UF"}}, "Park Santiago": {"1D1B": {"min": 11.78, "divisa": "UF"}, "2D2B": {"min": 17.95, "divisa": "UF"}}, "Soho Barrio Italia": {"1D1B": {"min": 13.69, "divisa": "UF"}, "2D2B": {"min": 20.55, "divisa": "UF"}}, "Spot Nueva Kennedy": {"1D1B": {"min": 20.29, "divisa": "UF"}, "2D2B": {"min": 29.94, "divisa": "UF"}}, "Spot Residence": {"1D1B": {"min": 20.83, "divisa": "UF"}, "2D2B": {"min": 31.92, "divisa": "UF"}}};
+var PROJ_TRENDS  = {"Blend Apoquindo": 3.2, "Boldo Club de Campo": 0.0, "Brooklyn La Florida": 1.7, "Central Santiago": -0.7, "Collective Bustamante": null, "IMU San Cristóbal": -0.9, "Nativo Riesco": -1.6, "Nomad Bellet": -1.5, "Nomad Holley": -1.9, "Park Santiago": -1.9, "Soho Barrio Italia": -2.1, "Spot Nueva Kennedy": -1.0, "Spot Residence": -1.1};
+var UF_VALOR     = 40340.86;
+var _projUFMode  = true;   // true=UF primero, false=CLP primero
+var _selProj     = null;
+
+// ── Helpers de formato ───────────────────────────────────────────────────────
+function _fmtClp(clp) {
+  if(!clp) return "";
+  return clp >= 1000000 ? "$"+(clp/1000000).toFixed(2)+"M" : "$"+Math.round(clp/1000)+"k";
+}
+function _dkpi(label, val, color) {
+  return '<div style="background:#F8FAFC;border-radius:8px;padding:9px 10px;border-bottom:3px solid '+color+'">'
+    +'<div style="font-size:.6rem;color:#6B7A8D;font-weight:600;margin-bottom:2px">'+label+'</div>'
+    +'<div style="font-size:1.18rem;font-weight:700;color:'+color+'">'+val+'</div></div>';
+}
+
+// ── Logo fallback ─────────────────────────────────────────────────────────────
+function projLogoFallback(img) {
+  var box=img.parentElement, init=box.dataset.init||"??", color=box.dataset.color||"#008E9F";
+  var sz=box.offsetWidth||34, cx=Math.round(sz/2), cy=Math.round(sz*.64), fs=Math.round(sz*.33);
+  box.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="'+sz+'" height="'+sz+'"'
+    +' viewBox="0 0 '+sz+' '+sz+'"><rect width="'+sz+'" height="'+sz+'" rx="8" fill="'+color+'"/>'
+    +'<text x="'+cx+'" y="'+cy+'" text-anchor="middle" font-family="Arial,sans-serif"'
+    +' font-size="'+fs+'" font-weight="800" fill="white">'+init+'</text></svg>';
+}
+
+// ── Sidebar: busqueda y sort ──────────────────────────────────────────────────
+function filtrarSidebar() {
+  var q=((document.getElementById("proj-sb-search")||{}).value||"").toLowerCase();
+  document.querySelectorAll(".proj-list-item").forEach(function(item) {
+    item.style.display=(item.dataset.name||"").toLowerCase().includes(q)?"":"none";
+  });
+}
+
+function sortSidebar(mode) {
+  localStorage.setItem("projSort",mode);
+  var c=document.getElementById("proj-list-items"); if(!c) return;
+  var items=Array.from(c.querySelectorAll(".proj-list-item"));
+  items.sort(function(a,b) {
+    if(mode==="alpha")     return (a.dataset.name||"").localeCompare(b.dataset.name||"","es");
+    if(mode==="ocup_desc") return parseFloat(b.dataset.pct||0)-parseFloat(a.dataset.pct||0);
+    if(mode==="ocup_asc")  return parseFloat(a.dataset.pct||0)-parseFloat(b.dataset.pct||0);
+    if(mode==="venc")      return parseInt(b.dataset.venc||0)-parseInt(a.dataset.venc||0);
+    return 0;
+  });
+  items.forEach(function(item){c.appendChild(item);});
+}
+
+// ── Toggle UF / CLP ──────────────────────────────────────────────────────────
+function toggleUFMode() {
+  _projUFMode=!_projUFMode;
+  localStorage.setItem("projUFMode",_projUFMode?"true":"false");
+  var btn=document.getElementById("proj-uf-btn");
+  if(btn) btn.innerHTML=_projUFMode?"$ CLP":"UF";
+  _refreshPricePills();
+  // Actualizar tabla de precios en detalle si hay proyecto abierto
+  if(_selProj) _renderPriceTable(_selProj);
+}
+
+function _refreshPricePills() {
+  document.querySelectorAll(".proj-price-pill").forEach(function(pill) {
+    var uf=parseFloat(pill.dataset.uf||0), clp=parseInt(pill.dataset.clp||0);
+    var div=pill.dataset.div||"UF", tip=pill.dataset.tip||"";
+    var ufStr=uf.toFixed(1)+" "+div, clpStr=clp?_fmtClp(clp):"";
+    if(_projUFMode) {
+      pill.innerHTML="<b>"+tip+"</b> "+ufStr+(clpStr?" &middot; "+clpStr:"");
+    } else {
+      pill.innerHTML="<b>"+tip+"</b> "+(clpStr||ufStr)+(clpStr?" &middot; "+ufStr:"");
+    }
+  });
+}
+
+// ── Seleccionar proyecto ──────────────────────────────────────────────────────
+function selectProj(projName) {
+  _selProj=projName;
+  localStorage.setItem("lastSelProj",projName);
+  if(history.pushState) history.pushState(null,null,"#proj-"+projName.replace(/[^a-zA-Z0-9]/g,"_"));
+
+  // Highlight en sidebar
+  document.querySelectorAll(".proj-list-item").forEach(function(item) {
+    item.classList.toggle("selected",item.dataset.name===projName);
+  });
+  var selItem=document.querySelector(".proj-list-item.selected");
+  if(selItem) selItem.scrollIntoView({block:"nearest",behavior:"smooth"});
+
+  // Mostrar panel detalle, ocultar overview
+  document.getElementById("proj-overview-panel").style.display="none";
+  var dp=document.getElementById("proj-detail-panel");
+  dp.style.display="block";
+  dp.innerHTML=_buildDetailHTML(projName);
+
+  // Charts Plotly con delay para animacion
+  setTimeout(function(){_renderDetailCharts(projName);},380);
+}
+
+function backToOverview() {
+  _selProj=null;
+  localStorage.removeItem("lastSelProj");
+  if(history.pushState) history.pushState(null,null,window.location.pathname+window.location.search);
+  document.querySelectorAll(".proj-list-item").forEach(function(item){item.classList.remove("selected");});
+  document.getElementById("proj-overview-panel").style.display="";
+  document.getElementById("proj-detail-panel").style.display="none";
+}
+
+// ── Construir HTML de detalle ─────────────────────────────────────────────────
+function _buildDetailHTML(projName) {
+  if(typeof proj_desc==="undefined") return "<p>Sin datos</p>";
+  var p=null;
+  for(var i=0;i<proj_desc.length;i++){if(proj_desc[i].Propiedad===projName){p=proj_desc[i];break;}}
+  if(!p) return "<p>Proyecto no encontrado</p>";
+
+  var color=PROJ_COLORS[projName]||"#008E9F";
+  var pct=(p.Pct_Ocup*100).toFixed(1);
+  var mt=typeof META_TARGET!=="undefined"?META_TARGET:0.95;
+  var tgt=(mt*100).toFixed(0);
+  var gap=((p.Pct_Ocup-mt)*100).toFixed(1);
+  var stClr=p.Pct_Ocup>=mt?"#16A34A":p.Pct_Ocup>=mt-.1?"#D97706":"#DC2626";
+  var badge=p.Pct_Ocup>=mt?"&#x2705; Cumple meta":p.Pct_Ocup>=mt-.1?"&#x1F7E1; En seguimiento":"&#x1F534; Cr&iacute;tico";
+
+  // Trend arrow
+  var delta=PROJ_TRENDS[projName];
+  var trendBadge="";
+  if(delta!==null&&delta!==undefined&&Math.abs(delta)>=.1) {
+    trendBadge='<span style="font-size:.72rem;font-weight:700;padding:1px 8px;border-radius:99px;margin-left:8px;background:'
+      +(delta>0?"#F0FDF4;color:#16A34A":"#FEF2F2;color:#DC2626")+'">'
+      +(delta>0?"&#8593;":"&#8595;")+Math.abs(delta).toFixed(1)+"pp vs mes ant.</span>";
+  }
+
+  // Logo
+  var logoUrl=PROJ_LOGOS[projName]||"";
+  var words=projName.replace(/-/g," ").split(" ").filter(function(w){return w;});
+  var initials=words.length>=2?(words[0][0]+words[1][0]).toUpperCase():projName.slice(0,2).toUpperCase();
+  var svgLogo='<svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 56 56">'
+    +'<rect width="56" height="56" rx="13" fill="'+color+'"/>'
+    +'<text x="28" y="37" text-anchor="middle" font-family="Arial,sans-serif" font-size="19" font-weight="800" fill="white">'+initials+'</text></svg>';
+  var logoHtml=logoUrl
+    ?'<div class="proj-logo-box" data-init="'+initials+'" data-color="'+color+'"'
+      +' style="width:56px;height:56px;flex-shrink:0;border-radius:12px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center">'
+      +'<img src="'+logoUrl+'" width="50" height="50" style="object-fit:contain" onerror="projLogoFallback(this)"></div>'
+    :svgLogo;
+
+  // Vencimientos desde tabla
+  var vRows=document.querySelectorAll("#venc-table tbody tr");
+  var vList=[];
+  vRows.forEach(function(r){
+    if(r.dataset.proj===projName) vList.push({
+      dias:parseInt(r.dataset.dias)||0,
+      unidad:r.cells[1]?r.cells[1].textContent:"",
+      tipo:r.cells[2]?r.cells[2].textContent:"",
+      fecha:r.cells[3]?r.cells[3].textContent:"",
+      ejec:r.cells[5]?r.cells[5].textContent:""
+    });
+  });
+  vList.sort(function(a,b){return a.dias-b.dias;});
+
+  var h="";
+
+  // Barra de navegacion del detalle
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px">';
+  h+='<button onclick="backToOverview()" style="display:flex;align-items:center;gap:5px;background:none;border:1px solid #E2E8F0;border-radius:8px;padding:6px 12px;font-size:.75rem;color:#374151;cursor:pointer;font-weight:600">'
+    +'&#8592; Volver</button>';
+  var pe=projName.replace(/'/g,"\'");
+  h+='<div style="display:flex;gap:8px">';
+  h+='<button onclick='if(typeof setProjFilter!=="undefined")setProjFilter("'+pe+'")' '
+    +'style="padding:7px 12px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;font-size:.75rem;color:#374151;cursor:pointer">&#128204; Filtrar</button>';
+  h+='<button onclick='exportProjData("'+pe+'")' '
+    +'style="padding:7px 14px;background:#0369A1;color:#fff;border:none;border-radius:8px;font-size:.75rem;cursor:pointer;font-weight:600">&#8595; Exportar</button>';
+  h+='</div></div>';
+
+  // Header proyecto
+  h+='<div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">';
+  h+=logoHtml;
+  h+='<div>';
+  h+='<div style="font-size:.58rem;text-transform:uppercase;letter-spacing:.12em;color:#9CA3AF;font-weight:600">PROYECTO</div>';
+  h+='<h2 style="margin:2px 0;font-size:1.2rem;font-weight:800;color:#1E2A38">'+projName+'</h2>';
+  h+='<div style="display:flex;align-items:center;gap:6px;font-size:.73rem;color:'+stClr+';font-weight:600">'+badge+trendBadge+'</div>';
+  h+='</div></div>';
+
+  // Barra de ocupacion
+  h+='<div style="background:#F8FAFC;border-radius:10px;padding:14px;margin-bottom:16px;border:1px solid #E2E8F0">';
+  h+='<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">';
+  h+='<span style="font-size:.72rem;color:#6B7A8D;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Ocupaci&oacute;n</span>';
+  h+='<span style="font-size:2rem;font-weight:800;color:'+stClr+'">'+pct+'%</span></div>';
+  h+='<div style="height:10px;background:#E2E8F0;border-radius:99px;overflow:hidden;margin-bottom:7px">';
+  h+='<div style="height:100%;width:'+Math.min(parseFloat(pct),100)+'%;background:'+color+';border-radius:99px"></div></div>';
+  h+='<div style="display:flex;justify-content:space-between;font-size:.69rem;color:#9CA3AF">';
+  h+='<span>Meta: <b>'+tgt+'%</b></span>';
+  h+='<span>Gap: <b style="color:'+stClr+'">'+(parseFloat(gap)>=0?"+":"")+gap+'pp</b></span>';
+  h+='<span>Necesita: <b style="color:'+stClr+'">'+(p.Uds_Needed>0?Math.round(p.Uds_Needed)+' uds':'&#x2713; OK')+'</b></span>';
+  h+='</div></div>';
+
+  // KPIs 3x2
+  h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px">';
+  h+=_dkpi("Total",        Math.round(p.Total),       "#6B7A8D");
+  h+=_dkpi("Arrendadas",   Math.round(p.Arrendados),  "#16A34A");
+  h+=_dkpi("Disponibles",  Math.round(p.Disponibles), "#D97706");
+  h+=_dkpi("No Disp.",     Math.round(p.No_Disp),     "#DC2626");
+  h+=_dkpi("Por Liberar",  Math.round(p.Por_Liberar), "#DC2626");
+  h+=_dkpi("Reservadas",   Math.round(p.Reservadas),  "#0369A1");
+  h+='</div>';
+
+  // Charts (side by side)
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">';
+  h+='<div><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#1E2A38;margin-bottom:6px">Tipolog&iacute;a</div>'
+    +'<div id="dtipo-chart" style="height:190px"></div></div>';
+  var vmo=PROJ_VENC_MO[projName];
+  var hasVmo=vmo&&vmo.labels&&vmo.labels.length>0;
+  h+='<div><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#1E2A38;margin-bottom:6px">Vencimientos por mes</div>'
+    +(hasVmo?'<div id="dvenc-chart" style="height:190px"></div>':'<div style="height:190px;display:flex;align-items:center;justify-content:center;color:#CBD5E1;font-size:.75rem">Sin vencimientos en 60d</div>')+'</div>';
+  h+='</div>';
+
+  // Tabla de precios (UF y CLP, igual relevancia)
+  var projPrices=PROJ_PRECIOS[projName]||{};
+  var tips=Object.keys(projPrices).sort();
+  if(tips.length>0) {
+    h+='<div style="margin-bottom:18px">';
+    h+='<div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#1E2A38;margin-bottom:8px">Precios desde (unidades disponibles)</div>';
+    h+='<div id="detail-price-table"></div>';
+    h+='</div>';
+  }
+
+  // Contratos que vencen
+  if(vList.length>0) {
+    h+='<div style="margin-bottom:18px">';
+    h+='<div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#1E2A38;margin-bottom:8px">Contratos que vencen pronto ('+vList.length+')</div>';
+    h+='<div style="max-height:220px;overflow-y:auto;border:1px solid #F1F5F9;border-radius:10px">';
+    vList.slice(0,20).forEach(function(v) {
+      var vc=v.dias<=30?"#DC2626":"#D97706";
+      h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 11px;border-bottom:1px solid #F8FAFC;font-size:.73rem">';
+      h+='<div><b>'+v.unidad+'</b> <span style="color:#9CA3AF;font-size:.67rem">('+v.tipo+')</span>';
+      if(v.ejec) h+='<div style="font-size:.63rem;color:#9CA3AF">'+v.ejec+'</div>';
+      h+='</div><div style="text-align:right;flex-shrink:0;margin-left:10px">';
+      h+='<div style="font-size:.67rem;color:#9CA3AF;margin-bottom:2px">'+v.fecha+'</div>';
+      h+='<span style="background:'+vc+'18;color:'+vc+';padding:1px 8px;border-radius:99px;font-size:.67rem;font-weight:700">'+v.dias+'d</span>';
+      h+='</div></div>';
+    });
+    if(vList.length>20) h+='<div style="padding:7px 11px;font-size:.67rem;color:#9CA3AF">+ '+(vList.length-20)+' m&aacute;s...</div>';
+    h+='</div></div>';
+  }
+
+  return h;
+}
+
+// ── Tabla de precios (llamada tras render) ────────────────────────────────────
+function _renderPriceTable(projName) {
+  var el=document.getElementById("detail-price-table"); if(!el) return;
+  var projPrices=PROJ_PRECIOS[projName]||{};
+  var tips=Object.keys(projPrices).sort();
+  if(tips.length===0) { el.innerHTML=""; return; }
+  var idx=-1;
+  if(typeof tipo_data!=="undefined"&&tipo_data.projects) idx=tipo_data.projects.indexOf(projName);
+  var rows="";
+  tips.forEach(function(tip) {
+    var pr=projPrices[tip]; if(!pr) return;
+    var uf=pr.min, div=pr.divisa||"UF";
+    var clp=UF_VALOR&&div==="UF"?Math.round(uf*UF_VALOR):0;
+    var ufStr='<b style="font-size:.82rem">'+uf.toFixed(1)+'</b> <span style="font-size:.68rem;color:#6B7A8D">'+div+'</span>';
+    var clpStr=clp?'<b style="font-size:.82rem">'+_fmtClp(clp)+'</b>':"<span style="color:#CBD5E1">—</span>";
+    // Disponibles para esta tipologia
+    var disp="—";
+    if(idx>=0&&typeof tipo_data!=="undefined"&&tipo_data[tip]) {
+      var tot=tipo_data[tip].total[idx]||0, arr=tipo_data[tip].arrendados[idx]||0;
+      disp=String(tot-arr);
+    }
+    var dispClr=parseInt(disp)>0?"#D97706":"#CBD5E1";
+    rows+='<tr>'
+      +'<td style="padding:8px 12px;font-weight:700;color:#1E2A38;font-size:.76rem">'+tip+'</td>'
+      +'<td style="padding:8px 12px;text-align:right;'+(_projUFMode?"color:#15803D":"color:#6B7A8D")+'">'
+        +(_projUFMode?ufStr:('<span style="font-size:.76rem">'+uf.toFixed(1)+' '+div+'</span>'))+'</td>'
+      +'<td style="padding:8px 12px;text-align:right;'+(!_projUFMode?"color:#15803D":"color:#6B7A8D")+'">'
+        +(!_projUFMode?clpStr:('<span style="font-size:.76rem">'+(clp?_fmtClp(clp):"—")+'</span>'))+'</td>'
+      +'<td style="padding:8px 12px;text-align:right;font-weight:700;color:'+dispClr+';font-size:.76rem">'+disp+'</td>'
+      +'</tr>';
+  });
+  el.innerHTML='<table style="width:100%;border-collapse:collapse;border:1px solid #E2E8F0;border-radius:10px;overflow:hidden">'
+    +'<thead><tr style="background:#F8FAFC">'
+    +'<th style="padding:8px 12px;text-align:left;font-size:.67rem;color:#6B7A8D;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E2E8F0">Tipolog&iacute;a</th>'
+    +'<th style="padding:8px 12px;text-align:right;font-size:.67rem;color:'+(  _projUFMode?"#15803D":"#6B7A8D")+';font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E2E8F0">Desde (UF)</th>'
+    +'<th style="padding:8px 12px;text-align:right;font-size:.67rem;color:'+(!_projUFMode?"#15803D":"#6B7A8D")+';font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E2E8F0">Desde (CLP)</th>'
+    +'<th style="padding:8px 12px;text-align:right;font-size:.67rem;color:#6B7A8D;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E2E8F0">Disponibles</th>'
+    +'</tr></thead><tbody>'+rows+'</tbody></table>';
+}
+
+// ── Render Plotly en detalle ──────────────────────────────────────────────────
+function _renderDetailCharts(projName) {
+  _renderPriceTable(projName);
+  var color=PROJ_COLORS[projName]||"#008E9F";
+  var base={paper_bgcolor:"#FFFFFF",plot_bgcolor:"#FFFFFF",
+    font:{family:"Arial,sans-serif",size:11,color:"#1A202C"},
+    margin:{t:10,b:55,l:40,r:10},
+    xaxis:{gridcolor:"#E2E8F0",linecolor:"#E2E8F0",tickfont:{size:10}},
+    yaxis:{gridcolor:"#E2E8F0",linecolor:"#E2E8F0",tickfont:{size:10}},
+    hoverlabel:{bgcolor:"#1E2A38",font:{color:"#fff",size:11}}
+  };
+
+  // Tipologia chart
+  if(typeof tipo_data!=="undefined"&&tipo_data.projects) {
+    var idx=tipo_data.projects.indexOf(projName);
+    if(idx>=0) {
+      var tips=[],arrs=[],disps=[];
+      tipo_data.tipologias.forEach(function(tip) {
+        var d=tipo_data[tip]; if(!d) return;
+        var tot=d.total[idx]||0; if(!tot) return;
+        var arr=d.arrendados[idx]||0;
+        tips.push(tip); arrs.push(arr); disps.push(tot-arr);
+      });
+      if(tips.length) try {
+        Plotly.newPlot("dtipo-chart",[
+          {type:"bar",name:"Arrendadas",x:tips,y:arrs,marker:{color:color},hovertemplate:"%{y} uds<extra>Arrendadas</extra>"},
+          {type:"bar",name:"Disponibles",x:tips,y:disps,marker:{color:"#CBD5E1"},hovertemplate:"%{y} uds<extra>Disponibles</extra>"}
+        ],Object.assign({},base,{barmode:"stack",height:190,showlegend:true,
+          legend:{orientation:"h",x:0,y:1.12,font:{size:10}},
+          margin:{t:30,b:55,l:35,r:10}}),{responsive:true,displayModeBar:false});
+      } catch(e) {}
+    }
+  }
+
+  // Vencimientos mensual chart
+  var vmo=PROJ_VENC_MO[projName];
+  if(vmo&&vmo.labels&&vmo.labels.length) try {
+    Plotly.newPlot("dvenc-chart",[
+      {type:"bar",x:vmo.labels,y:vmo.values,marker:{color:"#DC2626",opacity:.85},
+        hovertemplate:"%{y} contratos<extra></extra>"}
+    ],Object.assign({},base,{height:190,showlegend:false,
+      yaxis:Object.assign({},base.yaxis,{dtick:1}),
+      margin:{t:10,b:55,l:30,r:10}}),{responsive:true,displayModeBar:false});
+  } catch(e) {}
+}
+
+// ── Export datos ──────────────────────────────────────────────────────────────
+function exportProjData(projName) {
+  if(typeof proj_desc==="undefined") return;
+  var p=null;
+  for(var i=0;i<proj_desc.length;i++) {if(proj_desc[i].Propiedad===projName){p=proj_desc[i];break;}}
+  if(!p) return;
+  var rows=[];
+  rows.push(["=== RESUMEN: "+projName+" ==="]);
+  rows.push(["Indicador","Valor"]);
+  rows.push(["Total unidades",Math.round(p.Total)]);
+  rows.push(["Arrendadas",Math.round(p.Arrendados)]);
+  rows.push(["Disponibles",Math.round(p.Disponibles)]);
+  rows.push(["No disponibles",Math.round(p.No_Disp)]);
+  rows.push(["Por liberar",Math.round(p.Por_Liberar)]);
+  rows.push(["Reservadas",Math.round(p.Reservadas)]);
+  rows.push(["Ocupacion %",(p.Pct_Ocup*100).toFixed(1)+"%"]);
+  var delta=PROJ_TRENDS[projName];
+  if(delta!==null&&delta!==undefined) rows.push(["Tendencia vs mes ant.",delta.toFixed(1)+"pp"]);
+  rows.push([""]);
+  // Precios
+  var pr=PROJ_PRECIOS[projName]||{};
+  var tips=Object.keys(pr).sort();
+  if(tips.length) {
+    rows.push(["=== PRECIOS DESDE (UNIDADES DISPONIBLES) ==="]);
+    rows.push(["Tipologia","Precio desde (UF)","Precio desde (CLP)"]);
+    tips.forEach(function(tip) {
+      var info=pr[tip]; if(!info) return;
+      var uf=info.min, div=info.divisa||"UF";
+      var clp=UF_VALOR&&div==="UF"?("$"+Math.round(uf*UF_VALOR).toLocaleString("es-CL")):"";
+      rows.push([tip,uf.toFixed(2)+" "+div,clp]);
+    });
+    rows.push([""]);
+  }
+  // Tipologia
+  if(typeof tipo_data!=="undefined"&&tipo_data.projects) {
+    var idx=tipo_data.projects.indexOf(projName);
+    if(idx>=0) {
+      rows.push(["=== TIPOLOGIA ==="]);
+      rows.push(["Tipologia","Total","Arrendadas","Disponibles","Ocupacion %"]);
+      tipo_data.tipologias.forEach(function(tip) {
+        var d=tipo_data[tip]; if(!d) return;
+        var tot=d.total[idx]||0; if(!tot) return;
+        var arr=d.arrendados[idx]||0;
+        rows.push([tip,tot,arr,tot-arr,tot?(arr/tot*100).toFixed(1)+"%":"0%"]);
+      });
+      rows.push([""]);
+    }
+  }
+  // Vencimientos
+  var vRows=document.querySelectorAll("#venc-table tbody tr");
+  var vData=[];
+  vRows.forEach(function(r){
+    if(r.dataset.proj===projName) vData.push([
+      r.cells[0]?r.cells[0].textContent:"",r.cells[1]?r.cells[1].textContent:"",
+      r.cells[2]?r.cells[2].textContent:"",r.cells[3]?r.cells[3].textContent:"",
+      r.cells[4]?r.cells[4].textContent:"",r.cells[5]?r.cells[5].textContent:""
+    ]);
+  });
+  if(vData.length) {
+    rows.push(["=== CONTRATOS QUE VENCEN EN 60 DIAS ==="]);
+    rows.push(["Proyecto","Unidad","Tipologia","Vencimiento","Dias","Ejecutivo"]);
+    vData.forEach(function(r){rows.push(r);});
+  }
+  var csv=rows.map(function(r){
+    return r.map(function(c){var s=String(c).replace(/"/g,'""');return s.indexOf(",")>=0||s.indexOf('"')>=0?'"'+s+'"':s;}).join(",");
+  }).join("\n");
+  var blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a"),t=new Date();
+  a.href=url;
+  a.download="Reporte_"+projName.replace(/[^a-zA-Z0-9]/g,"_")
+    +"_"+String(t.getDate()).padStart(2,"0")+String(t.getMonth()+1).padStart(2,"0")+t.getFullYear()+".csv";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+// ── Badge en nav sidebar (proyectos bajo meta) ────────────────────────────────
+(function() {
+  if(typeof proj_desc==="undefined") return;
+  var nBelow=proj_desc.filter(function(p){return p.Pct_Ocup<0.95;}).length;
+  if(!nBelow) return;
+  document.querySelectorAll(".sbl").forEach(function(item) {
+    if(item.textContent.indexOf("Vista Proyectos")>=0) {
+      var badge=document.createElement("span");
+      badge.textContent=nBelow;
+      badge.style.cssText="background:#DC2626;color:#fff;border-radius:99px;padding:0 5px;"+
+        "font-size:.58rem;margin-left:4px;font-weight:700;vertical-align:middle;line-height:1.6;display:inline-block;";
+      item.appendChild(badge);
+    }
+  });
+})();
+
+// ── Refresh sidebar dots cuando cambia meta ──────────────────────────────────
+function refreshSidebarStatus() {
+  var mt = typeof META_TARGET !== "undefined" ? META_TARGET : 0.95;
+  var nBelow = 0;
+  document.querySelectorAll(".proj-list-item").forEach(function(item) {
+    var pct = parseFloat(item.dataset.pct || 0) / 100;
+    var isCrit  = pct < 0.85;
+    var isBelow = pct < mt;
+    var color   = isCrit ? "#DC2626" : isBelow ? "#D97706" : "#16A34A";
+    var dot = item.firstElementChild;
+    if(dot) {
+      dot.style.background = color;
+      dot.className = isCrit ? "proj-dot-pulse" : "";
+    }
+    if(isBelow) nBelow++;
+  });
+  var footer = document.querySelector("#proj-sidebar-panel div:last-child span:last-child");
+  if(footer) footer.textContent = nBelow + " bajo meta";
+}
+
+// ── Restaurar estado desde localStorage ──────────────────────────────────────
+(function() {
+  var saved=localStorage.getItem("projSort");
+  if(saved) { var el=document.getElementById("proj-sb-sort"); if(el){ el.value=saved; sortSidebar(saved); } }
+  var ufSaved=localStorage.getItem("projUFMode");
+  if(ufSaved==="false") { _projUFMode=false; _refreshPricePills(); var btn=document.getElementById("proj-uf-btn"); if(btn) btn.innerHTML="UF"; }
+  var lastProj=localStorage.getItem("lastSelProj");
+  if(lastProj) setTimeout(function(){ selectProj(lastProj); },250);
+})();
+
+</script>
+<script>
+
 // ── Vencimientos charts ──────────────────────────────────────────────────────
 var venc_projs      = ["Central Santiago", "Brooklyn La Florida", "Park Santiago", "Spot Nueva Kennedy", "Nativo Riesco", "Boldo Club de Campo", "IMU San Cristóbal", "Spot Residence", "Soho Barrio Italia", "Nomad Holley", "Nomad Bellet"];
 var venc_vals90     = [83, 79, 52, 51, 51, 31, 30, 30, 24, 23, 18];
@@ -2412,6 +2870,7 @@ function actualizarMeta(v) {
   META_TARGET = v / 100;
   document.getElementById("meta-val").textContent = v + "%";
   recalcAlertas();
+  if(typeof refreshSidebarStatus!=="undefined") refreshSidebarStatus();
   // Actualizar linea de meta en historico
   var el = document.getElementById("hist-ocup-chart");
   if(el && el.data && el.data.length > 1) {
