@@ -414,14 +414,7 @@ tr:hover td{background:#F0FDFE!important;}
 
 /* Mobile */
 
-/* Project cards */
-.proj-card{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:15px;
-    cursor:pointer;transition:all .18s ease;}
-.proj-card:hover{border-color:#008E9F;box-shadow:0 8px 24px rgba(0,142,159,.12);
-    transform:translateY(-3px);}
-.proj-stat{font-size:.67rem;color:#6B7A8D;background:#F8FAFC;padding:3px 8px;
-    border-radius:99px;}
-.proj-logo-box img{display:block;}
+/* proj-card styles moved to section inline <style> */
 @media(max-width:768px){
   #page-content{padding:0 12px 32px!important;}
   .kg{grid-template-columns:repeat(2,1fr)!important;}
@@ -658,386 +651,563 @@ tr:hover td{background:#F0FDFE!important;}
 </div>
 
 
+<style>
+.proj-dot-pulse{animation:proj-pulse 1.8s ease-in-out infinite;}
+@keyframes proj-pulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.5);}50%{box-shadow:0 0 0 6px rgba(220,38,38,0);}}
+.proj-list-item{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;cursor:pointer;
+  border-bottom:1px solid #F1F5F9;transition:background .13s;border-left:3px solid transparent;}
+.proj-list-item:hover{background:#F0FAFB;}
+.proj-list-item.selected{background:#E6F7F9;border-left-color:#008E9F;}
+.proj-price-pill{display:inline-flex;align-items:center;gap:2px;font-size:.62rem;background:#F0FDF4;
+  border:1px solid #BBF7D0;border-radius:5px;padding:1px 6px;color:#15803D;margin:1px 3px 1px 0;}
+.proj-card{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:14px;
+  cursor:pointer;transition:all .18s ease;}
+.proj-card:hover{border-color:#008E9F;box-shadow:0 6px 20px rgba(0,142,159,.1);transform:translateY(-2px);}
+.proj-stat{font-size:.67rem;color:#6B7A8D;background:#F8FAFC;padding:2px 7px;border-radius:99px;}
+.proj-logo-box img{display:block;}
+@media(max-width:840px){
+  #proj-workspace{flex-direction:column!important;}
+  #proj-sidebar-panel{width:100%!important;max-height:260px;border-right:none!important;border-bottom:1px solid #E2E8F0;}
+}
+</style>
+
 <div id="sec-proyectos" class="sec">Vista por Proyecto</div>
-<div class="sec-sub">Selecciona un proyecto para ver su detalle &mdash; Datos al 15/05/2026 &nbsp;&nbsp;<span style="background:#EEF6FB;border:1px solid #BAE6FD;border-radius:99px;padding:1px 9px;font-size:.7rem;color:#0369A1;font-weight:600">UF $40,340.86</span></div>
+<div class="sec-sub">Selecciona un proyecto para ver su an&aacute;lisis completo &mdash; Datos al 15/05/2026<span style="background:#EEF6FB;border:1px solid #BAE6FD;border-radius:99px;padding:2px 10px;font-size:.7rem;color:#0369A1;font-weight:700;margin-left:8px">UF $40,340.86</span></div>
 
-<div style="margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-  <input id="proj-card-search" type="text" placeholder="&#128269; Buscar proyecto..."
-         oninput="filtrarProjCards()"
-         style="padding:6px 12px;border:1px solid #E2E8F0;border-radius:8px;font-size:.78rem;
-                width:210px;background:#fff;color:#1E2A38;outline:none">
-  <select id="proj-sort" onchange="sortProjCards(this.value)"
-          style="padding:6px 10px;border:1px solid #E2E8F0;border-radius:8px;font-size:.75rem;
-                 background:#fff;color:#374151;cursor:pointer;outline:none">
-    <option value="alpha">A &#8594; Z</option>
-    <option value="ocup_desc">&#8595; Ocupaci&oacute;n</option>
-    <option value="ocup_asc">&#8593; Ocupaci&oacute;n</option>
-    <option value="pol">&#8595; Por Liberar</option>
-    <option value="venc">&#8595; Vencimientos</option>
-  </select>
-  <button id="proj-view-btn" onclick="toggleProjView()"
-          style="padding:6px 10px;border:1px solid #E2E8F0;border-radius:8px;font-size:.78rem;
-                 background:#fff;color:#374151;cursor:pointer;white-space:nowrap">
-    &#9776; Lista
-  </button>
-  <span style="font-size:.72rem;color:#6B7A8D">13 proyectos &mdash; clic en una card para ver detalle</span>
+<div id="proj-workspace"
+     style="display:flex;border:1px solid #E2E8F0;border-radius:16px;overflow:hidden;
+            min-height:580px;margin-bottom:32px;background:#fff">
+
+  <!-- ── Sidebar izquierdo ───────────────────────────────────────────── -->
+  <div id="proj-sidebar-panel"
+       style="width:268px;flex-shrink:0;border-right:1px solid #E2E8F0;
+              background:#F8FAFC;display:flex;flex-direction:column">
+
+    <!-- Controles -->
+    <div style="padding:12px 13px;border-bottom:1px solid #E2E8F0;background:#fff">
+      <input id="proj-sb-search" type="text" placeholder="&#128269; Buscar proyecto..."
+             oninput="filtrarSidebar()"
+             style="width:100%;box-sizing:border-box;padding:6px 10px;border:1px solid #E2E8F0;
+                    border-radius:8px;font-size:.75rem;background:#F8FAFC;color:#1E2A38;outline:none">
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <select id="proj-sb-sort" onchange="sortSidebar(this.value)"
+                style="flex:1;padding:5px 8px;border:1px solid #E2E8F0;border-radius:7px;
+                       font-size:.72rem;background:#F8FAFC;color:#374151;cursor:pointer;outline:none">
+          <option value="alpha">A &#8594; Z</option>
+          <option value="ocup_desc">&#8595; Ocupaci&oacute;n</option>
+          <option value="ocup_asc">&#8593; Ocupaci&oacute;n</option>
+          <option value="venc">&#8595; Vencimientos</option>
+        </select>
+        <button id="proj-uf-btn" onclick="toggleUFMode()"
+                title="Cambiar visualizaci&oacute;n de precios"
+                style="padding:5px 9px;border:1px solid #BAE6FD;border-radius:7px;font-size:.72rem;
+                       background:#EEF6FB;color:#0369A1;cursor:pointer;font-weight:700;white-space:nowrap">
+          $ CLP
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista proyectos -->
+    <div id="proj-list-items" style="flex:1;overflow-y:auto">
+      
+<div class="proj-list-item" id="pli-blend-apoquindo" onclick="selectProj('Blend Apoquindo')"
+     data-name="Blend Apoquindo" data-pct="56.8" data-venc="0">
+  <div class="proj-dot-pulse" style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#DC2626"></div>
+  <div class="proj-logo-box" data-init="BA" data-color="#008E9F" style="width:34px;height:34px;flex-shrink:0;border-radius:6px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/06/LOGO-BLEND-100X100.svg" width="30" height="30" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+  <div style="flex:1;min-width:0;overflow:hidden">
+    <div style="font-size:.76rem;font-weight:700;color:#1E2A38;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">Blend Apoquindo</div>
+    <div style="font-size:.68rem;color:#6B7A8D;margin:1px 0 3px">56.8% <span style="color:#16A34A;font-weight:700">&#8593;3.2pp</span></div>
+    <div class="proj-prices-row"><span class="proj-price-pill" data-uf="18.13" data-clp="731380" data-div="UF" data-tip="1D1B"><b>1D1B</b> 18.1UF · $731k</span><span class="proj-price-pill" data-uf="31.56" data-clp="1273158" data-div="UF" data-tip="2D2B"><b>2D2B</b> 31.6UF · $1.27M</span></div>
+  </div>
 </div>
+<div class="proj-list-item" id="pli-boldo-club-de-campo" onclick="selectProj('Boldo Club de Campo')"
+     data-name="Boldo Club de Campo" data-pct="96.0" data-venc="18">
+  <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#16A34A"></div>
+  <div class="proj-logo-box" data-init="BC" data-color="#0369A1" style="width:34px;height:34px;flex-shrink:0;border-radius:6px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-boldo.svg" width="30" height="30" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+  <div style="flex:1;min-width:0;overflow:hidden">
+    <div style="font-size:.76rem;font-weight:700;color:#1E2A38;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">Boldo Club de Campo</div>
+    <div style="font-size:.68rem;color:#6B7A8D;margin:1px 0 3px">96.0% <span style="color:#CBD5E1">&#8594;</span></div>
+    <div class="proj-prices-row"><span class="proj-price-pill" data-uf="21.53" data-clp="868539" data-div="UF" data-tip="1D1B"><b>1D1B</b> 21.5UF · $869k</span><span class="proj-price-pill" data-uf="37.66" data-clp="1519237" data-div="UF" data-tip="2D2B"><b>2D2B</b> 37.7UF · $1.52M</span></div>
+  </div>
+</div>
+<div class="proj-list-item" id="pli-brooklyn-la-florida" onclick="selectProj('Brooklyn La Florida')"
+     data-name="Brooklyn La Florida" data-pct="90.8" data-venc="38">
+  <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#D97706"></div>
+  <div class="proj-logo-box" data-init="BL" data-color="#7C3AED" style="width:34px;height:34px;flex-shrink:0;border-radius:6px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-brooklyn-200x200-1.jpg" width="30" height="30" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+  <div style="flex:1;min-width:0;overflow:hidden">
+    <div style="font-size:.76rem;font-weight:700;color:#1E2A38;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">Brooklyn La Florida</div>
+    <div style="font-size:.68rem;color:#6B7A8D;margin:1px 0 3px">90.8% <span style="color:#16A34A;font-weight:700">&#8593;1.7pp</span></div>
+    <div class="proj-prices-row"><span class="proj-price-pill" data-uf="9.15" data-clp="369119" data-div="UF" data-tip="1D1B"><b>1D1B</b> 9.2UF · $369k</span><span class="proj-price-pill" data-uf="11.82" data-clp="476829" data-div="UF" data-tip="2D2B"><b>2D2B</b> 11.8UF · $477k</span></div>
+  </div>
+</div>
+<div class="proj-list-item" id="pli-central-santiago" onclick="selectProj('Central Santiago')"
+     data-name="Central Santiago" data-pct="92.3" data-venc="48">
+  <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#D97706"></div>
+  <div style="flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34"><rect width="34" height="34" rx="9" fill="#DB2777"/><text x="17" y="21" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="800" fill="white">CS</text></svg></div>
+  <div style="flex:1;min-width:0;overflow:hidden">
+    <div style="font-size:.76rem;font-weight:700;color:#1E2A38;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">Central Santiago</div>
+    <div style="font-size:.68rem;color:#6B7A8D;margin:1px 0 3px">92.3% <span style="color:#DC2626;font-weight:700">&#8595;0.7pp</span></div>
+    <div class="proj-prices-row"><span class="proj-price-pill" data-uf="7.05" data-clp="284403" data-div="UF" data-tip="1D1B"><b>1D1B</b> 7.0UF · $284k</span><span class="proj-price-pill" data-uf="11.6" data-clp="467954" data-div="UF" data-tip="2D1B"><b>2D1B</b> 11.6UF · $468k</span><span class="proj-price-pill" data-uf="15.15" data-clp="611164" data-div="UF" data-tip="2D2B"><b>2D2B</b> 15.2UF · $611k</span></div>
+  </div>
+</div>
+<div class="proj-list-item" id="pli-collective-bustamante" onclick="selectProj('Collective Bustamante')"
+     data-name="Collective Bustamante" data-pct="19.1" data-venc="0">
+  <div class="proj-dot-pulse" style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#DC2626"></div>
+  <div class="proj-logo-box" data-init="CB" data-color="#059669" style="width:34px;height:34px;flex-shrink:0;border-radius:6px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/12/LOGO-CB-WEB.svg" width="30" height="30" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+  <div style="flex:1;min-width:0;overflow:hidden">
+    <div style="font-size:.76rem;font-weight:700;color:#1E2A38;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">Collective Bustamante</div>
+    <div style="font-size:.68rem;color:#6B7A8D;margin:1px 0 3px">19.1% <span style="color:#CBD5E1">&#8594;</span></div>
+    <div class="proj-prices-row"></div>
+  </div>
+</div>
+<div class="proj-list-item" id="pli-imu-san-cristóbal" onclick="selectProj('IMU San Cristóbal')"
+     data-name="IMU San Cristóbal" data-pct="69.3" data-venc="18">
+  <div class="proj-dot-pulse" style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#DC2626"></div>
+  <div class="proj-logo-box" data-init="IS" data-color="#D97706" style="width:34px;height:34px;flex-shrink:0;border-radius:6px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/12/IMU-Positivo-.png" width="30" height="30" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+  <div style="flex:1;min-width:0;overflow:hidden">
+    <div style="font-size:.76rem;font-weight:700;color:#1E2A38;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">IMU San Cristóbal</div>
+    <div style="font-size:.68rem;color:#6B7A8D;margin:1px 0 3px">69.3% <span style="color:#DC2626;font-weight:700">&#8595;0.9pp</span></div>
+    <div class="proj-prices-row"><span class="proj-price-pill" data-uf="13.03" data-clp="525641" data-div="UF" data-tip="1D1B"><b>1D1B</b> 13.0UF · $526k</span><span class="proj-price-pill" data-uf="19.25" data-clp="776562" data-div="UF" data-tip="2D1B"><b>2D1B</b> 19.2UF · $777k</span><span class="proj-price-pill" data-uf="18.53" data-clp="747516" data-div="UF" data-tip="2D2B"><b>2D2B</b> 18.5UF · $748k</span></div>
+  </div>
+</div>
+<div class="proj-list-item" id="pli-nativo-riesco" onclick="selectProj('Nativo Riesco')"
+     data-name="Nativo Riesco" data-pct="95.3" data-venc="27">
+  <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#16A34A"></div>
+  <div class="proj-logo-box" data-init="NR" data-color="#DC2626" style="width:34px;height:34px;flex-shrink:0;border-radius:6px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-nativo.png" width="30" height="30" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+  <div style="flex:1;min-width:0;overflow:hidden">
+    <div style="font-size:.76rem;font-weight:700;color:#1E2A38;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">Nativo Riesco</div>
+    <div style="font-size:.68rem;color:#6B7A8D;margin:1px 0 3px">95.3% <span style="color:#DC2626;font-weight:700">&#8595;1.6pp</span></div>
+    <div class="proj-prices-row"><span class="proj-price-pill" data-uf="22.93" data-clp="925016" data-div="UF" data-tip="1D1B"><b>1D1B</b> 22.9UF · $925k</span><span class="proj-price-pill" data-uf="29.06" data-clp="1172305" data-div="UF" data-tip="2D2B"><b>2D2B</b> 29.1UF · $1.17M</span></div>
+  </div>
+</div>
+<div class="proj-list-item" id="pli-nomad-bellet" onclick="selectProj('Nomad Bellet')"
+     data-name="Nomad Bellet" data-pct="92.5" data-venc="12">
+  <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#D97706"></div>
+  <div class="proj-logo-box" data-init="NB" data-color="#0891B2" style="width:34px;height:34px;flex-shrink:0;border-radius:6px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-nomad-bellet.svg" width="30" height="30" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+  <div style="flex:1;min-width:0;overflow:hidden">
+    <div style="font-size:.76rem;font-weight:700;color:#1E2A38;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">Nomad Bellet</div>
+    <div style="font-size:.68rem;color:#6B7A8D;margin:1px 0 3px">92.5% <span style="color:#DC2626;font-weight:700">&#8595;1.5pp</span></div>
+    <div class="proj-prices-row"><span class="proj-price-pill" data-uf="13.65" data-clp="550653" data-div="UF" data-tip="1D1B"><b>1D1B</b> 13.7UF · $551k</span><span class="proj-price-pill" data-uf="25.1" data-clp="1012556" data-div="UF" data-tip="2D2B"><b>2D2B</b> 25.1UF · $1.01M</span></div>
+  </div>
+</div>
+<div class="proj-list-item" id="pli-nomad-holley" onclick="selectProj('Nomad Holley')"
+     data-name="Nomad Holley" data-pct="93.8" data-venc="16">
+  <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#D97706"></div>
+  <div class="proj-logo-box" data-init="NH" data-color="#4F46E5" style="width:34px;height:34px;flex-shrink:0;border-radius:6px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-nomad-holley.svg" width="30" height="30" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+  <div style="flex:1;min-width:0;overflow:hidden">
+    <div style="font-size:.76rem;font-weight:700;color:#1E2A38;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">Nomad Holley</div>
+    <div style="font-size:.68rem;color:#6B7A8D;margin:1px 0 3px">93.8% <span style="color:#DC2626;font-weight:700">&#8595;1.9pp</span></div>
+    <div class="proj-prices-row"><span class="proj-price-pill" data-uf="17.33" data-clp="699107" data-div="UF" data-tip="1D1B"><b>1D1B</b> 17.3UF · $699k</span><span class="proj-price-pill" data-uf="23.74" data-clp="957692" data-div="UF" data-tip="2D2B"><b>2D2B</b> 23.7UF · $958k</span></div>
+  </div>
+</div>
+<div class="proj-list-item" id="pli-park-santiago" onclick="selectProj('Park Santiago')"
+     data-name="Park Santiago" data-pct="94.9" data-venc="32">
+  <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#D97706"></div>
+  <div style="flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34"><rect width="34" height="34" rx="9" fill="#BE123C"/><text x="17" y="21" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="800" fill="white">PS</text></svg></div>
+  <div style="flex:1;min-width:0;overflow:hidden">
+    <div style="font-size:.76rem;font-weight:700;color:#1E2A38;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">Park Santiago</div>
+    <div style="font-size:.68rem;color:#6B7A8D;margin:1px 0 3px">94.9% <span style="color:#DC2626;font-weight:700">&#8595;1.9pp</span></div>
+    <div class="proj-prices-row"><span class="proj-price-pill" data-uf="11.78" data-clp="475215" data-div="UF" data-tip="1D1B"><b>1D1B</b> 11.8UF · $475k</span><span class="proj-price-pill" data-uf="17.95" data-clp="724118" data-div="UF" data-tip="2D2B"><b>2D2B</b> 17.9UF · $724k</span></div>
+  </div>
+</div>
+<div class="proj-list-item" id="pli-soho-barrio-italia" onclick="selectProj('Soho Barrio Italia')"
+     data-name="Soho Barrio Italia" data-pct="94.8" data-venc="15">
+  <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#D97706"></div>
+  <div style="flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34"><rect width="34" height="34" rx="9" fill="#15803D"/><text x="17" y="21" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="800" fill="white">SB</text></svg></div>
+  <div style="flex:1;min-width:0;overflow:hidden">
+    <div style="font-size:.76rem;font-weight:700;color:#1E2A38;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">Soho Barrio Italia</div>
+    <div style="font-size:.68rem;color:#6B7A8D;margin:1px 0 3px">94.8% <span style="color:#DC2626;font-weight:700">&#8595;2.1pp</span></div>
+    <div class="proj-prices-row"><span class="proj-price-pill" data-uf="13.69" data-clp="552266" data-div="UF" data-tip="1D1B"><b>1D1B</b> 13.7UF · $552k</span><span class="proj-price-pill" data-uf="20.55" data-clp="829005" data-div="UF" data-tip="2D2B"><b>2D2B</b> 20.6UF · $829k</span></div>
+  </div>
+</div>
+<div class="proj-list-item" id="pli-spot-nueva-kennedy" onclick="selectProj('Spot Nueva Kennedy')"
+     data-name="Spot Nueva Kennedy" data-pct="90.2" data-venc="35">
+  <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#D97706"></div>
+  <div class="proj-logo-box" data-init="SN" data-color="#B45309" style="width:34px;height:34px;flex-shrink:0;border-radius:6px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-spot.svg" width="30" height="30" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+  <div style="flex:1;min-width:0;overflow:hidden">
+    <div style="font-size:.76rem;font-weight:700;color:#1E2A38;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">Spot Nueva Kennedy</div>
+    <div style="font-size:.68rem;color:#6B7A8D;margin:1px 0 3px">90.2% <span style="color:#DC2626;font-weight:700">&#8595;1.0pp</span></div>
+    <div class="proj-prices-row"><span class="proj-price-pill" data-uf="20.29" data-clp="818516" data-div="UF" data-tip="1D1B"><b>1D1B</b> 20.3UF · $819k</span><span class="proj-price-pill" data-uf="29.94" data-clp="1207805" data-div="UF" data-tip="2D2B"><b>2D2B</b> 29.9UF · $1.21M</span></div>
+  </div>
+</div>
+<div class="proj-list-item" id="pli-spot-residence" onclick="selectProj('Spot Residence')"
+     data-name="Spot Residence" data-pct="84.0" data-venc="16">
+  <div class="proj-dot-pulse" style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#DC2626"></div>
+  <div class="proj-logo-box" data-init="SR" data-color="#1D4ED8" style="width:34px;height:34px;flex-shrink:0;border-radius:6px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2024/12/logo-spot-residence-1.png" width="30" height="30" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+  <div style="flex:1;min-width:0;overflow:hidden">
+    <div style="font-size:.76rem;font-weight:700;color:#1E2A38;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">Spot Residence</div>
+    <div style="font-size:.68rem;color:#6B7A8D;margin:1px 0 3px">84.0% <span style="color:#DC2626;font-weight:700">&#8595;1.1pp</span></div>
+    <div class="proj-prices-row"><span class="proj-price-pill" data-uf="20.83" data-clp="840300" data-div="UF" data-tip="1D1B"><b>1D1B</b> 20.8UF · $840k</span><span class="proj-price-pill" data-uf="31.92" data-clp="1287680" data-div="UF" data-tip="2D2B"><b>2D2B</b> 31.9UF · $1.29M</span></div>
+  </div>
+</div>
+    </div>
 
-<div id="proj-cards-grid"
-     style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:32px">
-  
-<div class="proj-card" onclick="openProjDrawer('Blend Apoquindo')"
-     data-name="Blend Apoquindo" data-pct="56.8" data-pol="0" data-venc="0"
-     style="border-top:4px solid #008E9F">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <div class="proj-logo-box" data-init="BA" data-color="#008E9F" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/06/LOGO-BLEND-100X100.svg" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
-    <div>
-      <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Blend Apoquindo</div>
-      <div style="font-size:.67rem;color:#6B7A8D">95 departamentos</div>
+    <!-- Footer -->
+    <div style="padding:8px 13px;border-top:1px solid #E2E8F0;background:#fff;
+                font-size:.65rem;color:#9CA3AF;display:flex;justify-content:space-between">
+      <span>13 proyectos</span>
+      <span style="color:#DC2626;font-weight:600">11 bajo meta</span>
     </div>
   </div>
-  <div style="margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-      <span style="font-size:.68rem;color:#6B7A8D">Ocupaci&oacute;n</span>
-      <span style="font-size:.88rem;font-weight:800;color:#DC2626">56.8%</span>
+
+  <!-- ── Panel derecho ───────────────────────────────────────────────── -->
+  <div id="proj-right-panel" style="flex:1;overflow-y:auto;background:#fff;min-width:0">
+
+    <!-- Overview (estado inicial) -->
+    <div id="proj-overview-panel" style="padding:18px 20px">
+      <p style="font-size:.75rem;color:#9CA3AF;margin:0 0 14px;display:flex;align-items:center;gap:6px">
+        <span style="font-size:1rem">&#128204;</span>
+        Selecciona un proyecto en la lista para ver su an&aacute;lisis completo.
+      </p>
+      <div id="proj-cards-grid"
+           style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
+        
+<div class="proj-card" onclick="selectProj('Blend Apoquindo')"
+     data-name="Blend Apoquindo" data-pct="56.8" data-venc="0"
+     style="border-top:4px solid #008E9F">
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
+    <div class="proj-logo-box" data-init="BA" data-color="#008E9F" style="width:42px;height:42px;flex-shrink:0;border-radius:8px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/06/LOGO-BLEND-100X100.svg" width="38" height="38" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:.78rem;font-weight:700;color:#1E2A38;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Blend Apoquindo</div>
+      <div style="font-size:.66rem;color:#6B7A8D">95 deptos <span style="font-size:.66rem;color:#16A34A;font-weight:700">&#8593;3.2pp</span></div>
     </div>
-    <div style="height:7px;background:#E2E8F0;border-radius:99px;overflow:hidden">
+  </div>
+  <div style="margin-bottom:9px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+      <span style="font-size:.67rem;color:#6B7A8D">Ocupaci&oacute;n</span>
+      <span style="font-size:.86rem;font-weight:800;color:#DC2626">56.8%</span>
+    </div>
+    <div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">
       <div style="height:100%;width:56.8%;background:#008E9F;border-radius:99px"></div>
     </div>
   </div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap">
+  <div style="display:flex;gap:5px;flex-wrap:wrap">
     <div class="proj-stat"><span style="color:#16A34A;font-weight:700">54</span> arr.</div>
     <div class="proj-stat"><span style="color:#D97706;font-weight:700">21</span> disp.</div>
     
   </div>
-  <div style="margin-top:10px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Desde (arriendo)</div><div style="display:flex;gap:5px;flex-wrap:wrap"><div title="~$731k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">1D1B</span> <span style="font-weight:800">18.1</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$731k</span></div><div title="~$1.27M" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">2D2B</span> <span style="font-weight:800">31.6</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$1.27M</span></div></div></div>
+  <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Desde (arriendo)</div><div class="proj-prices-row"><span class="proj-price-pill" data-uf="18.13" data-clp="731380" data-div="UF" data-tip="1D1B"><b>1D1B</b> 18.1UF · $731k</span><span class="proj-price-pill" data-uf="31.56" data-clp="1273158" data-div="UF" data-tip="2D2B"><b>2D2B</b> 31.6UF · $1.27M</span></div></div>
 </div>
-<div class="proj-card" onclick="openProjDrawer('Boldo Club de Campo')"
-     data-name="Boldo Club de Campo" data-pct="96.0" data-pol="0" data-venc="18"
+<div class="proj-card" onclick="selectProj('Boldo Club de Campo')"
+     data-name="Boldo Club de Campo" data-pct="96.0" data-venc="18"
      style="border-top:4px solid #0369A1">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <div class="proj-logo-box" data-init="BC" data-color="#0369A1" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-boldo.svg" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
-    <div>
-      <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Boldo Club de Campo</div>
-      <div style="font-size:.67rem;color:#6B7A8D">126 departamentos</div>
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
+    <div class="proj-logo-box" data-init="BC" data-color="#0369A1" style="width:42px;height:42px;flex-shrink:0;border-radius:8px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-boldo.svg" width="38" height="38" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:.78rem;font-weight:700;color:#1E2A38;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Boldo Club de Campo</div>
+      <div style="font-size:.66rem;color:#6B7A8D">126 deptos </div>
     </div>
   </div>
-  <div style="margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-      <span style="font-size:.68rem;color:#6B7A8D">Ocupaci&oacute;n</span>
-      <span style="font-size:.88rem;font-weight:800;color:#16A34A">96.0%</span>
+  <div style="margin-bottom:9px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+      <span style="font-size:.67rem;color:#6B7A8D">Ocupaci&oacute;n</span>
+      <span style="font-size:.86rem;font-weight:800;color:#16A34A">96.0%</span>
     </div>
-    <div style="height:7px;background:#E2E8F0;border-radius:99px;overflow:hidden">
+    <div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">
       <div style="height:100%;width:96.0%;background:#0369A1;border-radius:99px"></div>
     </div>
   </div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap">
+  <div style="display:flex;gap:5px;flex-wrap:wrap">
     <div class="proj-stat"><span style="color:#16A34A;font-weight:700">121</span> arr.</div>
     <div class="proj-stat"><span style="color:#D97706;font-weight:700">4</span> disp.</div>
     <div class="proj-stat"><span style="color:#DC2626;font-weight:700">18</span> venc.</div>
   </div>
-  <div style="margin-top:10px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Desde (arriendo)</div><div style="display:flex;gap:5px;flex-wrap:wrap"><div title="~$869k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">1D1B</span> <span style="font-weight:800">21.5</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$869k</span></div><div title="~$1.52M" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">2D2B</span> <span style="font-weight:800">37.7</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$1.52M</span></div></div></div>
+  <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Desde (arriendo)</div><div class="proj-prices-row"><span class="proj-price-pill" data-uf="21.53" data-clp="868539" data-div="UF" data-tip="1D1B"><b>1D1B</b> 21.5UF · $869k</span><span class="proj-price-pill" data-uf="37.66" data-clp="1519237" data-div="UF" data-tip="2D2B"><b>2D2B</b> 37.7UF · $1.52M</span></div></div>
 </div>
-<div class="proj-card" onclick="openProjDrawer('Brooklyn La Florida')"
-     data-name="Brooklyn La Florida" data-pct="90.8" data-pol="15" data-venc="38"
+<div class="proj-card" onclick="selectProj('Brooklyn La Florida')"
+     data-name="Brooklyn La Florida" data-pct="90.8" data-venc="38"
      style="border-top:4px solid #7C3AED">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <div class="proj-logo-box" data-init="BL" data-color="#7C3AED" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-brooklyn-200x200-1.jpg" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
-    <div>
-      <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Brooklyn La Florida</div>
-      <div style="font-size:.67rem;color:#6B7A8D">478 departamentos</div>
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
+    <div class="proj-logo-box" data-init="BL" data-color="#7C3AED" style="width:42px;height:42px;flex-shrink:0;border-radius:8px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-brooklyn-200x200-1.jpg" width="38" height="38" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:.78rem;font-weight:700;color:#1E2A38;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Brooklyn La Florida</div>
+      <div style="font-size:.66rem;color:#6B7A8D">478 deptos <span style="font-size:.66rem;color:#16A34A;font-weight:700">&#8593;1.7pp</span></div>
     </div>
   </div>
-  <div style="margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-      <span style="font-size:.68rem;color:#6B7A8D">Ocupaci&oacute;n</span>
-      <span style="font-size:.88rem;font-weight:800;color:#D97706">90.8%</span>
+  <div style="margin-bottom:9px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+      <span style="font-size:.67rem;color:#6B7A8D">Ocupaci&oacute;n</span>
+      <span style="font-size:.86rem;font-weight:800;color:#D97706">90.8%</span>
     </div>
-    <div style="height:7px;background:#E2E8F0;border-radius:99px;overflow:hidden">
+    <div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">
       <div style="height:100%;width:90.8%;background:#7C3AED;border-radius:99px"></div>
     </div>
   </div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap">
+  <div style="display:flex;gap:5px;flex-wrap:wrap">
     <div class="proj-stat"><span style="color:#16A34A;font-weight:700">434</span> arr.</div>
     <div class="proj-stat"><span style="color:#D97706;font-weight:700">34</span> disp.</div>
     <div class="proj-stat"><span style="color:#DC2626;font-weight:700">15</span> p.lib.</div><div class="proj-stat"><span style="color:#DC2626;font-weight:700">38</span> venc.</div>
   </div>
-  <div style="margin-top:10px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Desde (arriendo)</div><div style="display:flex;gap:5px;flex-wrap:wrap"><div title="~$369k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">1D1B</span> <span style="font-weight:800">9.2</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$369k</span></div><div title="~$477k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">2D2B</span> <span style="font-weight:800">11.8</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$477k</span></div></div></div>
+  <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Desde (arriendo)</div><div class="proj-prices-row"><span class="proj-price-pill" data-uf="9.15" data-clp="369119" data-div="UF" data-tip="1D1B"><b>1D1B</b> 9.2UF · $369k</span><span class="proj-price-pill" data-uf="11.82" data-clp="476829" data-div="UF" data-tip="2D2B"><b>2D2B</b> 11.8UF · $477k</span></div></div>
 </div>
-<div class="proj-card" onclick="openProjDrawer('Central Santiago')"
-     data-name="Central Santiago" data-pct="92.3" data-pol="22" data-venc="48"
+<div class="proj-card" onclick="selectProj('Central Santiago')"
+     data-name="Central Santiago" data-pct="92.3" data-venc="48"
      style="border-top:4px solid #DB2777">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <div style="width:44px;height:44px;flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" rx="10" fill="#DB2777"/><text x="22" y="28" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="800" fill="white" letter-spacing=".5">CS</text></svg></div>
-    <div>
-      <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Central Santiago</div>
-      <div style="font-size:.67rem;color:#6B7A8D">562 departamentos</div>
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
+    <div style="flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"><rect width="42" height="42" rx="9" fill="#DB2777"/><text x="21" y="26" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="800" fill="white">CS</text></svg></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:.78rem;font-weight:700;color:#1E2A38;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Central Santiago</div>
+      <div style="font-size:.66rem;color:#6B7A8D">562 deptos <span style="font-size:.66rem;color:#DC2626;font-weight:700">&#8595;0.7pp</span></div>
     </div>
   </div>
-  <div style="margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-      <span style="font-size:.68rem;color:#6B7A8D">Ocupaci&oacute;n</span>
-      <span style="font-size:.88rem;font-weight:800;color:#D97706">92.3%</span>
+  <div style="margin-bottom:9px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+      <span style="font-size:.67rem;color:#6B7A8D">Ocupaci&oacute;n</span>
+      <span style="font-size:.86rem;font-weight:800;color:#D97706">92.3%</span>
     </div>
-    <div style="height:7px;background:#E2E8F0;border-radius:99px;overflow:hidden">
+    <div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">
       <div style="height:100%;width:92.3%;background:#DB2777;border-radius:99px"></div>
     </div>
   </div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap">
+  <div style="display:flex;gap:5px;flex-wrap:wrap">
     <div class="proj-stat"><span style="color:#16A34A;font-weight:700">519</span> arr.</div>
     <div class="proj-stat"><span style="color:#D97706;font-weight:700">40</span> disp.</div>
     <div class="proj-stat"><span style="color:#DC2626;font-weight:700">22</span> p.lib.</div><div class="proj-stat"><span style="color:#DC2626;font-weight:700">48</span> venc.</div>
   </div>
-  <div style="margin-top:10px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Desde (arriendo)</div><div style="display:flex;gap:5px;flex-wrap:wrap"><div title="~$284k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">1D1B</span> <span style="font-weight:800">7.0</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$284k</span></div><div title="~$468k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">2D1B</span> <span style="font-weight:800">11.6</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$468k</span></div><div title="~$611k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">2D2B</span> <span style="font-weight:800">15.2</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$611k</span></div></div></div>
+  <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Desde (arriendo)</div><div class="proj-prices-row"><span class="proj-price-pill" data-uf="7.05" data-clp="284403" data-div="UF" data-tip="1D1B"><b>1D1B</b> 7.0UF · $284k</span><span class="proj-price-pill" data-uf="11.6" data-clp="467954" data-div="UF" data-tip="2D1B"><b>2D1B</b> 11.6UF · $468k</span><span class="proj-price-pill" data-uf="15.15" data-clp="611164" data-div="UF" data-tip="2D2B"><b>2D2B</b> 15.2UF · $611k</span></div></div>
 </div>
-<div class="proj-card" onclick="openProjDrawer('Collective Bustamante')"
-     data-name="Collective Bustamante" data-pct="19.1" data-pol="0" data-venc="0"
+<div class="proj-card" onclick="selectProj('Collective Bustamante')"
+     data-name="Collective Bustamante" data-pct="19.1" data-venc="0"
      style="border-top:4px solid #059669">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <div class="proj-logo-box" data-init="CB" data-color="#059669" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/12/LOGO-CB-WEB.svg" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
-    <div>
-      <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Collective Bustamante</div>
-      <div style="font-size:.67rem;color:#6B7A8D">371 departamentos</div>
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
+    <div class="proj-logo-box" data-init="CB" data-color="#059669" style="width:42px;height:42px;flex-shrink:0;border-radius:8px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/12/LOGO-CB-WEB.svg" width="38" height="38" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:.78rem;font-weight:700;color:#1E2A38;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Collective Bustamante</div>
+      <div style="font-size:.66rem;color:#6B7A8D">371 deptos </div>
     </div>
   </div>
-  <div style="margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-      <span style="font-size:.68rem;color:#6B7A8D">Ocupaci&oacute;n</span>
-      <span style="font-size:.88rem;font-weight:800;color:#DC2626">19.1%</span>
+  <div style="margin-bottom:9px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+      <span style="font-size:.67rem;color:#6B7A8D">Ocupaci&oacute;n</span>
+      <span style="font-size:.86rem;font-weight:800;color:#DC2626">19.1%</span>
     </div>
-    <div style="height:7px;background:#E2E8F0;border-radius:99px;overflow:hidden">
+    <div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">
       <div style="height:100%;width:19.1%;background:#059669;border-radius:99px"></div>
     </div>
   </div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap">
+  <div style="display:flex;gap:5px;flex-wrap:wrap">
     <div class="proj-stat"><span style="color:#16A34A;font-weight:700">71</span> arr.</div>
     <div class="proj-stat"><span style="color:#D97706;font-weight:700">213</span> disp.</div>
     
   </div>
   
 </div>
-<div class="proj-card" onclick="openProjDrawer('IMU San Cristóbal')"
-     data-name="IMU San Cristóbal" data-pct="69.3" data-pol="4" data-venc="18"
+<div class="proj-card" onclick="selectProj('IMU San Cristóbal')"
+     data-name="IMU San Cristóbal" data-pct="69.3" data-venc="18"
      style="border-top:4px solid #D97706">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <div class="proj-logo-box" data-init="IS" data-color="#D97706" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/12/IMU-Positivo-.png" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
-    <div>
-      <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">IMU San Cristóbal</div>
-      <div style="font-size:.67rem;color:#6B7A8D">453 departamentos</div>
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
+    <div class="proj-logo-box" data-init="IS" data-color="#D97706" style="width:42px;height:42px;flex-shrink:0;border-radius:8px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/12/IMU-Positivo-.png" width="38" height="38" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:.78rem;font-weight:700;color:#1E2A38;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">IMU San Cristóbal</div>
+      <div style="font-size:.66rem;color:#6B7A8D">453 deptos <span style="font-size:.66rem;color:#DC2626;font-weight:700">&#8595;0.9pp</span></div>
     </div>
   </div>
-  <div style="margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-      <span style="font-size:.68rem;color:#6B7A8D">Ocupaci&oacute;n</span>
-      <span style="font-size:.88rem;font-weight:800;color:#DC2626">69.3%</span>
+  <div style="margin-bottom:9px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+      <span style="font-size:.67rem;color:#6B7A8D">Ocupaci&oacute;n</span>
+      <span style="font-size:.86rem;font-weight:800;color:#DC2626">69.3%</span>
     </div>
-    <div style="height:7px;background:#E2E8F0;border-radius:99px;overflow:hidden">
+    <div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">
       <div style="height:100%;width:69.3%;background:#D97706;border-radius:99px"></div>
     </div>
   </div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap">
+  <div style="display:flex;gap:5px;flex-wrap:wrap">
     <div class="proj-stat"><span style="color:#16A34A;font-weight:700">314</span> arr.</div>
     <div class="proj-stat"><span style="color:#D97706;font-weight:700">70</span> disp.</div>
     <div class="proj-stat"><span style="color:#DC2626;font-weight:700">4</span> p.lib.</div><div class="proj-stat"><span style="color:#DC2626;font-weight:700">18</span> venc.</div>
   </div>
-  <div style="margin-top:10px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Desde (arriendo)</div><div style="display:flex;gap:5px;flex-wrap:wrap"><div title="~$526k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">1D1B</span> <span style="font-weight:800">13.0</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$526k</span></div><div title="~$777k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">2D1B</span> <span style="font-weight:800">19.2</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$777k</span></div><div title="~$748k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">2D2B</span> <span style="font-weight:800">18.5</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$748k</span></div></div></div>
+  <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Desde (arriendo)</div><div class="proj-prices-row"><span class="proj-price-pill" data-uf="13.03" data-clp="525641" data-div="UF" data-tip="1D1B"><b>1D1B</b> 13.0UF · $526k</span><span class="proj-price-pill" data-uf="19.25" data-clp="776562" data-div="UF" data-tip="2D1B"><b>2D1B</b> 19.2UF · $777k</span><span class="proj-price-pill" data-uf="18.53" data-clp="747516" data-div="UF" data-tip="2D2B"><b>2D2B</b> 18.5UF · $748k</span></div></div>
 </div>
-<div class="proj-card" onclick="openProjDrawer('Nativo Riesco')"
-     data-name="Nativo Riesco" data-pct="95.3" data-pol="8" data-venc="27"
+<div class="proj-card" onclick="selectProj('Nativo Riesco')"
+     data-name="Nativo Riesco" data-pct="95.3" data-venc="27"
      style="border-top:4px solid #DC2626">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <div class="proj-logo-box" data-init="NR" data-color="#DC2626" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-nativo.png" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
-    <div>
-      <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Nativo Riesco</div>
-      <div style="font-size:.67rem;color:#6B7A8D">255 departamentos</div>
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
+    <div class="proj-logo-box" data-init="NR" data-color="#DC2626" style="width:42px;height:42px;flex-shrink:0;border-radius:8px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-nativo.png" width="38" height="38" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:.78rem;font-weight:700;color:#1E2A38;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Nativo Riesco</div>
+      <div style="font-size:.66rem;color:#6B7A8D">255 deptos <span style="font-size:.66rem;color:#DC2626;font-weight:700">&#8595;1.6pp</span></div>
     </div>
   </div>
-  <div style="margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-      <span style="font-size:.68rem;color:#6B7A8D">Ocupaci&oacute;n</span>
-      <span style="font-size:.88rem;font-weight:800;color:#16A34A">95.3%</span>
+  <div style="margin-bottom:9px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+      <span style="font-size:.67rem;color:#6B7A8D">Ocupaci&oacute;n</span>
+      <span style="font-size:.86rem;font-weight:800;color:#16A34A">95.3%</span>
     </div>
-    <div style="height:7px;background:#E2E8F0;border-radius:99px;overflow:hidden">
+    <div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">
       <div style="height:100%;width:95.3%;background:#DC2626;border-radius:99px"></div>
     </div>
   </div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap">
+  <div style="display:flex;gap:5px;flex-wrap:wrap">
     <div class="proj-stat"><span style="color:#16A34A;font-weight:700">243</span> arr.</div>
     <div class="proj-stat"><span style="color:#D97706;font-weight:700">11</span> disp.</div>
     <div class="proj-stat"><span style="color:#DC2626;font-weight:700">8</span> p.lib.</div><div class="proj-stat"><span style="color:#DC2626;font-weight:700">27</span> venc.</div>
   </div>
-  <div style="margin-top:10px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Desde (arriendo)</div><div style="display:flex;gap:5px;flex-wrap:wrap"><div title="~$925k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">1D1B</span> <span style="font-weight:800">22.9</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$925k</span></div><div title="~$1.17M" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">2D2B</span> <span style="font-weight:800">29.1</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$1.17M</span></div></div></div>
+  <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Desde (arriendo)</div><div class="proj-prices-row"><span class="proj-price-pill" data-uf="22.93" data-clp="925016" data-div="UF" data-tip="1D1B"><b>1D1B</b> 22.9UF · $925k</span><span class="proj-price-pill" data-uf="29.06" data-clp="1172305" data-div="UF" data-tip="2D2B"><b>2D2B</b> 29.1UF · $1.17M</span></div></div>
 </div>
-<div class="proj-card" onclick="openProjDrawer('Nomad Bellet')"
-     data-name="Nomad Bellet" data-pct="92.5" data-pol="5" data-venc="12"
+<div class="proj-card" onclick="selectProj('Nomad Bellet')"
+     data-name="Nomad Bellet" data-pct="92.5" data-venc="12"
      style="border-top:4px solid #0891B2">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <div class="proj-logo-box" data-init="NB" data-color="#0891B2" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-nomad-bellet.svg" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
-    <div>
-      <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Nomad Bellet</div>
-      <div style="font-size:.67rem;color:#6B7A8D">134 departamentos</div>
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
+    <div class="proj-logo-box" data-init="NB" data-color="#0891B2" style="width:42px;height:42px;flex-shrink:0;border-radius:8px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-nomad-bellet.svg" width="38" height="38" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:.78rem;font-weight:700;color:#1E2A38;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Nomad Bellet</div>
+      <div style="font-size:.66rem;color:#6B7A8D">134 deptos <span style="font-size:.66rem;color:#DC2626;font-weight:700">&#8595;1.5pp</span></div>
     </div>
   </div>
-  <div style="margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-      <span style="font-size:.68rem;color:#6B7A8D">Ocupaci&oacute;n</span>
-      <span style="font-size:.88rem;font-weight:800;color:#D97706">92.5%</span>
+  <div style="margin-bottom:9px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+      <span style="font-size:.67rem;color:#6B7A8D">Ocupaci&oacute;n</span>
+      <span style="font-size:.86rem;font-weight:800;color:#D97706">92.5%</span>
     </div>
-    <div style="height:7px;background:#E2E8F0;border-radius:99px;overflow:hidden">
+    <div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">
       <div style="height:100%;width:92.5%;background:#0891B2;border-radius:99px"></div>
     </div>
   </div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap">
+  <div style="display:flex;gap:5px;flex-wrap:wrap">
     <div class="proj-stat"><span style="color:#16A34A;font-weight:700">124</span> arr.</div>
     <div class="proj-stat"><span style="color:#D97706;font-weight:700">8</span> disp.</div>
     <div class="proj-stat"><span style="color:#DC2626;font-weight:700">5</span> p.lib.</div><div class="proj-stat"><span style="color:#DC2626;font-weight:700">12</span> venc.</div>
   </div>
-  <div style="margin-top:10px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Desde (arriendo)</div><div style="display:flex;gap:5px;flex-wrap:wrap"><div title="~$551k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">1D1B</span> <span style="font-weight:800">13.7</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$551k</span></div><div title="~$1.01M" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">2D2B</span> <span style="font-weight:800">25.1</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$1.01M</span></div></div></div>
+  <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Desde (arriendo)</div><div class="proj-prices-row"><span class="proj-price-pill" data-uf="13.65" data-clp="550653" data-div="UF" data-tip="1D1B"><b>1D1B</b> 13.7UF · $551k</span><span class="proj-price-pill" data-uf="25.1" data-clp="1012556" data-div="UF" data-tip="2D2B"><b>2D2B</b> 25.1UF · $1.01M</span></div></div>
 </div>
-<div class="proj-card" onclick="openProjDrawer('Nomad Holley')"
-     data-name="Nomad Holley" data-pct="93.8" data-pol="10" data-venc="16"
+<div class="proj-card" onclick="selectProj('Nomad Holley')"
+     data-name="Nomad Holley" data-pct="93.8" data-venc="16"
      style="border-top:4px solid #4F46E5">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <div class="proj-logo-box" data-init="NH" data-color="#4F46E5" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-nomad-holley.svg" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
-    <div>
-      <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Nomad Holley</div>
-      <div style="font-size:.67rem;color:#6B7A8D">208 departamentos</div>
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
+    <div class="proj-logo-box" data-init="NH" data-color="#4F46E5" style="width:42px;height:42px;flex-shrink:0;border-radius:8px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-nomad-holley.svg" width="38" height="38" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:.78rem;font-weight:700;color:#1E2A38;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Nomad Holley</div>
+      <div style="font-size:.66rem;color:#6B7A8D">208 deptos <span style="font-size:.66rem;color:#DC2626;font-weight:700">&#8595;1.9pp</span></div>
     </div>
   </div>
-  <div style="margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-      <span style="font-size:.68rem;color:#6B7A8D">Ocupaci&oacute;n</span>
-      <span style="font-size:.88rem;font-weight:800;color:#D97706">93.8%</span>
+  <div style="margin-bottom:9px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+      <span style="font-size:.67rem;color:#6B7A8D">Ocupaci&oacute;n</span>
+      <span style="font-size:.86rem;font-weight:800;color:#D97706">93.8%</span>
     </div>
-    <div style="height:7px;background:#E2E8F0;border-radius:99px;overflow:hidden">
+    <div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">
       <div style="height:100%;width:93.8%;background:#4F46E5;border-radius:99px"></div>
     </div>
   </div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap">
+  <div style="display:flex;gap:5px;flex-wrap:wrap">
     <div class="proj-stat"><span style="color:#16A34A;font-weight:700">195</span> arr.</div>
     <div class="proj-stat"><span style="color:#D97706;font-weight:700">10</span> disp.</div>
     <div class="proj-stat"><span style="color:#DC2626;font-weight:700">10</span> p.lib.</div><div class="proj-stat"><span style="color:#DC2626;font-weight:700">16</span> venc.</div>
   </div>
-  <div style="margin-top:10px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Desde (arriendo)</div><div style="display:flex;gap:5px;flex-wrap:wrap"><div title="~$699k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">1D1B</span> <span style="font-weight:800">17.3</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$699k</span></div><div title="~$958k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">2D2B</span> <span style="font-weight:800">23.7</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$958k</span></div></div></div>
+  <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Desde (arriendo)</div><div class="proj-prices-row"><span class="proj-price-pill" data-uf="17.33" data-clp="699107" data-div="UF" data-tip="1D1B"><b>1D1B</b> 17.3UF · $699k</span><span class="proj-price-pill" data-uf="23.74" data-clp="957692" data-div="UF" data-tip="2D2B"><b>2D2B</b> 23.7UF · $958k</span></div></div>
 </div>
-<div class="proj-card" onclick="openProjDrawer('Park Santiago')"
-     data-name="Park Santiago" data-pct="94.9" data-pol="13" data-venc="32"
+<div class="proj-card" onclick="selectProj('Park Santiago')"
+     data-name="Park Santiago" data-pct="94.9" data-venc="32"
      style="border-top:4px solid #BE123C">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <div style="width:44px;height:44px;flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" rx="10" fill="#BE123C"/><text x="22" y="28" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="800" fill="white" letter-spacing=".5">PS</text></svg></div>
-    <div>
-      <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Park Santiago</div>
-      <div style="font-size:.67rem;color:#6B7A8D">314 departamentos</div>
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
+    <div style="flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"><rect width="42" height="42" rx="9" fill="#BE123C"/><text x="21" y="26" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="800" fill="white">PS</text></svg></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:.78rem;font-weight:700;color:#1E2A38;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Park Santiago</div>
+      <div style="font-size:.66rem;color:#6B7A8D">314 deptos <span style="font-size:.66rem;color:#DC2626;font-weight:700">&#8595;1.9pp</span></div>
     </div>
   </div>
-  <div style="margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-      <span style="font-size:.68rem;color:#6B7A8D">Ocupaci&oacute;n</span>
-      <span style="font-size:.88rem;font-weight:800;color:#D97706">94.9%</span>
+  <div style="margin-bottom:9px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+      <span style="font-size:.67rem;color:#6B7A8D">Ocupaci&oacute;n</span>
+      <span style="font-size:.86rem;font-weight:800;color:#D97706">94.9%</span>
     </div>
-    <div style="height:7px;background:#E2E8F0;border-radius:99px;overflow:hidden">
+    <div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">
       <div style="height:100%;width:94.9%;background:#BE123C;border-radius:99px"></div>
     </div>
   </div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap">
+  <div style="display:flex;gap:5px;flex-wrap:wrap">
     <div class="proj-stat"><span style="color:#16A34A;font-weight:700">298</span> arr.</div>
     <div class="proj-stat"><span style="color:#D97706;font-weight:700">15</span> disp.</div>
     <div class="proj-stat"><span style="color:#DC2626;font-weight:700">13</span> p.lib.</div><div class="proj-stat"><span style="color:#DC2626;font-weight:700">32</span> venc.</div>
   </div>
-  <div style="margin-top:10px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Desde (arriendo)</div><div style="display:flex;gap:5px;flex-wrap:wrap"><div title="~$475k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">1D1B</span> <span style="font-weight:800">11.8</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$475k</span></div><div title="~$724k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">2D2B</span> <span style="font-weight:800">17.9</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$724k</span></div></div></div>
+  <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Desde (arriendo)</div><div class="proj-prices-row"><span class="proj-price-pill" data-uf="11.78" data-clp="475215" data-div="UF" data-tip="1D1B"><b>1D1B</b> 11.8UF · $475k</span><span class="proj-price-pill" data-uf="17.95" data-clp="724118" data-div="UF" data-tip="2D2B"><b>2D2B</b> 17.9UF · $724k</span></div></div>
 </div>
-<div class="proj-card" onclick="openProjDrawer('Soho Barrio Italia')"
-     data-name="Soho Barrio Italia" data-pct="94.8" data-pol="3" data-venc="15"
+<div class="proj-card" onclick="selectProj('Soho Barrio Italia')"
+     data-name="Soho Barrio Italia" data-pct="94.8" data-venc="15"
      style="border-top:4px solid #15803D">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <div style="width:44px;height:44px;flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44"><rect width="44" height="44" rx="10" fill="#15803D"/><text x="22" y="28" text-anchor="middle" font-family="Arial,sans-serif" font-size="14" font-weight="800" fill="white" letter-spacing=".5">SB</text></svg></div>
-    <div>
-      <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Soho Barrio Italia</div>
-      <div style="font-size:.67rem;color:#6B7A8D">96 departamentos</div>
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
+    <div style="flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42"><rect width="42" height="42" rx="9" fill="#15803D"/><text x="21" y="26" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="800" fill="white">SB</text></svg></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:.78rem;font-weight:700;color:#1E2A38;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Soho Barrio Italia</div>
+      <div style="font-size:.66rem;color:#6B7A8D">96 deptos <span style="font-size:.66rem;color:#DC2626;font-weight:700">&#8595;2.1pp</span></div>
     </div>
   </div>
-  <div style="margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-      <span style="font-size:.68rem;color:#6B7A8D">Ocupaci&oacute;n</span>
-      <span style="font-size:.88rem;font-weight:800;color:#D97706">94.8%</span>
+  <div style="margin-bottom:9px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+      <span style="font-size:.67rem;color:#6B7A8D">Ocupaci&oacute;n</span>
+      <span style="font-size:.86rem;font-weight:800;color:#D97706">94.8%</span>
     </div>
-    <div style="height:7px;background:#E2E8F0;border-radius:99px;overflow:hidden">
+    <div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">
       <div style="height:100%;width:94.8%;background:#15803D;border-radius:99px"></div>
     </div>
   </div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap">
+  <div style="display:flex;gap:5px;flex-wrap:wrap">
     <div class="proj-stat"><span style="color:#16A34A;font-weight:700">91</span> arr.</div>
     <div class="proj-stat"><span style="color:#D97706;font-weight:700">5</span> disp.</div>
     <div class="proj-stat"><span style="color:#DC2626;font-weight:700">3</span> p.lib.</div><div class="proj-stat"><span style="color:#DC2626;font-weight:700">15</span> venc.</div>
   </div>
-  <div style="margin-top:10px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Desde (arriendo)</div><div style="display:flex;gap:5px;flex-wrap:wrap"><div title="~$552k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">1D1B</span> <span style="font-weight:800">13.7</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$552k</span></div><div title="~$829k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">2D2B</span> <span style="font-weight:800">20.6</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$829k</span></div></div></div>
+  <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Desde (arriendo)</div><div class="proj-prices-row"><span class="proj-price-pill" data-uf="13.69" data-clp="552266" data-div="UF" data-tip="1D1B"><b>1D1B</b> 13.7UF · $552k</span><span class="proj-price-pill" data-uf="20.55" data-clp="829005" data-div="UF" data-tip="2D2B"><b>2D2B</b> 20.6UF · $829k</span></div></div>
 </div>
-<div class="proj-card" onclick="openProjDrawer('Spot Nueva Kennedy')"
-     data-name="Spot Nueva Kennedy" data-pct="90.2" data-pol="7" data-venc="35"
+<div class="proj-card" onclick="selectProj('Spot Nueva Kennedy')"
+     data-name="Spot Nueva Kennedy" data-pct="90.2" data-venc="35"
      style="border-top:4px solid #B45309">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <div class="proj-logo-box" data-init="SN" data-color="#B45309" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-spot.svg" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
-    <div>
-      <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Spot Nueva Kennedy</div>
-      <div style="font-size:.67rem;color:#6B7A8D">296 departamentos</div>
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
+    <div class="proj-logo-box" data-init="SN" data-color="#B45309" style="width:42px;height:42px;flex-shrink:0;border-radius:8px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2025/03/logo-spot.svg" width="38" height="38" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:.78rem;font-weight:700;color:#1E2A38;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Spot Nueva Kennedy</div>
+      <div style="font-size:.66rem;color:#6B7A8D">296 deptos <span style="font-size:.66rem;color:#DC2626;font-weight:700">&#8595;1.0pp</span></div>
     </div>
   </div>
-  <div style="margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-      <span style="font-size:.68rem;color:#6B7A8D">Ocupaci&oacute;n</span>
-      <span style="font-size:.88rem;font-weight:800;color:#D97706">90.2%</span>
+  <div style="margin-bottom:9px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+      <span style="font-size:.67rem;color:#6B7A8D">Ocupaci&oacute;n</span>
+      <span style="font-size:.86rem;font-weight:800;color:#D97706">90.2%</span>
     </div>
-    <div style="height:7px;background:#E2E8F0;border-radius:99px;overflow:hidden">
+    <div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">
       <div style="height:100%;width:90.2%;background:#B45309;border-radius:99px"></div>
     </div>
   </div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap">
+  <div style="display:flex;gap:5px;flex-wrap:wrap">
     <div class="proj-stat"><span style="color:#16A34A;font-weight:700">267</span> arr.</div>
     <div class="proj-stat"><span style="color:#D97706;font-weight:700">27</span> disp.</div>
     <div class="proj-stat"><span style="color:#DC2626;font-weight:700">7</span> p.lib.</div><div class="proj-stat"><span style="color:#DC2626;font-weight:700">35</span> venc.</div>
   </div>
-  <div style="margin-top:10px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Desde (arriendo)</div><div style="display:flex;gap:5px;flex-wrap:wrap"><div title="~$819k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">1D1B</span> <span style="font-weight:800">20.3</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$819k</span></div><div title="~$1.21M" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">2D2B</span> <span style="font-weight:800">29.9</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$1.21M</span></div></div></div>
+  <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Desde (arriendo)</div><div class="proj-prices-row"><span class="proj-price-pill" data-uf="20.29" data-clp="818516" data-div="UF" data-tip="1D1B"><b>1D1B</b> 20.3UF · $819k</span><span class="proj-price-pill" data-uf="29.94" data-clp="1207805" data-div="UF" data-tip="2D2B"><b>2D2B</b> 29.9UF · $1.21M</span></div></div>
 </div>
-<div class="proj-card" onclick="openProjDrawer('Spot Residence')"
-     data-name="Spot Residence" data-pct="84.0" data-pol="5" data-venc="16"
+<div class="proj-card" onclick="selectProj('Spot Residence')"
+     data-name="Spot Residence" data-pct="84.0" data-venc="16"
      style="border-top:4px solid #1D4ED8">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <div class="proj-logo-box" data-init="SR" data-color="#1D4ED8" style="width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2024/12/logo-spot-residence-1.png" width="40" height="40" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
-    <div>
-      <div style="font-size:.8rem;font-weight:700;color:#1E2A38;line-height:1.25">Spot Residence</div>
-      <div style="font-size:.67rem;color:#6B7A8D">188 departamentos</div>
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
+    <div class="proj-logo-box" data-init="SR" data-color="#1D4ED8" style="width:42px;height:42px;flex-shrink:0;border-radius:8px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2024/12/logo-spot-residence-1.png" width="38" height="38" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:.78rem;font-weight:700;color:#1E2A38;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Spot Residence</div>
+      <div style="font-size:.66rem;color:#6B7A8D">188 deptos <span style="font-size:.66rem;color:#DC2626;font-weight:700">&#8595;1.1pp</span></div>
     </div>
   </div>
-  <div style="margin-bottom:10px">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-      <span style="font-size:.68rem;color:#6B7A8D">Ocupaci&oacute;n</span>
-      <span style="font-size:.88rem;font-weight:800;color:#DC2626">84.0%</span>
+  <div style="margin-bottom:9px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+      <span style="font-size:.67rem;color:#6B7A8D">Ocupaci&oacute;n</span>
+      <span style="font-size:.86rem;font-weight:800;color:#DC2626">84.0%</span>
     </div>
-    <div style="height:7px;background:#E2E8F0;border-radius:99px;overflow:hidden">
+    <div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">
       <div style="height:100%;width:84.0%;background:#1D4ED8;border-radius:99px"></div>
     </div>
   </div>
-  <div style="display:flex;gap:6px;flex-wrap:wrap">
+  <div style="display:flex;gap:5px;flex-wrap:wrap">
     <div class="proj-stat"><span style="color:#16A34A;font-weight:700">158</span> arr.</div>
     <div class="proj-stat"><span style="color:#D97706;font-weight:700">23</span> disp.</div>
     <div class="proj-stat"><span style="color:#DC2626;font-weight:700">5</span> p.lib.</div><div class="proj-stat"><span style="color:#DC2626;font-weight:700">16</span> venc.</div>
   </div>
-  <div style="margin-top:10px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Desde (arriendo)</div><div style="display:flex;gap:5px;flex-wrap:wrap"><div title="~$840k" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">1D1B</span> <span style="font-weight:800">20.8</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$840k</span></div><div title="~$1.29M" style="font-size:.68rem;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:3px 8px;color:#15803D;line-height:1.7"><span style="font-weight:600">2D2B</span> <span style="font-weight:800">31.9</span> <span style="opacity:.65;font-size:.6rem">UF</span><br><span style="font-size:.62rem;color:#15803D;opacity:.8">~$1.29M</span></div></div></div>
+  <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><div style="font-size:.6rem;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Desde (arriendo)</div><div class="proj-prices-row"><span class="proj-price-pill" data-uf="20.83" data-clp="840300" data-div="UF" data-tip="1D1B"><b>1D1B</b> 20.8UF · $840k</span><span class="proj-price-pill" data-uf="31.92" data-clp="1287680" data-div="UF" data-tip="2D2B"><b>2D2B</b> 31.9UF · $1.29M</span></div></div>
 </div>
-</div>
+      </div>
+    </div>
 
-<!-- Backdrop -->
-<div id="proj-drawer-backdrop"
-     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:1500;cursor:pointer"
-     onclick="closeProjDrawer()"></div>
-
-<!-- Drawer -->
-<div id="proj-drawer"
-     style="display:none;position:fixed;top:0;right:0;width:490px;max-width:100vw;
-            height:100vh;background:#fff;z-index:1600;overflow-y:auto;
-            box-shadow:-6px 0 40px rgba(0,0,0,.18);
-            transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1)">
-  <div id="proj-drawer-inner" style="padding:24px 22px 40px"></div>
+    <!-- Detalle proyecto (oculto por defecto) -->
+    <div id="proj-detail-panel" style="display:none;padding:26px 30px 32px">
+      <!-- Rellenado por JS: buildDetailHTML(projName) -->
+    </div>
+  </div>
 </div>
 
 <div id="sec-vencimientos" class="sec">Vencimientos de Contratos</div>
