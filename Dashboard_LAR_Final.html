@@ -2,7 +2,10 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>LAR GROUP Panel de Ocupacion</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" href="https://largroup.cl/wp-content/uploads/2024/07/cropped-favicon-lar-32x32.png">
+<title>LAR GROUP · Panel Operacional</title>
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 <style>
 /* ── GATE BRANDED ── */
@@ -101,6 +104,7 @@
 }
 #gate-btn:hover{background:#008a94;transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,168,180,0.45);}
 #gate-btn:active{transform:translateY(0);}
+@keyframes spin{to{transform:rotate(360deg)}}
 #gate-err{
   color:#FC8181;font-size:.78rem;
   margin-top:10px;min-height:18px;
@@ -476,6 +480,7 @@ tr:hover td{background:#F0FDFE!important;}
     <div style="font-size:.58rem;color:#9CA3AF;font-weight:700;text-transform:uppercase;letter-spacing:.1em">Ocupaci&oacute;n Total</div>
     <div style="font-size:2rem;font-weight:800;color:#D97706;line-height:1.2">87.9%</div>
     <div style="font-size:.68rem;color:#6B7A8D;margin-top:2px">2,818 / 3,205 unidades</div>
+    <div style="margin-top:4px"><span style="color:#DC2626;font-size:.68rem;font-weight:700">↓9022.1pp vs mes ant.</span></div>
   </div>
   <div style="background:#fff;border-radius:14px;padding:18px 20px;border:1px solid #E2E8F0;border-left:4px solid #D97706;box-shadow:0 1px 6px rgba(0,0,0,.05)">
     <div style="font-size:.58rem;color:#9CA3AF;font-weight:700;text-transform:uppercase;letter-spacing:.1em">Bajo Meta</div>
@@ -522,7 +527,7 @@ tr:hover td{background:#F0FDFE!important;}
   <div class="kc kc-link" onclick="irA('sec-reservadas')"><div class="kl">Reservadas</div><div class="kv gr" style="color:#0369A1!important">43</div><div class="ks">En proceso de firma</div></div>
   <div class="kc kc-link" onclick="irA('sec-pipeline')"><div class="kl">No Disponibles</div><div class="kv re">119</div><div class="ks">Incl. En Obra (2)</div></div>
   <div class="kc kc-link" onclick="irA('sec-ocupacion')"><div class="kl">% Ocupaci&oacute;n Global</div><div class="kv ac">87.9%</div><div class="ks">Target: 95% | Gap: -7.1pp</div></div>
-  <div class="kc kc-link" onclick="irA('sec-por-liberar')"><div class="kl">Por Liberar</div><div class="kv re">92</div><div class="ks">10 proyectos afectados</div></div>
+  <div class="kc kc-link" onclick="irA('sec-ocupacion')"><div class="kl">Brecha Meta</div><div class="kv re" id="kpi-brecha-meta">-7.1pp</div><div class="ks">vs Target <span id="kpi-brecha-target">95</span>%</div></div>
 </div>
 
 <div class="filter-bar">
@@ -2921,6 +2926,15 @@ function actualizarMeta(v) {
   // Actualizar footer meta
   var ftmp = document.getElementById("ft-meta-pct");
   if(ftmp) ftmp.textContent = Math.round(v);
+  // Actualizar Brecha Meta en KPI grid
+  var bGap = document.getElementById("kpi-brecha-meta");
+  var bTgt = document.getElementById("kpi-brecha-target");
+  if(bGap) {
+    var gap = (gpct * 100 - parseFloat(v));
+    bGap.textContent = gap.toFixed(1) + "pp";
+    bGap.style.color = gap >= 0 ? "#16A34A" : "#DC2626";
+  }
+  if(bTgt) bTgt.textContent = Math.round(v);
 }
 
 function globalSearch(q) {
