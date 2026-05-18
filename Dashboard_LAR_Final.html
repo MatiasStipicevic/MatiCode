@@ -26,7 +26,7 @@
   box-shadow:0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,168,180,0.1);
 }
 .gate-header{
-  background:#008E9F;
+  background:#00A8B4;
   padding:28px 40px 24px;
   display:flex;flex-direction:column;align-items:center;gap:10px;
 }
@@ -69,7 +69,7 @@
 }
 .gate-divider{
   width:40px;height:2px;
-  background:#008E9F;border-radius:2px;
+  background:#00A8B4;border-radius:2px;
   margin:0 auto 24px;
 }
 #gate-input{
@@ -88,10 +88,10 @@
   transition:border-color .2s;
 }
 #gate-input::placeholder{letter-spacing:1px;color:#747678;}
-#gate-input:focus{border-color:#008E9F;box-shadow:0 0 0 3px rgba(0,168,180,0.12);}
+#gate-input:focus{border-color:#00A8B4;box-shadow:0 0 0 3px rgba(0,168,180,0.12);}
 #gate-btn{
   width:100%;
-  background:#008E9F;
+  background:#00A8B4;
   color:#fff;border:none;
   border-radius:10px;
   padding:13px;
@@ -115,29 +115,32 @@
   text-align:center;margin-top:20px;
   font-family:'Aileron',Arial,sans-serif;
 }
+.kc-link{cursor:pointer;transition:border-color .2s,transform .15s,box-shadow .2s}
+.kc-link:hover{border-color:#00A8B4!important;transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,168,180,.18)}
+.kc-link:hover .kl{color:#00A8B4}
 </style>
 
 <!-- Aileron font: install from fontsquirrel.com/fonts/aileron or use Arial fallback -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0F1117;color:#E2E8F0;font-family:'Aileron',Arial,sans-serif;min-height:100vh;padding:24px}
-.brand-bar{background:#008E9F;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;margin:-24px -24px 0 -24px}
+.brand-bar{background:#00A8B4;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;margin:-24px -24px 0 -24px}
 .brand-logo{display:flex;flex-direction:column;line-height:1}
 .logo-lar{font-size:2rem;font-weight:900;color:#fff;letter-spacing:4px}
 .logo-group{font-size:0.85rem;font-weight:400;color:#fff;letter-spacing:6px;margin-top:-4px}
 .brand-slogan{font-size:0.85rem;color:rgba(255,255,255,0.85);font-style:italic;font-family:Corbel,Arial,sans-serif}
 .header{text-align:center;padding:32px 0 24px;border-bottom:1px solid #2D3748;margin-bottom:32px}
 .header h1{font-size:2rem;font-weight:700;color:#FFF}
-.header h1 span{color:#008E9F}
+.header h1 span{color:#00A8B4}
 .header .sub{color:#747678;font-size:.9rem;margin-top:8px}
-.sec{font-size:1.1rem;font-weight:600;color:#008E9F;margin:32px 0 16px;text-transform:uppercase;letter-spacing:.5px;border-left:3px solid #008E9F;padding-left:12px}
+.sec{font-size:1.1rem;font-weight:600;color:#00A8B4;margin:32px 0 16px;text-transform:uppercase;letter-spacing:.5px;border-left:3px solid #00A8B4;padding-left:12px}
 .sec-sub{font-size:.8rem;color:#747678;margin-top:-10px;margin-bottom:16px;padding-left:15px}
 .kg{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:32px}
 .kc{background:#1E2130;border-radius:12px;padding:20px;border:1px solid #2D3748;transition:transform .2s}
 .kc:hover{transform:translateY(-2px)}
 .kl{font-size:.75rem;font-weight:500;color:#747678;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
 .kv{font-size:2rem;font-weight:700;color:#FFF}
-.kv.ac{color:#008E9F} .kv.gr{color:#48BB78} .kv.or{color:#ED8936} .kv.re{color:#FC8181}
+.kv.ac{color:#00A8B4} .kv.gr{color:#48BB78} .kv.or{color:#ED8936} .kv.re{color:#FC8181}
 .ks{font-size:.75rem;color:#747678;margin-top:4px}
 .cr{display:grid;grid-template-columns:1fr 2fr;gap:24px;margin-bottom:32px}
 .cc{background:#1E2130;border-radius:12px;padding:20px;border:1px solid #2D3748}
@@ -169,13 +172,13 @@ tr:hover td{background:#252A3D}
 .filter-bar{display:flex;align-items:center;gap:16px;background:#1E2130;border-radius:12px;padding:16px 20px;margin-bottom:24px;border:1px solid #2D3748;}
 .filter-label{font-size:.85rem;color:#747678;font-weight:500;white-space:nowrap;}
 #proj-filter{background:#0F1117;color:#E2E8F0;border:1px solid #2D3748;border-radius:8px;padding:8px 12px;font-size:.9rem;font-family:'Aileron',Arial,sans-serif;cursor:pointer;min-width:220px;}
-#proj-filter:focus{outline:none;border-color:#008E9F;}
-.filter-badge{background:rgba(0,168,180,0.15);color:#008E9F;border:1px solid #008E9F;border-radius:999px;padding:4px 12px;font-size:.78rem;font-weight:600;}
+#proj-filter:focus{outline:none;border-color:#00A8B4;}
+.filter-badge{background:rgba(0,168,180,0.15);color:#00A8B4;border:1px solid #00A8B4;border-radius:999px;padding:4px 12px;font-size:.78rem;font-weight:600;}
 .filter-reset{background:transparent;border:1px solid #747678;color:#747678;border-radius:8px;padding:8px 14px;font-size:.78rem;cursor:pointer;transition:all .2s}
-.filter-reset:hover{border-color:#008E9F;color:#008E9F}
-.proj-detail{display:none;background:#1E2130;border-radius:12px;padding:20px;border:1px solid #008E9F;margin-bottom:24px}
+.filter-reset:hover{border-color:#00A8B4;color:#00A8B4}
+.proj-detail{display:none;background:#1E2130;border-radius:12px;padding:20px;border:1px solid #00A8B4;margin-bottom:24px}
 .proj-detail.visible{display:block}
-.pd-title{font-size:1.1rem;font-weight:700;color:#008E9F;margin-bottom:12px}
+.pd-title{font-size:1.1rem;font-weight:700;color:#00A8B4;margin-bottom:12px}
 .pd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .pd-kpi{background:#252A3D;border-radius:8px;padding:12px}
 .pd-kl{font-size:.7rem;color:#747678;text-transform:uppercase;margin-bottom:4px}
@@ -183,21 +186,21 @@ tr:hover td{background:#252A3D}
 /* IMPROVEMENT 3 — Available units table */
 .table-filters{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
 .tf-input{background:#252A3D;color:#E2E8F0;border:1px solid #2D3748;border-radius:8px;padding:8px 12px;font-size:.82rem;font-family:'Aileron',Arial,sans-serif;flex:1;min-width:200px}
-.tf-input:focus,.tf-sel:focus{outline:none;border-color:#008E9F}
+.tf-input:focus,.tf-sel:focus{outline:none;border-color:#00A8B4}
 .tf-sel{background:#252A3D;color:#E2E8F0;border:1px solid #2D3748;border-radius:8px;padding:8px 12px;font-size:.82rem;font-family:'Aileron',Arial,sans-serif;cursor:pointer}
 
 /* IMPROVEMENT 2 — Exec Summary */
 .exec-card{background:#1E2130;border-radius:12px;padding:24px;border:1px solid #2D3748;margin-bottom:24px;}
 .exec-section{margin-bottom:16px;}
 .exec-section:last-child{margin-bottom:0;}
-.exec-title{font-size:.75rem;font-weight:600;color:#008E9F;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.exec-title{font-size:.75rem;font-weight:600;color:#00A8B4;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
 .exec-text{font-size:.9rem;color:#E2E8F0;line-height:1.6;}
 .exec-text strong{color:#FFF;}
 .exec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 /* IMPROVEMENT 3 — Units table extra */
 .table-filters input,.table-filters select{background:#0F1117;color:#E2E8F0;border:1px solid #2D3748;border-radius:8px;padding:8px 12px;font-size:.85rem;font-family:'Aileron',Arial,sans-serif;}
 .table-filters input{flex:1;min-width:200px;}
-.table-filters input:focus,.table-filters select:focus{outline:none;border-color:#008E9F;}
+.table-filters input:focus,.table-filters select:focus{outline:none;border-color:#00A8B4;}
 .table-count{font-size:.78rem;color:#747678;white-space:nowrap;}
 /* IMPROVEMENT 4 — Weekly comparator */
 .trend-up{color:#48BB78;font-size:1.2rem;}
@@ -209,7 +212,7 @@ tr:hover td{background:#252A3D}
 /* ── Improvement 5: Modo Presentación ── */
 #btn-present {
   position: fixed; bottom: 28px; right: 28px;
-  background: #008E9F; color: #fff; border: none;
+  background: #00A8B4; color: #fff; border: none;
   padding: 12px 20px; border-radius: 999px;
   font-family: 'Aileron', Arial, sans-serif;
   font-size: .9rem; font-weight: 600;
@@ -229,9 +232,9 @@ body.present-mode .header { padding: 16px 0 12px; }
   #btn-present { display: none; }
   #btn-pdf { display: none; }
   body { background: #fff !important; color: #000 !important; }
-  .brand-bar { background: #008E9F !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .brand-bar { background: #00A8B4 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .kc, .cc, .cf { break-inside: avoid; }
-  .header h1, .sec { color: #008E9F !important; }
+  .header h1, .sec { color: #00A8B4 !important; }
 }
 /* ── Improvement 6: Exportar PDF ── */
 #btn-pdf {
@@ -245,220 +248,10 @@ body.present-mode .header { padding: 16px 0 12px; }
   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
   transition: all .2s;
 }
-#btn-pdf:hover { border-color: #008E9F; color: #008E9F; transform: translateY(-2px); }
-</style>
-<style>
-
-/* ══════ TEMA CLARO LAR GROUP ══════ */
-:root{
-  --bg:#F5F6F8;--surface:#FFFFFF;--border:#E2E8F0;
-  --text:#1E2A38;--muted:#6B7A8D;--teal:#008E9F;
-  --teal-dark:#006E7D;--teal-light:rgba(0,142,159,.10);
-}
-
-/* Body y page */
-body{background:var(--bg)!important;color:var(--text)!important;padding:0!important;}
-
-/* Brand bar — color oficial LAR #008E9F */
-.brand-bar{background:#008E9F!important;margin:0!important;}
-.brand-slogan{color:rgba(255,255,255,.85)!important;}
-
-/* Header */
-.header{border-bottom:1px solid var(--border)!important;background:#fff!important;
-  padding:24px 28px 18px!important;margin-bottom:0!important;}
-.header h1{color:var(--text)!important;font-size:1.7rem!important;}
-.header h1 span{color:var(--teal)!important;}
-.header .sub{color:var(--muted)!important;}
-
-/* Sidebar overlay */
-#sb{position:fixed;top:0;left:0;width:220px;height:100vh;
-    background:#fff;border-right:1px solid var(--border);z-index:950;
-    overflow-y:auto;display:flex;flex-direction:column;
-    box-shadow:4px 0 20px rgba(0,0,0,.12);
-    transform:translateX(-110%);transition:transform .25s ease;}
-#sb.vis{transform:translateX(0);}
-#sb-logo{position:relative;padding:18px 16px 14px;border-bottom:1px solid var(--border);}
-.lg-brand{font-size:.65rem;font-weight:800;letter-spacing:.14em;
-    color:var(--teal);text-transform:uppercase;}
-.lg-sub{font-size:.72rem;color:var(--muted);margin-top:3px;}
-#sb-date{padding:7px 16px;font-size:.68rem;color:var(--muted);
-    background:#F8FAFC;border-bottom:1px solid var(--border);}
-#sb-date b{color:var(--teal);}
-.sbn{padding:10px 0;flex:1;}
-.sbl{display:flex;align-items:center;gap:8px;padding:9px 16px;
-    font-size:.76rem;color:var(--muted);cursor:pointer;
-    border-left:3px solid transparent;transition:all .15s;user-select:none;}
-.sbl:hover{background:#F1F5F9;color:var(--text);}
-.sbl.on{border-left-color:var(--teal);color:var(--teal);
-    background:#F0FDFE;font-weight:600;}
-.sbl .ico{font-size:.85rem;width:16px;text-align:center;}
-
-/* Backdrop */
-#sb-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.22);
-    z-index:940;cursor:pointer;}
-#sb-backdrop.vis{display:block;}
-
-/* Ham button — siempre visible */
-#sb-ham{display:block!important;position:fixed;top:14px;left:14px;z-index:1000;
-    background:var(--teal);color:#fff;border:none;border-radius:7px;
-    padding:7px 11px;cursor:pointer;font-size:1rem;line-height:1;
-    box-shadow:0 2px 10px rgba(0,168,180,.35);}
-
-/* Main wrapper — sin margin (sidebar es overlay) */
-#page-content{padding:0 28px 40px;max-width:1400px;margin:0 auto;}
-
-/* KPI cards */
-.kg{display:grid;gap:14px;margin:20px 0 28px!important;}
-.kc{background:#fff!important;border:1px solid var(--border)!important;
-    box-shadow:0 1px 4px rgba(0,0,0,.06)!important;border-radius:10px!important;}
-.kl{color:var(--muted)!important;}
-.kv{color:var(--text)!important;font-size:1.8rem!important;}
-.kv.gr{color:#16A34A!important;}
-.kv.or{color:#D97706!important;}
-.kv.re{color:#DC2626!important;}
-.kv.ac{color:var(--teal)!important;}
-.ks{color:var(--muted)!important;}
-.kc-link{cursor:pointer;transition:border-color .2s,transform .15s,box-shadow .2s;}
-.kc-link:hover{border-color:var(--teal)!important;
-    transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,168,180,.15)!important;}
-.kc-link:hover .kl{color:var(--teal)!important;}
-
-/* Section headers */
-.sec{color:var(--text)!important;border-left:none!important;
-    border-bottom:3px solid var(--teal)!important;
-    padding:0 0 6px!important;padding-left:0!important;
-    font-size:.9rem!important;font-weight:700!important;
-    text-transform:uppercase!important;letter-spacing:.06em!important;
-    margin:32px 0 16px!important;}
-.sec-sub{color:var(--muted)!important;}
-
-/* Chart containers */
-.cr{display:grid;gap:16px;margin-bottom:20px!important;}
-.cc,.cf{background:#fff!important;border:1px solid var(--border)!important;
-    border-radius:10px!important;box-shadow:0 1px 4px rgba(0,0,0,.05)!important;
-    padding:16px!important;}
-
-/* Alert box */
-.ab{background:#FFFBEB!important;border:none!important;
-    border-left:4px solid #F59E0B!important;
-    color:#92400E!important;border-radius:8px!important;}
-.ab span{color:#92400E!important;}
-
-/* Tables */
-table{background:#fff!important;border-radius:10px;overflow:hidden;
-    box-shadow:0 1px 4px rgba(0,0,0,.06);}
-thead tr{background:#F8FAFC!important;}
-th{color:var(--muted)!important;font-size:.7rem!important;
-    letter-spacing:.04em;padding:10px 12px!important;
-    border-bottom:2px solid var(--border)!important;
-    background:#F8FAFC!important;font-weight:600!important;}
-td{color:var(--text)!important;padding:8px 12px!important;
-    border-bottom:1px solid var(--border)!important;font-size:.8rem!important;}
-tr:hover td{background:#F0FDFE!important;}
-
-/* Filter bar */
-.filter-bar{background:#fff!important;border:1px solid var(--border)!important;}
-.filter-label{color:var(--muted)!important;}
-#proj-filter{background:#fff!important;color:var(--text)!important;
-    border:1px solid var(--border)!important;}
-.filter-badge{background:rgba(0,168,180,.1)!important;color:var(--teal)!important;
-    border:1px solid var(--teal)!important;}
-
-/* Table filters */
-.tf-input,.tf-sel,.table-filters input,.table-filters select{
-    background:#fff!important;color:var(--text)!important;
-    border:1px solid var(--border)!important;}
-
-/* Alert cards (t5) */
-.t5c{background:#fff!important;border-top:1px solid var(--border)!important;
-    border-right:1px solid var(--border)!important;
-    border-bottom:1px solid var(--border)!important;}
-.t5p{color:var(--muted)!important;}
-.t5t{color:var(--text)!important;}
-.t5mi{color:var(--muted)!important;}
-.t5mi span{color:var(--text)!important;}
-.t5r{color:var(--muted)!important;border-top:1px solid var(--border)!important;}
-
-/* Exec summary */
-.exec-card{background:#fff!important;border:1px solid var(--border)!important;}
-.exec-title{color:var(--teal)!important;}
-.exec-text{color:var(--text)!important;}
-.exec-text strong{color:var(--text)!important;}
-
-/* Proj detail */
-.proj-detail{background:#fff!important;border:1px solid var(--teal)!important;}
-.pd-title{color:var(--teal)!important;}
-.pd-kpi{background:#F8FAFC!important;}
-.pd-kl{color:var(--muted)!important;}
-.pd-kv{color:var(--text)!important;}
-
-/* Semáforo dots */
-.sem{display:inline-block;width:8px;height:8px;border-radius:50%;
-    margin-right:5px;vertical-align:middle;flex-shrink:0;}
-.sem-g{background:#16A34A!important;}
-.sem-y{background:#D97706!important;}
-.sem-r{background:#DC2626!important;}
-
-/* Buscador de tablas */
-.tbl-search{width:100%;max-width:300px;padding:6px 12px;
-    border:1px solid var(--border);border-radius:6px;font-size:.78rem;
-    margin-bottom:10px;background:#fff;color:var(--text);outline:none;display:block;}
-.tbl-search:focus{border-color:var(--teal);}
-
-/* Botón exportar */
-.btn-exp{padding:5px 14px;background:var(--teal);color:#fff;border:none;
-    border-radius:6px;font-size:.73rem;cursor:pointer;float:right;
-    margin-bottom:8px;}
-.btn-exp:hover{background:#008C96;}
-
-/* Botones fijos PDF/Presentar */
-#btn-pdf{background:#fff!important;color:var(--text)!important;
-    border:1px solid var(--border)!important;}
-#btn-pdf:hover{border-color:var(--teal)!important;color:var(--teal)!important;}
-
-/* Mobile */
-
-/* proj-card styles moved to section inline <style> */
-@media(max-width:768px){
-  #page-content{padding:0 12px 32px!important;}
-  .kg{grid-template-columns:repeat(2,1fr)!important;}
-  .cr{grid-template-columns:1fr!important;}
-  .t5g{grid-template-columns:1fr!important;}
-}
-
+#btn-pdf:hover { border-color: #00A8B4; color: #00A8B4; transform: translateY(-2px); }
 </style>
 </head>
 <body>
-
-<button id="sb-ham" onclick="toggleSb()" title="Abrir menu">&#9776;</button>
-<div id="sb-backdrop" onclick="closeSb()"></div>
-<nav id="sb">
-  <div id="sb-logo">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 93 93" fill="none"><rect width="93" height="93" fill="#008E9F"/><path d="M76.05 50.33L69.27 39.68C72.96 38.73 74.2 35.67 74.2 32.58C74.2 28.85 72.46 25.07 66.76 25.07H61.89C59.52 25.07 58.3 26.32 58.3 28.69V37.59H49.54L44.95 25.84S44.59 24.81 43.57 24.81C42.55 24.81 42.24 25.84 42.24 25.84L32.59 50.32H35.26L43.57 28.69L46.95 37.59H42.18L41.31 39.97H47.86L51.78 50.32H54.51L50.47 39.97H58.3V50.32H60.87V39.97H66.7L73.29 50.32H76.06L76.05 50.33ZM60.86 28.9C60.86 27.88 61.37 27.45 62.4 27.45H66.1C70.16 27.45 71.75 29.57 71.75 32.53C71.75 35.49 70.1 37.6 66.1 37.6H60.87V28.9H60.86Z" fill="white"/><path d="M19.79 46.5V25.08H17.22V46.71C17.22 49.09 18.46 50.34 20.81 50.34H30.67V47.96H21.32C20.3 47.96 19.79 47.55 19.79 46.5Z" fill="white"/></svg>
-      <div>
-        <div class="lg-brand">LAR GROUP</div>
-        <div class="lg-sub">Panel de Ocupaci&oacute;n</div>
-      </div>
-    </div>
-    <button onclick="closeSb()" style="position:absolute;top:14px;right:12px;background:none;border:none;cursor:pointer;font-size:1rem;color:#6B7A8D;line-height:1;">&#x2715;</button>
-  </div>
-  <div id="sb-date">Actualizado: <b>18/05/2026</b></div>
-  <div class="sbn">
-    <div class="sbl on" onclick="irA('sec-resumen')"><span class="ico">&#128202;</span>Resumen Ejecutivo</div>
-    <div class="sbl" onclick="irA('sec-ocupacion')"><span class="ico">&#127970;</span>Ocupaci&oacute;n Global</div>
-    <div class="sbl" onclick="irA('sec-alertas')"><span class="ico">&#9888;</span>Alertas por Proyecto</div>
-    <div class="sbl" onclick="irA('sec-disponibles')"><span class="ico">&#128994;</span>Disponibles</div>
-    <div class="sbl" onclick="irA('sec-reservadas')"><span class="ico">&#128203;</span>Reservadas</div>
-    <div class="sbl" onclick="irA('sec-por-liberar')"><span class="ico">&#128308;</span>Por Liberar</div>
-    <div class="sbl" onclick="irA('sec-vencimientos')"><span class="ico">&#128197;</span>Vencimientos</div>
-    <div class="sbl" onclick="irA('sec-proyectos')"><span class="ico">&#127970;</span>Vista Proyectos</div>
-    <div class="sbl" onclick="irA('sec-pipeline')"><span class="ico">&#128260;</span>Pipeline</div>
-  </div>
-  <div style="padding:14px 16px;border-top:1px solid #E2E8F0;font-size:.65rem;color:#6B7A8D;">
-    &copy; 2026 LAR GROUP &mdash; Uso interno
-  </div>
-</nav>
 
 
 </div>
@@ -468,7 +261,6 @@ tr:hover td{background:#F0FDFE!important;}
   <img src="data:image/png;base64,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" alt="LAR GROUP" style="height:52px;object-fit:contain;">
   <div class="brand-slogan">Tu nueva forma de arrendar</div>
 </div>
-<div id="page-content">
 <div class="header">
   <h1>Panel de <span>Ocupación</span></h1>
   <div class="sub">Datos al 18/05/2026 | Fuente: API PostgreSQL | Target global: <span id="ft-meta-pct">95</span>%</div>
@@ -520,14 +312,18 @@ tr:hover td{background:#F0FDFE!important;}
   <span id="meta-feedback" style="font-size:.68rem;color:#0369A1;background:#EFF6FF;border-radius:99px;padding:2px 9px;font-weight:600;display:none"></span>
   <span style="font-size:.71rem;color:#9CA3AF">| La tabla de alertas se recalcula en tiempo real</span>
 </div>
-<div class="kg" style="grid-template-columns:repeat(7,1fr)">
-  <div class="kc kc-link" onclick="irA('sec-alertas')"><div class="kl">Total Unidades</div><div class="kv">3,576</div><div class="ks">Departamentos en cartera</div></div>
-  <div class="kc kc-link" onclick="irA('sec-alertas')"><div class="kl">Arrendadas</div><div class="kv gr">2,893</div><div class="ks">Estado: Arrendado</div></div>
-  <div class="kc kc-link" onclick="irA('sec-disponibles')"><div class="kl">Disponibles</div><div class="kv or">477</div><div class="ks">Libres para arrendar</div></div>
-  <div class="kc kc-link" onclick="irA('sec-reservadas')"><div class="kl">Reservadas</div><div class="kv gr" style="color:#0369A1!important">49</div><div class="ks">En proceso de firma</div></div>
-  <div class="kc kc-link" onclick="irA('sec-pipeline')"><div class="kl">No Disponibles</div><div class="kv re">206</div><div class="ks">Incl. En Obra (2)</div></div>
-  <div class="kc kc-link" onclick="irA('sec-ocupacion')"><div class="kl">% Ocupaci&oacute;n Global</div><div class="kv ac">80.9%</div><div class="ks">Target: 95% | Gap: -14.1pp</div></div>
-  <div class="kc kc-link" onclick="irA('sec-ocupacion')"><div class="kl">Brecha Meta</div><div class="kv re" id="kpi-brecha-meta">-14.1pp</div><div class="ks">vs Target <span id="kpi-brecha-target">95</span>%</div></div>
+<div class="kg" style="grid-template-columns:repeat(6,1fr)">
+  <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas"><div class="kl">Total Unidades</div><div class="kv">3,576</div><div class="ks">Departamentos en cartera</div></div>
+  <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas"><div class="kl">Arrendadas</div><div class="kv gr">2,893</div><div class="ks">Estado: Arrendado</div></div>
+  <div class="kc kc-link" onclick="irA('sec-disponibles')" title="Ver Disponibles"><div class="kl">Disponibles</div><div class="kv or">477</div><div class="ks">Libres para arrendar</div></div>
+  <div class="kc kc-link" onclick="irA('sec-pipeline')" title="Ver Pipeline"><div class="kl">No Disponibles</div><div class="kv re">206</div><div class="ks">Incl. En Obra (2)</div></div>
+  <div class="kc kc-link" onclick="irA('sec-ocupacion')" title="Ver Ocupaci&oacute;n"><div class="kl">% Ocupaci&oacute;n Global</div><div class="kv ac">80.9%</div><div class="ks">Target: 95% | Gap: -14.1pp</div></div>
+  <div class="kc kc-link" onclick="irA('sec-por-liberar')" title="Ver Por Liberar"><div class="kl">Por Liberar</div><div class="kv re">92</div><div class="ks">10 proyectos afectados</div></div>
+</div>
+  <div class="kc"><div class="kl">Arrendadas</div><div class="kv gr">2,877</div><div class="ks">Estado: Arrendado</div></div>
+  <div class="kc"><div class="kl">Disponibles</div><div class="kv or">489</div><div class="ks">Libres para arrendar</div></div>
+  <div class="kc"><div class="kl">No Disponibles</div><div class="kv re">207</div><div class="ks">Incl. En Obra (5)</div></div>
+  <div class="kc"><div class="kl">% Ocupaci&oacute;n Global</div><div class="kv ac">80.5%</div><div class="ks">Target: 95% | Gap: 14.5pp</div></div>
 </div>
 
 <div class="filter-bar">
@@ -538,7 +334,7 @@ tr:hover td{background:#F0FDFE!important;}
   <span id="filter-badge" class="filter-badge" style="display:none"></span>
 </div>
 
-<div id="sec-resumen" class="sec">Resumen Ejecutivo</div>
+<div class="sec">Resumen Ejecutivo</div>
 <div id="exec-summary" class="exec-card"></div>
 
 <div id="sec-ocupacion" class="sec">Ocupación Global</div>
@@ -558,19 +354,19 @@ tr:hover td{background:#F0FDFE!important;}
 <div id="sec-alertas" class="sec">Alertas por Proyecto</div>
 <div class="cf">
 <table><thead><tr><th>Proyecto</th><th>% Ocup</th><th>Gap al 95%</th><th>Uds. Necesarias</th><th>Estado</th></tr></thead>
-<tbody id="alerts-tbody"><tr><td style="font-weight:500">Collective Bustamante</td><td><b>20.2%</b></td><td>+74.8pp</td><td>277 uds.</td><td><span class="badge badge-red">&#x1F534; Cr&iacute;tico</span></td></tr>
-<tr><td style="font-weight:500">Blend Apoquindo</td><td><b>56.8%</b></td><td>+38.2pp</td><td>36 uds.</td><td><span class="badge badge-red">&#x1F534; Cr&iacute;tico</span></td></tr>
-<tr><td style="font-weight:500">IMU San Cristóbal</td><td><b>69.3%</b></td><td>+25.7pp</td><td>116 uds.</td><td><span class="badge badge-red">&#x1F534; Cr&iacute;tico</span></td></tr>
-<tr><td style="font-weight:500">Spot Residence</td><td><b>84.0%</b></td><td>+11.0pp</td><td>21 uds.</td><td><span class="badge badge-red">&#x1F534; Cr&iacute;tico</span></td></tr>
-<tr><td style="font-weight:500">Spot Nueva Kennedy</td><td><b>90.2%</b></td><td>+-4.8pp</td><td>14 uds.</td><td><span class="badge badge-orange">&#x1F7E1; En seguimiento</span></td></tr>
-<tr><td style="font-weight:500">Brooklyn La Florida</td><td><b>90.8%</b></td><td>+-4.2pp</td><td>20 uds.</td><td><span class="badge badge-orange">&#x1F7E1; En seguimiento</span></td></tr>
-<tr><td style="font-weight:500">Central Santiago</td><td><b>92.3%</b></td><td>+-2.6pp</td><td>15 uds.</td><td><span class="badge badge-orange">&#x1F7E1; En seguimiento</span></td></tr>
-<tr><td style="font-weight:500">Nomad Bellet</td><td><b>92.5%</b></td><td>+-2.5pp</td><td>3 uds.</td><td><span class="badge badge-orange">&#x1F7E1; En seguimiento</span></td></tr>
-<tr><td style="font-weight:500">Nomad Holley</td><td><b>93.8%</b></td><td>+-1.2pp</td><td>3 uds.</td><td><span class="badge badge-orange">&#x1F7E1; En seguimiento</span></td></tr>
-<tr><td style="font-weight:500">Soho Barrio Italia</td><td><b>94.8%</b></td><td>+-0.2pp</td><td>0 uds.</td><td><span class="badge badge-orange">&#x1F7E1; En seguimiento</span></td></tr>
-<tr><td style="font-weight:500">Park Santiago</td><td><b>94.9%</b></td><td>+-0.1pp</td><td>0 uds.</td><td><span class="badge badge-orange">&#x1F7E1; En seguimiento</span></td></tr>
-<tr><td style="font-weight:500">Nativo Riesco</td><td><b>95.3%</b></td><td>&mdash;</td><td>&mdash;</td><td><span class="badge badge-green">&#x2705; Cumple</span></td></tr>
-<tr><td style="font-weight:500">Boldo Club de Campo</td><td><b>96.0%</b></td><td>&mdash;</td><td>&mdash;</td><td><span class="badge badge-green">&#x2705; Cumple</span></td></tr>
+<tbody><tr><td style="font-weight:500">Collective Bustamante</td><td><b>18.4%</b></td><td>+76.6pp</td><td>284 uds.</td><td><span class="badge badge-red">&#x1F534; Cr&iacute;tico</span></td></tr>
+<tr><td style="font-weight:500">Blend Apoquindo</td><td><b>55.8%</b></td><td>+39.2pp</td><td>38 uds.</td><td><span class="badge badge-red">&#x1F534; Cr&iacute;tico</span></td></tr>
+<tr><td style="font-weight:500">IMU San Cristóbal</td><td><b>70.0%</b></td><td>+25.0pp</td><td>114 uds.</td><td><span class="badge badge-red">&#x1F534; Cr&iacute;tico</span></td></tr>
+<tr><td style="font-weight:500">Spot Residence</td><td><b>84.0%</b></td><td>+11.0pp</td><td>21 uds.</td><td><span class="badge badge-orange">&#x1F7E1; En seguimiento</span></td></tr>
+<tr><td style="font-weight:500">Brooklyn La Florida</td><td><b>88.5%</b></td><td>+6.5pp</td><td>32 uds.</td><td><span class="badge badge-orange">&#x1F7E1; En seguimiento</span></td></tr>
+<tr><td style="font-weight:500">Spot Nueva Kennedy</td><td><b>90.2%</b></td><td>+4.8pp</td><td>15 uds.</td><td><span class="badge badge-orange">&#x1F7E1; En seguimiento</span></td></tr>
+<tr><td style="font-weight:500">Central Santiago</td><td><b>92.3%</b></td><td>+2.6pp</td><td>15 uds.</td><td><span class="badge badge-orange">&#x1F7E1; En seguimiento</span></td></tr>
+<tr><td style="font-weight:500">Nomad Holley</td><td><b>93.8%</b></td><td>+1.2pp</td><td>3 uds.</td><td><span class="badge badge-orange">&#x1F7E1; En seguimiento</span></td></tr>
+<tr><td style="font-weight:500">Nomad Bellet</td><td><b>94.0%</b></td><td>+1.0pp</td><td>2 uds.</td><td><span class="badge badge-orange">&#x1F7E1; En seguimiento</span></td></tr>
+<tr><td style="font-weight:500">Nativo Riesco</td><td><b>94.5%</b></td><td>+0.5pp</td><td>2 uds.</td><td><span class="badge badge-orange">&#x1F7E1; En seguimiento</span></td></tr>
+<tr><td style="font-weight:500">Boldo Club de Campo</td><td><b>95.2%</b></td><td>&mdash;</td><td>&mdash;</td><td><span class="badge badge-green">&#x2705; Cumple</span></td></tr>
+<tr><td style="font-weight:500">Park Santiago</td><td><b>95.5%</b></td><td>&mdash;</td><td>&mdash;</td><td><span class="badge badge-green">&#x2705; Cumple</span></td></tr>
+<tr><td style="font-weight:500">Soho Barrio Italia</td><td><b>95.8%</b></td><td>&mdash;</td><td>&mdash;</td><td><span class="badge badge-green">&#x2705; Cumple</span></td></tr>
 </tbody></table>
 </div>
 
@@ -609,13 +405,13 @@ tr:hover td{background:#F0FDFE!important;}
   </div>
 </div>
 
-<div id="sec-pipeline" class="sec">FASE 3 &mdash; Pipeline de Acci&oacute;n</div>
+<div class="sec">FASE 3 &mdash; Pipeline de Acci&oacute;n</div>
 <div class="kg" style="grid-template-columns:repeat(5,1fr)">
   <div class="kc"><div class="kl">Por Arrendar</div><div class="kv or">229</div><div class="ks">Disponibles activos</div></div>
   <div class="kc"><div class="kl">Por Liberar</div><div class="kv re">92</div><div class="ks">Riesgo de baja ocupaci&oacute;n</div></div>
   <div class="kc"><div class="kl">Por Renovar</div><div class="kv ac">24</div><div class="ks">Contratos por vencer</div></div>
-  <div class="kc kc-link" onclick="irA('sec-reservadas')"><div class="kl">Reservadas</div><div class="kv gr">49</div><div class="ks">En proceso de firma</div></div>
-  <div class="kc"><div class="kl">En Obra</div><div class="kv" style="color:#747678">2</div><div class="ks">No disponibles temp.</div></div>
+  <div class="kc kc-link" onclick="irA('sec-reservadas')" title="Ver Reservadas"><div class="kl">Reservadas</div><div class="kv gr">49</div><div class="ks">En proceso de firma</div></div>
+  <div class="kc"><div class="kl">En Obra</div><div class="kv" style="color:#747678">5</div><div class="ks">No disponibles temp.</div></div>
 </div>
 
 <div class="ab">&#x26A0;&#xFE0F; <span><b>92 unidades Por Liberar</b> en 10 proyectos. Mayor riesgo: <b>Central Santiago</b> con <b>22 unidades</b>.</span></div>
@@ -650,7 +446,7 @@ tr:hover td{background:#F0FDFE!important;}
     <tbody>
       <tr><td>IMU San Cristóbal</td><td style="text-align:center">5</td><td style="text-align:center">-</td><td style="text-align:center">5</td><td style="text-align:center"><b style="color:#48BB78">10</b></td></tr><tr><td>Nativo Riesco</td><td style="text-align:center">4</td><td style="text-align:center">-</td><td style="text-align:center">4</td><td style="text-align:center"><b style="color:#48BB78">8</b></td></tr><tr><td>Spot Nueva Kennedy</td><td style="text-align:center">3</td><td style="text-align:center">-</td><td style="text-align:center">4</td><td style="text-align:center"><b style="color:#48BB78">7</b></td></tr><tr><td>Spot Residence</td><td style="text-align:center">4</td><td style="text-align:center">-</td><td style="text-align:center">3</td><td style="text-align:center"><b style="color:#48BB78">7</b></td></tr><tr><td>Collective Bustamante</td><td style="text-align:center">5</td><td style="text-align:center">1</td><td style="text-align:center">-</td><td style="text-align:center"><b style="color:#48BB78">6</b></td></tr><tr><td>Brooklyn La Florida</td><td style="text-align:center">-</td><td style="text-align:center">-</td><td style="text-align:center">4</td><td style="text-align:center"><b style="color:#48BB78">4</b></td></tr><tr><td>Central Santiago</td><td style="text-align:center">2</td><td style="text-align:center">-</td><td style="text-align:center">-</td><td style="text-align:center"><b style="color:#48BB78">2</b></td></tr><tr><td>Soho Barrio Italia</td><td style="text-align:center">2</td><td style="text-align:center">-</td><td style="text-align:center">-</td><td style="text-align:center"><b style="color:#48BB78">2</b></td></tr><tr><td>Blend Apoquindo</td><td style="text-align:center">1</td><td style="text-align:center">-</td><td style="text-align:center">-</td><td style="text-align:center"><b style="color:#48BB78">1</b></td></tr><tr><td>Nomad Bellet</td><td style="text-align:center">1</td><td style="text-align:center">-</td><td style="text-align:center">-</td><td style="text-align:center"><b style="color:#48BB78">1</b></td></tr><tr><td>Nomad Holley</td><td style="text-align:center">1</td><td style="text-align:center">-</td><td style="text-align:center">-</td><td style="text-align:center"><b style="color:#48BB78">1</b></td></tr>
       <tr style="border-top:2px solid #2D3748">
-        <td><b>TOTAL</b></td><td style="text-align:center;color:#008E9F"><b>28</b></td><td style="text-align:center;color:#008E9F"><b>1</b></td><td style="text-align:center;color:#008E9F"><b>20</b></td>
+        <td><b>TOTAL</b></td><td style="text-align:center;color:#00A8B4"><b>28</b></td><td style="text-align:center;color:#00A8B4"><b>1</b></td><td style="text-align:center;color:#00A8B4"><b>20</b></td>
         <td style="text-align:center"><b style="color:#48BB78">49</b></td>
       </tr>
     </tbody>
@@ -660,6 +456,7 @@ tr:hover td{background:#F0FDFE!important;}
 
 <div id="sec-por-liberar" class="sec">Por Liberar &mdash; Detalle por Proyecto y Tipolog&iacute;a</div>
 <div class="sec-sub">Unidades arrendadas con subestado Por Liberar en POP Estate &mdash; Datos al 18/05/2026</div>
+<div class="sec-sub" style="color:#747678;font-size:.75rem;margin-top:4px">* Collective Bustamante, Blend Apoquindo y Boldo Club de Campo no registran unidades Por Liberar en POP Estate.</div>
 
 <div class="kg" style="grid-template-columns:repeat(1,1fr);max-width:220px">
   <div class="kc"><div class="kl">Total Por Liberar</div><div class="kv re">92</div><div class="ks">10 de 13 proyectos</div></div>
@@ -681,7 +478,7 @@ tr:hover td{background:#F0FDFE!important;}
     <tbody>
       <tr><td>Central Santiago</td><td style="text-align:center">19</td><td style="text-align:center">1</td><td style="text-align:center">2</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">22</b></td></tr><tr><td>Brooklyn La Florida</td><td style="text-align:center">7</td><td style="text-align:center">-</td><td style="text-align:center">8</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">15</b></td></tr><tr><td>Park Santiago</td><td style="text-align:center">10</td><td style="text-align:center">-</td><td style="text-align:center">3</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">13</b></td></tr><tr><td>Nomad Holley</td><td style="text-align:center">4</td><td style="text-align:center">-</td><td style="text-align:center">6</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">10</b></td></tr><tr><td>Nativo Riesco</td><td style="text-align:center">6</td><td style="text-align:center">-</td><td style="text-align:center">2</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">8</b></td></tr><tr><td>Spot Nueva Kennedy</td><td style="text-align:center">3</td><td style="text-align:center">-</td><td style="text-align:center">4</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">7</b></td></tr><tr><td>Spot Residence</td><td style="text-align:center">5</td><td style="text-align:center">-</td><td style="text-align:center">-</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">5</b></td></tr><tr><td>Nomad Bellet</td><td style="text-align:center">4</td><td style="text-align:center">-</td><td style="text-align:center">1</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">5</b></td></tr><tr><td>IMU San Cristóbal</td><td style="text-align:center">2</td><td style="text-align:center">1</td><td style="text-align:center">1</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">4</b></td></tr><tr><td>Soho Barrio Italia</td><td style="text-align:center">1</td><td style="text-align:center">-</td><td style="text-align:center">2</td><td style="text-align:center"></td><td style="text-align:center"><b style="color:#FC8181">3</b></td></tr>
       <tr style="border-top:2px solid #2D3748">
-        <td><b>TOTAL</b></td><td style="text-align:center;color:#008E9F"><b>61</b></td><td style="text-align:center;color:#008E9F"><b>2</b></td><td style="text-align:center;color:#008E9F"><b>29</b></td>
+        <td><b>TOTAL</b></td><td style="text-align:center;color:#00A8B4"><b>61</b></td><td style="text-align:center;color:#00A8B4"><b>2</b></td><td style="text-align:center;color:#00A8B4"><b>29</b></td>
         <td style="text-align:center;color:#747678"><b></b></td>
         <td style="text-align:center"><b style="color:#FC8181">92</b></td>
       </tr>
@@ -1266,7 +1063,7 @@ tr:hover td{background:#F0FDFE!important;}
     <div class="ks">Planificar contacto</div>
   </div>
   <div class="kc">
-    <div class="kl">Total pr&oacute;x. 90 d&iacute;as</div><div class="kv">479</div>
+    <div class="kl">Total pr&oacute;x. 30 d&iacute;as</div><div class="kv re">112</div>
     <div class="ks">En 11 proyectos</div>
   </div>
 </div>
@@ -1274,13 +1071,6 @@ tr:hover td{background:#F0FDFE!important;}
 <div class="cr" style="grid-template-columns:1fr 1fr">
   <div class="cc"><div id="venc_bar_proj" style="height:340px"></div></div>
   <div class="cc"><div id="venc_timeline" style="height:340px"></div></div>
-</div>
-
-<div class="cf" style="margin-top:16px">
-  <div style="font-weight:600;font-size:.82rem;margin-bottom:10px">
-    &#128100; Alerta por Ejecutivo &mdash; contratos que vencen en los pr&oacute;ximos 60 d&iacute;as
-  </div>
-  <div id="venc_bar_ejec" style="height:280px"></div>
 </div>
 
 <div class="cf" style="margin-top:16px">
@@ -1636,7 +1426,7 @@ tr:hover td{background:#F0FDFE!important;}
 var P=[{"Propiedad": "Boldo Club de Campo", "Total": 126.0, "Arrendados": 121.0, "Disponibles": 4.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 4.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9603, "Gap": 0.0103, "Uds_Needed": 0.0}, {"Propiedad": "Nativo Riesco", "Total": 255.0, "Arrendados": 243.0, "Disponibles": 11.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 8.0, "Por_Arrendar": 3.0, "Por_Liberar": 8.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.9529, "Gap": 0.0029, "Uds_Needed": 0.0}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 298.0, "Disponibles": 15.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 15.0, "Por_Liberar": 13.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.949, "Gap": -0.001, "Uds_Needed": 0.0}, {"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 91.0, "Disponibles": 5.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 3.0, "Por_Liberar": 3.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9479, "Gap": -0.0021, "Uds_Needed": 0.0}, {"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 195.0, "Disponibles": 10.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 9.0, "Por_Liberar": 10.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9375, "Gap": -0.0125, "Uds_Needed": 3.0}, {"Propiedad": "Nomad Bellet", "Total": 134.0, "Arrendados": 124.0, "Disponibles": 8.0, "No_Disp": 2.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 7.0, "Por_Liberar": 5.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9254, "Gap": -0.0246, "Uds_Needed": 3.0}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 519.0, "Disponibles": 40.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 38.0, "Por_Liberar": 22.0, "Por_Renovar": 4.0, "Pct_Ocup": 0.9235, "Gap": -0.0265, "Uds_Needed": 15.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 434.0, "Disponibles": 34.0, "No_Disp": 10.0, "En_Obra": 0.0, "Reservadas": 4.0, "Por_Arrendar": 30.0, "Por_Liberar": 15.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.908, "Gap": -0.0421, "Uds_Needed": 20.0}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 267.0, "Disponibles": 27.0, "No_Disp": 2.0, "En_Obra": 1.0, "Reservadas": 7.0, "Por_Arrendar": 19.0, "Por_Liberar": 7.0, "Por_Renovar": 4.0, "Pct_Ocup": 0.902, "Gap": -0.048, "Uds_Needed": 14.0}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 158.0, "Disponibles": 23.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 7.0, "Por_Arrendar": 16.0, "Por_Liberar": 5.0, "Por_Renovar": 2.0, "Pct_Ocup": 0.8404, "Gap": -0.1096, "Uds_Needed": 21.0}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 314.0, "Disponibles": 70.0, "No_Disp": 69.0, "En_Obra": 0.0, "Reservadas": 10.0, "Por_Arrendar": 60.0, "Por_Liberar": 4.0, "Por_Renovar": 9.0, "Pct_Ocup": 0.6932, "Gap": -0.2568, "Uds_Needed": 116.0}, {"Propiedad": "Blend Apoquindo", "Total": 95.0, "Arrendados": 54.0, "Disponibles": 21.0, "No_Disp": 20.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 20.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.5684, "Gap": -0.3816, "Uds_Needed": 36.0}, {"Propiedad": "Collective Bustamante", "Total": 371.0, "Arrendados": 75.0, "Disponibles": 209.0, "No_Disp": 87.0, "En_Obra": 0.0, "Reservadas": 6.0, "Por_Arrendar": 5.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.2022, "Gap": -0.7478, "Uds_Needed": 277.0}];
 </script>
 <script>
-var PAPER="#FFFFFF",GRID="#E2E8F0",FONT="#1A202C",AXIS="#4A5568";
+var PAPER="#1E2130",GRID="#2D3748",FONT="#E2E8F0",AXIS="#747678";
 var gpct=0.809;
 var proj_desc=[{"Propiedad": "Boldo Club de Campo", "Total": 126.0, "Arrendados": 121.0, "Disponibles": 4.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 4.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9603, "Gap": 0.0103, "Uds_Needed": 0.0}, {"Propiedad": "Nativo Riesco", "Total": 255.0, "Arrendados": 243.0, "Disponibles": 11.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 8.0, "Por_Arrendar": 3.0, "Por_Liberar": 8.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.9529, "Gap": 0.0029, "Uds_Needed": 0.0}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 298.0, "Disponibles": 15.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 15.0, "Por_Liberar": 13.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.949, "Gap": -0.001, "Uds_Needed": 0.0}, {"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 91.0, "Disponibles": 5.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 3.0, "Por_Liberar": 3.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9479, "Gap": -0.0021, "Uds_Needed": 0.0}, {"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 195.0, "Disponibles": 10.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 9.0, "Por_Liberar": 10.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9375, "Gap": -0.0125, "Uds_Needed": 3.0}, {"Propiedad": "Nomad Bellet", "Total": 134.0, "Arrendados": 124.0, "Disponibles": 8.0, "No_Disp": 2.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 7.0, "Por_Liberar": 5.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9254, "Gap": -0.0246, "Uds_Needed": 3.0}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 519.0, "Disponibles": 40.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 38.0, "Por_Liberar": 22.0, "Por_Renovar": 4.0, "Pct_Ocup": 0.9235, "Gap": -0.0265, "Uds_Needed": 15.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 434.0, "Disponibles": 34.0, "No_Disp": 10.0, "En_Obra": 0.0, "Reservadas": 4.0, "Por_Arrendar": 30.0, "Por_Liberar": 15.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.908, "Gap": -0.0421, "Uds_Needed": 20.0}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 267.0, "Disponibles": 27.0, "No_Disp": 2.0, "En_Obra": 1.0, "Reservadas": 7.0, "Por_Arrendar": 19.0, "Por_Liberar": 7.0, "Por_Renovar": 4.0, "Pct_Ocup": 0.902, "Gap": -0.048, "Uds_Needed": 14.0}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 158.0, "Disponibles": 23.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 7.0, "Por_Arrendar": 16.0, "Por_Liberar": 5.0, "Por_Renovar": 2.0, "Pct_Ocup": 0.8404, "Gap": -0.1096, "Uds_Needed": 21.0}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 314.0, "Disponibles": 70.0, "No_Disp": 69.0, "En_Obra": 0.0, "Reservadas": 10.0, "Por_Arrendar": 60.0, "Por_Liberar": 4.0, "Por_Renovar": 9.0, "Pct_Ocup": 0.6932, "Gap": -0.2568, "Uds_Needed": 116.0}, {"Propiedad": "Blend Apoquindo", "Total": 95.0, "Arrendados": 54.0, "Disponibles": 21.0, "No_Disp": 20.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 20.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.5684, "Gap": -0.3816, "Uds_Needed": 36.0}, {"Propiedad": "Collective Bustamante", "Total": 371.0, "Arrendados": 75.0, "Disponibles": 209.0, "No_Disp": 87.0, "En_Obra": 0.0, "Reservadas": 6.0, "Por_Arrendar": 5.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.2022, "Gap": -0.7478, "Uds_Needed": 277.0}];
 var proj_asc=[{"Propiedad": "Collective Bustamante", "Total": 371.0, "Arrendados": 75.0, "Disponibles": 209.0, "No_Disp": 87.0, "En_Obra": 0.0, "Reservadas": 6.0, "Por_Arrendar": 5.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.2022, "Gap": -0.7478, "Uds_Needed": 277.0}, {"Propiedad": "Blend Apoquindo", "Total": 95.0, "Arrendados": 54.0, "Disponibles": 21.0, "No_Disp": 20.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 20.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.5684, "Gap": -0.3816, "Uds_Needed": 36.0}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 314.0, "Disponibles": 70.0, "No_Disp": 69.0, "En_Obra": 0.0, "Reservadas": 10.0, "Por_Arrendar": 60.0, "Por_Liberar": 4.0, "Por_Renovar": 9.0, "Pct_Ocup": 0.6932, "Gap": -0.2568, "Uds_Needed": 116.0}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 158.0, "Disponibles": 23.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 7.0, "Por_Arrendar": 16.0, "Por_Liberar": 5.0, "Por_Renovar": 2.0, "Pct_Ocup": 0.8404, "Gap": -0.1096, "Uds_Needed": 21.0}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 267.0, "Disponibles": 27.0, "No_Disp": 2.0, "En_Obra": 1.0, "Reservadas": 7.0, "Por_Arrendar": 19.0, "Por_Liberar": 7.0, "Por_Renovar": 4.0, "Pct_Ocup": 0.902, "Gap": -0.048, "Uds_Needed": 14.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 434.0, "Disponibles": 34.0, "No_Disp": 10.0, "En_Obra": 0.0, "Reservadas": 4.0, "Por_Arrendar": 30.0, "Por_Liberar": 15.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.908, "Gap": -0.0421, "Uds_Needed": 20.0}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 519.0, "Disponibles": 40.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 38.0, "Por_Liberar": 22.0, "Por_Renovar": 4.0, "Pct_Ocup": 0.9235, "Gap": -0.0265, "Uds_Needed": 15.0}, {"Propiedad": "Nomad Bellet", "Total": 134.0, "Arrendados": 124.0, "Disponibles": 8.0, "No_Disp": 2.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 7.0, "Por_Liberar": 5.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9254, "Gap": -0.0246, "Uds_Needed": 3.0}, {"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 195.0, "Disponibles": 10.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 9.0, "Por_Liberar": 10.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9375, "Gap": -0.0125, "Uds_Needed": 3.0}, {"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 91.0, "Disponibles": 5.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 3.0, "Por_Liberar": 3.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9479, "Gap": -0.0021, "Uds_Needed": 0.0}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 298.0, "Disponibles": 15.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 15.0, "Por_Liberar": 13.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.949, "Gap": -0.001, "Uds_Needed": 0.0}, {"Propiedad": "Nativo Riesco", "Total": 255.0, "Arrendados": 243.0, "Disponibles": 11.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 8.0, "Por_Arrendar": 3.0, "Por_Liberar": 8.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.9529, "Gap": 0.0029, "Uds_Needed": 0.0}, {"Propiedad": "Boldo Club de Campo", "Total": 126.0, "Arrendados": 121.0, "Disponibles": 4.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 4.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9603, "Gap": 0.0103, "Uds_Needed": 0.0}];
@@ -1654,7 +1444,7 @@ var base={paper_bgcolor:PAPER,plot_bgcolor:PAPER,font:{family:"Aileron",color:FO
 
 Plotly.newPlot("donut_gauge",[
   {type:"pie",hole:0.72,values:[gpct*100,100-gpct*100],labels:["Ocupado","Vacante"],
-    marker:{colors:["#008E9F","#2D3748"]},textinfo:"none",
+    marker:{colors:["#00A8B4","#2D3748"]},textinfo:"none",
     hovertemplate:"%{label}: %{value:.1f}%<extra></extra>"},
   {type:"pie",hole:0.72,values:[95,5],labels:["Target 95%",""],
     marker:{colors:["rgba(72,187,120,0.15)","rgba(0,0,0,0)"]},
@@ -1663,7 +1453,7 @@ Plotly.newPlot("donut_gauge",[
   title:{text:""},
   annotations:[{
     x:0.5,y:0.5,showarrow:false,align:"center",
-    text:"<b><span style='font-size:28px;color:#008E9F'>"+(gpct*100).toFixed(1)+"%</span></b><br><span style='font-size:11px;color:#E2E8F0'>Ocupación Global</span><br><span style='font-size:10px;color:#747678'>Target: 95%</span>"
+    text:"<b><span style='font-size:28px;color:#00A8B4'>"+(gpct*100).toFixed(1)+"%</span></b><br><span style='font-size:11px;color:#E2E8F0'>Ocupación Global</span><br><span style='font-size:10px;color:#747678'>Target: 95%</span>"
   }],
   showlegend:true,legend:{orientation:"h",y:-0.05},
   margin:{t:10,b:40,l:20,r:20},height:350
@@ -1703,7 +1493,7 @@ var pp=pipe_data.map(d=>d.Propiedad);
 Plotly.newPlot("stacked_pipeline",[
   {type:"bar",name:"Por Arrendar",x:pp,y:pipe_data.map(d=>d.Por_Arrendar),marker:{color:"#ED8936"}},
   {type:"bar",name:"Por Liberar",x:pp,y:pipe_data.map(d=>d.Por_Liberar),marker:{color:"#FC8181"}},
-  {type:"bar",name:"Por Renovar",x:pp,y:pipe_data.map(d=>d.Por_Renovar),marker:{color:"#008E9F"}},
+  {type:"bar",name:"Por Renovar",x:pp,y:pipe_data.map(d=>d.Por_Renovar),marker:{color:"#00A8B4"}},
   {type:"bar",name:"Reservadas",x:pp,y:pipe_data.map(d=>d.Reservadas),marker:{color:"#48BB78"}},
   {type:"bar",name:"En Obra",x:pp,y:pipe_data.map(d=>d.En_Obra),marker:{color:"#747678"}}
 ],{...base,
@@ -1731,7 +1521,7 @@ Plotly.newPlot("risk_bar",[
 
 var hn=["Portfolio Global","Collective Bustamante","IMU San Cristóbal","Blend Apoquindo"];
 var hv=[80.9,20.22,69.32,56.84];
-var hc=["#008E9F","#FC8181","#ED8936","#F6AD55"];
+var hc=["#00A8B4","#FC8181","#ED8936","#F6AD55"];
 var ht=hn.map((n,i)=>({type:"scatter",mode:"lines+markers",name:n,
   x:["2026-05-06"],y:[hv[i]],
   line:{color:hc[i],width:2},marker:{size:10},
@@ -1760,7 +1550,7 @@ var tipo_data = {
   "2D2B": {total:[16, 33, 174, 78, 148, 217, 7, 24, 73, 20, 87, 105, 70],arrendados:[3, 10, 89, 62, 132, 184, 5, 21, 68, 19, 80, 97, 66],pct:[18.8, 30.3, 51.1, 79.5, 89.2, 84.8, 71.4, 87.5, 93.2, 95.0, 92.0, 92.4, 94.3]},
   "3D3B": {total:[0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],arrendados:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],pct:[0, 0, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]},
 };
-var tipo_colors = {Studio:"#008E9F","1D1B":"#48BB78","1D2B":"#9F7AEA","2D1B":"#ED8936","2D2B":"#FC8181","3D3B":"#F6AD55"};
+var tipo_colors = {Studio:"#00A8B4","1D1B":"#48BB78","1D2B":"#9F7AEA","2D1B":"#ED8936","2D2B":"#FC8181","3D3B":"#F6AD55"};
 var tipo_traces = tipo_data.tipologias.map(function(tipo){
   var d = tipo_data[tipo];
   var texts = tipo_data.projects.map(function(proj,i){
@@ -1794,7 +1584,7 @@ Plotly.newPlot("tipo_stacked",tipo_traces,{...base,
 // DATA EMBED
 // ================================================================
 var unidades_disp = [{"Propiedad": "Blend Apoquindo", "Tipologia": "2D2B", "Modelo": "2D + 2B (A)", "Nombre": "BLEN-DEPA-0403", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "1D1B", "Modelo": "Estudio B", "Nombre": "BLEN-DEPA-0404", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "2D2B", "Modelo": "2D + 2B (C)", "Nombre": "BLEN-DEPA-0411", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "2D2B", "Modelo": "2D + 2B (B)", "Nombre": "BLEN-DEPA-0413", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "1D1B", "Modelo": "1D + 1B", "Nombre": "BLEN-DEPA-0502", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "1D1B", "Modelo": "Estudio B", "Nombre": "BLEN-DEPA-0504", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "1D1B", "Modelo": "Estudio B", "Nombre": "BLEN-DEPA-0506", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "2D2B", "Modelo": "2D + 2B (B)", "Nombre": "BLEN-DEPA-0513", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "1D1B", "Modelo": "1D + 1B", "Nombre": "BLEN-DEPA-0602", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "2D2B", "Modelo": "2D + 2B (A)", "Nombre": "BLEN-DEPA-0603", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "1D1B", "Modelo": "Estudio B", "Nombre": "BLEN-DEPA-0604", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "1D1B", "Modelo": "Estudio B", "Nombre": "BLEN-DEPA-0606", "SubEstado": "reservada"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "2D2B", "Modelo": "2D + 2B (B)", "Nombre": "BLEN-DEPA-0613", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "2D2B", "Modelo": "2D + 2B (A)", "Nombre": "BLEN-DEPA-0703", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "1D1B", "Modelo": "Estudio A", "Nombre": "BLEN-DEPA-0705", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "1D1B", "Modelo": "1D + 1B", "Nombre": "BLEN-DEPA-0709", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "2D2B", "Modelo": "2D + 2B (B)", "Nombre": "BLEN-DEPA-0713", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "2D2B", "Modelo": "2D + 2B (A)", "Nombre": "BLEN-DEPA-0803", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "2D2B", "Modelo": "2D + 2B (A)", "Nombre": "BLEN-DEPA-0903", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "1D1B", "Modelo": "Estudio A", "Nombre": "BLEN-DEPA-0905", "SubEstado": "por arrendar"}, {"Propiedad": "Blend Apoquindo", "Tipologia": "2D2B", "Modelo": "2D + 2B (A)", "Nombre": "BLEN-DEPA-1003", "SubEstado": "por arrendar"}, {"Propiedad": "Boldo Club de Campo", "Tipologia": "2D2B", "Modelo": "2D+2B Cocina cerrada", "Nombre": "BOLD-DEPA-0202", "SubEstado": "por arrendar"}, {"Propiedad": "Boldo Club de Campo", "Tipologia": "2D2B", "Modelo": "2D+2B Cocina isla", "Nombre": "BOLD-DEPA-0808", "SubEstado": "por arrendar"}, {"Propiedad": "Boldo Club de Campo", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "BOLD-DEPA-1106", "SubEstado": "por arrendar"}, {"Propiedad": "Boldo Club de Campo", "Tipologia": "2D2B", "Modelo": "2D+2B Mariposa", "Nombre": "BOLD-DEPA-1205", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "BROO-DEPA-0206", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B MARIPOSA", "Nombre": "BROO-DEPA-0207", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B MARIPOSA", "Nombre": "BROO-DEPA-0208", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B MARIPOSA", "Nombre": "BROO-DEPA-0210", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B MARIPOSA", "Nombre": "BROO-DEPA-0211", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B MARIPOSA", "Nombre": "BROO-DEPA-0212", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B+LOGIA", "Nombre": "BROO-DEPA-0304", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B MARIPOSA", "Nombre": "BROO-DEPA-0311", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B MARIPOSA", "Nombre": "BROO-DEPA-0312", "SubEstado": "reservada"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "BROO-DEPA-0318", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B+LOGIA", "Nombre": "BROO-DEPA-0319", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B+LOGIA", "Nombre": "BROO-DEPA-0419", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B MARIPOSA", "Nombre": "BROO-DEPA-0511", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B+LOGIA", "Nombre": "BROO-DEPA-0519", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B MARIPOSA", "Nombre": "BROO-DEPA-0610", "SubEstado": "reservada"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B+LOGIA", "Nombre": "BROO-DEPA-0719", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B+LOGIA", "Nombre": "BROO-DEPA-0804", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B+LOGIA", "Nombre": "BROO-DEPA-0819", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B+LOGIA", "Nombre": "BROO-DEPA-0919", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "BROO-DEPA-1105", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B MARIPOSA", "Nombre": "BROO-DEPA-1110", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "BROO-DEPA-1215", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B+LOGIA", "Nombre": "BROO-DEPA-1304", "SubEstado": "reservada"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B MARIPOSA", "Nombre": "BROO-DEPA-1312", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B+LOGIA", "Nombre": "BROO-DEPA-1404", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "BROO-DEPA-1505", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B+LOGIA", "Nombre": "BROO-DEPA-1704", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B+LOGIA", "Nombre": "BROO-DEPA-1804", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B MARIPOSA", "Nombre": "BROO-DEPA-1908", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "BROO-DEPA-2001", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B+LOGIA", "Nombre": "BROO-DEPA-2104", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B MARIPOSA", "Nombre": "BROO-DEPA-2117", "SubEstado": "por arrendar"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "2D2B", "Modelo": "2D+2B+LOGIA", "Nombre": "BROO-DEPA-2219", "SubEstado": "reservada"}, {"Propiedad": "Brooklyn La Florida", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "BROO-DEPA-2309", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "CENT-DEPA-0202", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0223", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "CENT-DEPA-0236", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0309", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0320", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0331", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0411", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "CENT-DEPA-0436", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0504", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0518", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0523", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0604", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "CENT-DEPA-0624", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0729", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0737", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0803", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0809", "SubEstado": "reservada"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0823", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "CENT-DEPA-0824", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0906", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0909", "SubEstado": "reservada"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-0920", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "CENT-DEPA-0925", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-1026", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-1029", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-1037", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-1115", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-1120", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-1131", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-1420", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-1529", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-1536", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-1601", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-1603", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-1606", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-1612", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-1620", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-1623", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "CENT-DEPA-1624", "SubEstado": "por arrendar"}, {"Propiedad": "Central Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "CENT-DEPA-1636", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-125B", "SubEstado": "reservada"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-129B", "SubEstado": "reservada"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-130B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-132B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-133B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "IMU-DEPA-134B", "SubEstado": "reservada"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-136B", "SubEstado": "reservada"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "IMU-DEPA-204A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-204B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-206A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-213A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-220B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-221B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-224B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-227B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-229B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-233B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-243B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-305B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-306B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "IMU-DEPA-313A", "SubEstado": "reservada"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "IMU-DEPA-321A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-321B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-322A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-324B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-325B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-327B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-328A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-329B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-330B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-335A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-342B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-351A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-403B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-405B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-406B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "IMU-DEPA-409A", "SubEstado": "reservada"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-410B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "IMU-DEPA-415A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "IMU-DEPA-419A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "IMU-DEPA-420A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-421B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-424B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-427B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "IMU-DEPA-428B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-429B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-435A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "IMU-DEPA-435B", "SubEstado": "reservada"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "IMU-DEPA-436A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "IMU-DEPA-437A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-437B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "IMU-DEPA-443A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-443B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "IMU-DEPA-501A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-503B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-504B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-509B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-512B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-521B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-525B", "SubEstado": "reservada"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-527B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "IMU-DEPA-528B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-529B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-530B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-534B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "IMU-DEPA-536A", "SubEstado": "reservada"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-537B", "SubEstado": "reservada"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "IMU-DEPA-541A", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-543B", "SubEstado": "por arrendar"}, {"Propiedad": "IMU San Cristóbal", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "IMU-DEPA-555A", "SubEstado": "por arrendar"}, {"Propiedad": "Nativo Riesco", "Tipologia": "2D2B", "Modelo": "2D+2B Mariposa", "Nombre": "NATI-DEPA-0505", "SubEstado": "reservada"}, {"Propiedad": "Nativo Riesco", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "NATI-DEPA-0514", "SubEstado": "reservada"}, {"Propiedad": "Nativo Riesco", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "NATI-DEPA-0617", "SubEstado": "reservada"}, {"Propiedad": "Nativo Riesco", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "NATI-DEPA-0703", "SubEstado": "reservada"}, {"Propiedad": "Nativo Riesco", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "NATI-DEPA-0807", "SubEstado": "reservada"}, {"Propiedad": "Nativo Riesco", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "NATI-DEPA-0817", "SubEstado": "por arrendar"}, {"Propiedad": "Nativo Riesco", "Tipologia": "2D2B", "Modelo": "2D+2B Mariposa", "Nombre": "NATI-DEPA-1105", "SubEstado": "por arrendar"}, {"Propiedad": "Nativo Riesco", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "NATI-DEPA-1112", "SubEstado": "reservada"}, {"Propiedad": "Nativo Riesco", "Tipologia": "2D2B", "Modelo": "2D+2B Mariposa", "Nombre": "NATI-DEPA-1316", "SubEstado": "reservada"}, {"Propiedad": "Nativo Riesco", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "NATI-DEPA-1509", "SubEstado": "reservada"}, {"Propiedad": "Nativo Riesco", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "NATI-DEPA-1614", "SubEstado": "por arrendar"}, {"Propiedad": "Nomad Bellet", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "BELL-DEPA-0A08", "SubEstado": "por arrendar"}, {"Propiedad": "Nomad Bellet", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "BELL-DEPA-0B11", "SubEstado": "reservada"}, {"Propiedad": "Nomad Bellet", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "BELL-DEPA-0C03", "SubEstado": "por arrendar"}, {"Propiedad": "Nomad Bellet", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "BELL-DEPA-0D11", "SubEstado": "por arrendar"}, {"Propiedad": "Nomad Bellet", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "BELL-DEPA-0F08", "SubEstado": "por arrendar"}, {"Propiedad": "Nomad Bellet", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "BELL-DEPA-0H01", "SubEstado": "por arrendar"}, {"Propiedad": "Nomad Bellet", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "BELL-DEPA-0I02", "SubEstado": "por arrendar"}, {"Propiedad": "Nomad Bellet", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "BELL-DEPA-0L03", "SubEstado": "por arrendar"}, {"Propiedad": "Nomad Holley", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "HOLL-DEPA-0B05", "SubEstado": "por arrendar"}, {"Propiedad": "Nomad Holley", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "HOLL-DEPA-0B08", "SubEstado": "por arrendar"}, {"Propiedad": "Nomad Holley", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "HOLL-DEPA-0C01", "SubEstado": "por arrendar"}, {"Propiedad": "Nomad Holley", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "HOLL-DEPA-0C10", "SubEstado": "reservada"}, {"Propiedad": "Nomad Holley", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "HOLL-DEPA-0I06", "SubEstado": "por arrendar"}, {"Propiedad": "Nomad Holley", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "HOLL-DEPA-0I12", "SubEstado": "por arrendar"}, {"Propiedad": "Nomad Holley", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "HOLL-DEPA-0K11", "SubEstado": "por arrendar"}, {"Propiedad": "Nomad Holley", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "HOLL-DEPA-0N08", "SubEstado": "por arrendar"}, {"Propiedad": "Nomad Holley", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "HOLL-DEPA-0N10", "SubEstado": "por arrendar"}, {"Propiedad": "Nomad Holley", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "HOLL-DEPA-0O04", "SubEstado": "por arrendar"}, {"Propiedad": "Park Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "PARK-DEPA-0808", "SubEstado": "por arrendar"}, {"Propiedad": "Park Santiago", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "PARK-DEPA-0903", "SubEstado": "por arrendar"}, {"Propiedad": "Park Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "PARK-DEPA-0904", "SubEstado": "por arrendar"}, {"Propiedad": "Park Santiago", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "PARK-DEPA-1001", "SubEstado": "por arrendar"}, {"Propiedad": "Park Santiago", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "PARK-DEPA-1103", "SubEstado": "por arrendar"}, {"Propiedad": "Park Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "PARK-DEPA-1311", "SubEstado": "por arrendar"}, {"Propiedad": "Park Santiago", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "PARK-DEPA-1403", "SubEstado": "por arrendar"}, {"Propiedad": "Park Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "PARK-DEPA-1412", "SubEstado": "por arrendar"}, {"Propiedad": "Park Santiago", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "PARK-DEPA-1903", "SubEstado": "por arrendar"}, {"Propiedad": "Park Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "PARK-DEPA-1908", "SubEstado": "por arrendar"}, {"Propiedad": "Park Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "PARK-DEPA-2012", "SubEstado": "por arrendar"}, {"Propiedad": "Park Santiago", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "PARK-DEPA-2201", "SubEstado": "por arrendar"}, {"Propiedad": "Park Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "PARK-DEPA-2212", "SubEstado": "por arrendar"}, {"Propiedad": "Park Santiago", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "PARK-DEPA-2711", "SubEstado": "por arrendar"}, {"Propiedad": "Park Santiago", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "PARK-DEPA-2901", "SubEstado": "por arrendar"}, {"Propiedad": "Soho Barrio Italia", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "SOHO-DEPA-0401", "SubEstado": "por arrendar"}, {"Propiedad": "Soho Barrio Italia", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "SOHO-DEPA-0408", "SubEstado": "reservada"}, {"Propiedad": "Soho Barrio Italia", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "SOHO-DEPA-0706", "SubEstado": "por arrendar"}, {"Propiedad": "Soho Barrio Italia", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "SOHO-DEPA-0708", "SubEstado": "por arrendar"}, {"Propiedad": "Soho Barrio Italia", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "SOHO-DEPA-0709", "SubEstado": "reservada"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "SPOT-DEPA-0206", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "SPOT-DEPA-0308", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "SPOT-DEPA-0402", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "SPOT-DEPA-0504", "SubEstado": "reservada"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "SPOT-DEPA-0606", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "SPOT-DEPA-1004", "SubEstado": "en obra"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "SPOT-DEPA-1102", "SubEstado": "reservada"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "SPOT-DEPA-1305", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "SPOT-DEPA-1506", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "SPOT-DEPA-1604", "SubEstado": "reservada"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "SPOT-DEPA-1906", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "SPOT-DEPA-2003", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "SPOT-DEPA-2104", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "SPOT-DEPA-2302", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "SPOT-DEPA-2506", "SubEstado": "reservada"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "SPOT-DEPA-2507", "SubEstado": "reservada"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "SPOT-DEPA-2604", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "SPOT-DEPA-2606", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "SPOT-DEPA-2706", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "SPOT-DEPA-2905", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "SPOT-DEPA-3002", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "SPOT-DEPA-3101", "SubEstado": "reservada"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "SPOT-DEPA-3203", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "SPOT-DEPA-3303", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "SPOT-DEPA-3306", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "SPOT-DEPA-3507", "SubEstado": "reservada"}, {"Propiedad": "Spot Nueva Kennedy", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "SPOT-DEPA-3806", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Residence", "Tipologia": "2D2B", "Modelo": "2D + 2B", "Nombre": "SPO2-DEPA-0207", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Residence", "Tipologia": "1D1B", "Modelo": "1D + 1B", "Nombre": "SPO2-DEPA-0212", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Residence", "Tipologia": "1D1B", "Modelo": "1D + 1B", "Nombre": "SPO2-DEPA-0216", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Residence", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "SPO2-DEPA-0218", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Residence", "Tipologia": "1D1B", "Modelo": "1D + 1B", "Nombre": "SPO2-DEPA-0302", "SubEstado": "reservada"}, {"Propiedad": "Spot Residence", "Tipologia": "2D2B", "Modelo": "2D + 2B", "Nombre": "SPO2-DEPA-0307", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Residence", "Tipologia": "1D1B", "Modelo": "1D + 1B", "Nombre": "SPO2-DEPA-0405", "SubEstado": "reservada"}, {"Propiedad": "Spot Residence", "Tipologia": "2D2B", "Modelo": "2D + 2B", "Nombre": "SPO2-DEPA-0415", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Residence", "Tipologia": "1D1B", "Modelo": "1D + 1B", "Nombre": "SPO2-DEPA-0512", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Residence", "Tipologia": "2D2B", "Modelo": "2D + 2B", "Nombre": "SPO2-DEPA-0519", "SubEstado": "reservada"}, {"Propiedad": "Spot Residence", "Tipologia": "2D2B", "Modelo": "2D + 2B", "Nombre": "SPO2-DEPA-0614", "SubEstado": "reservada"}, {"Propiedad": "Spot Residence", "Tipologia": "2D2B", "Modelo": "2D + 2B", "Nombre": "SPO2-DEPA-0620", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Residence", "Tipologia": "2D2B", "Modelo": "2D + 2B", "Nombre": "SPO2-DEPA-1104", "SubEstado": "reservada"}, {"Propiedad": "Spot Residence", "Tipologia": "2D2B", "Modelo": "2D + 2B", "Nombre": "SPO2-DEPA-1119", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Residence", "Tipologia": "2D2B", "Modelo": "2D + 2B", "Nombre": "SPO2-DEPA-1204", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Residence", "Tipologia": "1D1B", "Modelo": "1D + 1B", "Nombre": "SPO2-DEPA-1205", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Residence", "Tipologia": "1D1B", "Modelo": "1D + 1B", "Nombre": "SPO2-DEPA-1305", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Residence", "Tipologia": "1D1B", "Modelo": "1D + 1B", "Nombre": "SPO2-DEPA-1306", "SubEstado": "reservada"}, {"Propiedad": "Spot Residence", "Tipologia": "2D2B", "Modelo": "2D + 2B", "Nombre": "SPO2-DEPA-1404", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Residence", "Tipologia": "1D1B", "Modelo": "1D + 1B", "Nombre": "SPO2-DEPA-1405", "SubEstado": "reservada"}, {"Propiedad": "Spot Residence", "Tipologia": "2D2B", "Modelo": "2D + 2B", "Nombre": "SPO2-DEPA-1504", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Residence", "Tipologia": "1D1B", "Modelo": "1D + 1B", "Nombre": "SPO2-DEPA-1517", "SubEstado": "por arrendar"}, {"Propiedad": "Spot Residence", "Tipologia": "2D2B", "Modelo": "2D + 2B", "Nombre": "SPO2-DEPA-1519", "SubEstado": "por arrendar"}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0114", "SubEstado": "reservada"}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0116", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0117", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0118", "SubEstado": "por arrendar"}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0119", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-0120", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0201", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0202", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio Japonés", "Nombre": "COBU-DEPA-0209", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio Japonés", "Nombre": "COBU-DEPA-0210", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-0211", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "COBU-DEPA-0212", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-0213", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0218", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0219", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0220", "SubEstado": "reservada"}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0221", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0222", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0225", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "COBU-DEPA-0305", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio Japonés", "Nombre": "COBU-DEPA-0306", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio Japonés", "Nombre": "COBU-DEPA-0307", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio Japonés", "Nombre": "COBU-DEPA-0310", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-0311", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "COBU-DEPA-0312", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-0313", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0314", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0318", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0319", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0320", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0321", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0322", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0401", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0402", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0403", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "COBU-DEPA-0404", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "COBU-DEPA-0405", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio Japonés", "Nombre": "COBU-DEPA-0406", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio Japonés", "Nombre": "COBU-DEPA-0407", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio Japonés", "Nombre": "COBU-DEPA-0408", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio Japonés", "Nombre": "COBU-DEPA-0409", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio Japonés", "Nombre": "COBU-DEPA-0410", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-0411", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "COBU-DEPA-0412", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-0413", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0415", "SubEstado": "por arrendar"}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0418", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0419", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0420", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0421", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0422", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0425", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0501", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0502", "SubEstado": "reservada"}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "COBU-DEPA-0504", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "COBU-DEPA-0505", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio Japonés", "Nombre": "COBU-DEPA-0506", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio Japonés", "Nombre": "COBU-DEPA-0508", "SubEstado": "por arrendar"}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio Japonés", "Nombre": "COBU-DEPA-0510", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "COBU-DEPA-0512", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-0513", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0514", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0518", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0519", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0521", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0522", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0702", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D2B", "Modelo": "2D+2B", "Nombre": "COBU-DEPA-0712", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0714", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0718", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0719", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0721", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0722", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0725", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0808", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0810", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-0813", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0814", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-0823", "SubEstado": "reservada"}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-0901", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0902", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0907", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0908", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0909", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0910", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-0911", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-0913", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0914", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0922", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-0925", "SubEstado": "por arrendar"}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-1001", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1007", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1008", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1009", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1010", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1011", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1014", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1023", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-1101", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1102", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1107", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1108", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1109", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1110", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1111", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1113", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1114", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1123", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-1201", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1202", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1207", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1208", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1209", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1210", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1211", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1213", "SubEstado": "reservada"}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1214", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1215", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1222", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1223", "SubEstado": "por arrendar"}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1224", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1225", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-1301", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1302", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1307", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1308", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1309", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1310", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1311", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1313", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1314", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1315", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1322", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1323", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1325", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-1401", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1402", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1407", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1408", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1409", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1410", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1411", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1413", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1414", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1415", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1422", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1423", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1424", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1425", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-1501", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1502", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1507", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1508", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1509", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1510", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1511", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1513", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1514", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1515", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1522", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1523", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1524", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1525", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-1601", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1602", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1608", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1609", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1610", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1611", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1613", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1614", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1615", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1622", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1623", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1624", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1625", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-1701", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1702", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1707", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1708", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1709", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1710", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1713", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1714", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1715", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1723", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1724", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1725", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "2D1B", "Modelo": "2D+1B", "Nombre": "COBU-DEPA-1801", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1802", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1808", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1809", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1810", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1814", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1815", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1822", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1824", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1825", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1902", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1907", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1908", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1909", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1910", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1911", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1914", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1915", "SubEstado": "reservada"}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1922", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "Studio", "Nombre": "COBU-DEPA-1923", "SubEstado": "..."}, {"Propiedad": "Collective Bustamante", "Tipologia": "1D1B", "Modelo": "1D+1B", "Nombre": "COBU-DEPA-1925", "SubEstado": "..."}];
-var historial_data = [{"Fecha": "06/05/2026", "Soho Barrio Italia": 95.83, "Park Santiago": 95.54, "Boldo Club de Campo": 95.24, "Nativo Riesco": 94.49, "Nomad Bellet": 93.98, "Nomad Holley": 93.75, "Central Santiago": 92.35, "Spot Nueva Kennedy": 90.2, "Brooklyn La Florida": 88.49, "Spot Residence": 84.04, "IMU San Cristóbal": 69.98, "Blend Apoquindo": 55.79, "Collective Bustamante": 18.38, "Global": 80.52}];
+var historial_data = [{"Fecha": "06/05/2026", "Soho Barrio Italia": 95.83, "Park Santiago": 95.54, "Boldo Club de Campo": 95.24, "Nativo Riesco": 94.49, "Nomad Bellet": 93.98, "Nomad Holley": 93.75, "Central Santiago": 92.35, "Spot Nueva Kennedy": 90.2, "Brooklyn La Florida": 88.49, "Spot Residence": 84.04, "IMU San Cristóbal": 69.98, "Blend Apoquindo": 55.79, "Collective Bustamante": 18.38, "Global": 80.52}, {"Fecha": "18/05/2026", "Boldo Club de Campo": 96.03, "Nativo Riesco": 95.29, "Park Santiago": 94.9, "Soho Barrio Italia": 94.79, "Nomad Holley": 93.75, "Nomad Bellet": 92.54, "Central Santiago": 92.35, "Brooklyn La Florida": 90.8, "Spot Nueva Kennedy": 90.2, "Spot Residence": 84.04, "IMU San Cristóbal": 69.32, "Blend Apoquindo": 56.84, "Collective Bustamante": 20.22, "Global": 8090.04}];
 
 // ================================================================
 // IMPROVEMENT 1 — Filter bar setup
@@ -2092,120 +1882,6 @@ function exportPDF() {
   }, 300);
 }
 </script>
-
-</div>
-
-<script>
-/* ── Sidebar open/close ── */
-function openSb(){
-  document.getElementById('sb').classList.add('vis');
-  document.getElementById('sb-backdrop').classList.add('vis');
-}
-function closeSb(){
-  document.getElementById('sb').classList.remove('vis');
-  document.getElementById('sb-backdrop').classList.remove('vis');
-}
-function toggleSb(){
-  if(document.getElementById('sb').classList.contains('vis')) closeSb();
-  else openSb();
-}
-
-/* ── irA: scroll suave + cierra sidebar ── */
-function irA(id){
-  var el=document.getElementById(id);
-  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
-  setTimeout(closeSb, 200);
-}
-
-/* ── Active nav on scroll ── */
-(function(){
-  var ids=['sec-resumen','sec-ocupacion','sec-alertas','sec-disponibles',
-           'sec-reservadas','sec-por-liberar','sec-vencimientos','sec-proyectos','sec-pipeline'];
-  var links=document.querySelectorAll('.sbl');
-  if(!links.length) return;
-  var obs=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting){
-        links.forEach(function(l){l.classList.remove('on');});
-        ids.forEach(function(id,i){
-          if(id===e.target.id && links[i]) links[i].classList.add('on');
-        });
-      }
-    });
-  },{threshold:0.2,rootMargin:'-60px 0px -60% 0px'});
-  ids.forEach(function(id){
-    var el=document.getElementById(id); if(el) obs.observe(el);
-  });
-})();
-
-/* ── Semáforo por proyecto (run post-load) ── */
-function applySemaforo(){
-  if(typeof proj_desc==='undefined') return;
-  var map={};
-  proj_desc.forEach(function(p){ map[p.Propiedad]=p.Pct_Ocup; });
-  document.querySelectorAll('table tbody td:first-child').forEach(function(td){
-    if(td.querySelector('.sem')) return;
-    var k=td.textContent.trim();
-    if(map[k]!==undefined){
-      var v=map[k];
-      var cls=v>=0.90?'sem-g':v>=0.75?'sem-y':'sem-r';
-      var dot=document.createElement('span');
-      dot.className='sem '+cls;
-      dot.title=(v*100).toFixed(1)+'% ocupación';
-      td.insertBefore(dot,td.firstChild);
-    }
-  });
-}
-
-/* ── Exportar CSV ── */
-function exportCSV(tbl,filename){
-  if(!tbl) return;
-  var rows=[],all=tbl.querySelectorAll('tr');
-  all.forEach(function(r){
-    var cols=[];
-    r.querySelectorAll('th,td').forEach(function(c){
-      cols.push('"'+c.textContent.replace(/"/g,'""').trim()+'"');
-    });
-    rows.push(cols.join(','));
-  });
-  var a=document.createElement('a');
-  a.href='data:text/csv;charset=utf-8,﻿'+encodeURIComponent(rows.join('\n'));
-  a.download=(filename||'export')+'.csv'; a.click();
-}
-
-/* ── Agregar buscador + botón export a cada tabla ── */
-function addSearchExport(secId, csvName){
-  var sec=document.getElementById(secId); if(!sec) return;
-  var tbl=sec; while(tbl && tbl.tagName!=='TABLE') tbl=tbl.nextElementSibling;
-  if(!tbl) return;
-  var wrap=document.createElement('div');
-  wrap.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px;';
-  var inp=document.createElement('input');
-  inp.style.cssText='padding:6px 12px;border:1px solid #E2E8F0;border-radius:6px;font-size:.78rem;color:#1A202C;background:#fff;outline:none;min-width:220px;';
-  inp.placeholder='Buscar...';
-  inp.addEventListener('input',function(){
-    var q=inp.value.toLowerCase();
-    tbl.querySelectorAll('tbody tr').forEach(function(r){
-      r.style.display=r.textContent.toLowerCase().includes(q)?'':'none';
-    });
-  });
-  var btn=document.createElement('button');
-  btn.style.cssText='padding:5px 14px;background:#008E9F;color:#fff;border:none;border-radius:6px;font-size:.73rem;cursor:pointer;';
-  btn.textContent='Exportar CSV';
-  btn.onclick=function(){exportCSV(tbl,csvName);};
-  wrap.appendChild(inp); wrap.appendChild(btn);
-  tbl.parentNode.insertBefore(wrap,tbl);
-}
-
-window.addEventListener('load',function(){ openSb();
-  applySemaforo();
-  addSearchExport('sec-alertas','Alertas_LAR');
-  addSearchExport('sec-disponibles','Disponibles_LAR');
-  addSearchExport('sec-reservadas','Reservadas_LAR');
-  addSearchExport('sec-por-liberar','PorLiberar_LAR');
-});
-</script>
-
 <script>
 
 // Reservadas charts
@@ -2227,7 +1903,7 @@ Plotly.newPlot("res_bar_proj",[
 Plotly.newPlot("res_donut_tipo",[
   {type:"pie",hole:0.6,
    values:[28, 20, 1],labels:["1D1B", "2D2B", "2D1B"],
-   marker:{colors:["#48BB78","#68D391","#9AE6B4","#008E9F","#F6AD55"]},
+   marker:{colors:["#48BB78","#68D391","#9AE6B4","#00A8B4","#F6AD55"]},
    textinfo:"label+percent",
    hovertemplate:"%{label}: %{value} uds (%{percent})<extra></extra>"}
 ],{...base,
@@ -2270,7 +1946,7 @@ Plotly.newPlot("pol_bar_proj",[
 Plotly.newPlot("pol_donut_tipo",[
   {type:"pie",hole:0.6,
    values:[61, 29, 2],labels:["1D1B", "2D2B", "2D1B"],
-   marker:{colors:["#FC8181","#ED8936","#F6AD55","#747678","#008E9F"]},
+   marker:{colors:["#FC8181","#ED8936","#F6AD55","#747678","#00A8B4"]},
    textinfo:"label+percent",
    hovertemplate:"%{label}: %{value} uds (%{percent})<extra></extra>"}
 ],{...base,
@@ -2771,8 +2447,8 @@ function refreshSidebarStatus() {
 <script>
 
 // ── Vencimientos charts ──────────────────────────────────────────────────────
-var venc_projs      = ["Central Santiago", "Brooklyn La Florida", "Spot Nueva Kennedy", "Nativo Riesco", "Park Santiago", "Boldo Club de Campo", "IMU San Cristóbal", "Spot Residence", "Soho Barrio Italia", "Nomad Holley", "Nomad Bellet"];
-var venc_vals90     = [84, 80, 55, 53, 51, 31, 30, 28, 26, 23, 18];
+var venc_projs      = ["Central Santiago", "Spot Nueva Kennedy", "Nativo Riesco", "Brooklyn La Florida", "Park Santiago", "Boldo Club de Campo", "Soho Barrio Italia", "Spot Residence", "Nomad Holley", "Nomad Bellet", "IMU San Cristóbal"];
+var venc_vals90     = [23, 16, 16, 12, 10, 8, 7, 7, 5, 4, 4];
 var venc_meses      = ["2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10", "2026-11", "2026-12", "2027-01", "2027-02", "2027-03", "2027-04"];
 var venc_mes_v      = [46, 163, 195, 211, 164, 187, 199, 189, 276, 349, 401, 254];
 var venc_ejec_names = ["January Rangel", "Raul Manqui", "Catalina Garrido", "Carolina Romero", "Ruben Alzualde Martínez", "Mercedes Navas", "Maria Contreras", "Ana Karina Figueroa", "Berta Gil", "Lucas Escaffi", "Rigoberto Gonzalez", "Vanessa Fernández", "Jorge Alarcón", "Tamara Duarte", "Cristian Abella", "Jorge Valenzuela", "Maria José Contreras", "Maria Carolina Acuña Morillo"];
@@ -2782,11 +2458,11 @@ var venc_ejec_prox  = [32, 17, 20, 19, 18, 12, 12, 10, 4, 5, 6, 5, 3, 2, 3, 2, 1
 Plotly.newPlot("venc_bar_proj",[
   {type:"bar",orientation:"h",
    y:venc_projs.slice().reverse(),x:venc_vals90.slice().reverse(),
-   marker:{color:venc_vals90.slice().reverse().map(function(v){return v>=40?"#DC2626":v>=20?"#D97706":"#008E9F";})},
+   marker:{color:venc_vals90.slice().reverse().map(function(v){return v>=15?"#DC2626":v>=8?"#D97706":"#008E9F";})},
    text:venc_vals90.slice().reverse().map(String),textposition:"outside",
    hovertemplate:"%{y}: %{x} contratos<extra></extra>"}
 ],{...base,
-  title:{text:"Vencimientos 90 dias por Proyecto",font:{size:13}},
+  title:{text:"Vencimientos 30 días por Proyecto",font:{size:13}},
   xaxis:{gridcolor:GRID,color:AXIS,title:"Contratos"},yaxis:{gridcolor:GRID,color:AXIS},
   margin:{t:50,b:60,l:200,r:80},height:340
 });
@@ -2800,78 +2476,7 @@ Plotly.newPlot("venc_timeline",[
   xaxis:{gridcolor:GRID,color:AXIS,tickangle:-40},yaxis:{gridcolor:GRID,color:AXIS,title:"Contratos"},
   margin:{t:50,b:120,l:60,r:20},height:340
 });
-
-Plotly.newPlot("venc_bar_ejec",[
-  {type:"bar",name:"Urgente <=30d",x:venc_ejec_names,y:venc_ejec_urg,
-   marker:{color:"#DC2626"},hovertemplate:"%{x}: %{y} urgentes<extra></extra>"},
-  {type:"bar",name:"Proximo 31-60d",x:venc_ejec_names,y:venc_ejec_prox,
-   marker:{color:"#D97706"},hovertemplate:"%{x}: %{y} proximos<extra></extra>"}
-],{...base,
-  barmode:"stack",
-  title:{text:"Alerta por Ejecutivo - vencimientos 60 dias",font:{size:13}},
-  xaxis:{gridcolor:GRID,color:AXIS,tickangle:-35},yaxis:{gridcolor:GRID,color:AXIS,title:"Contratos"},
-  legend:{orientation:"h",y:-0.35},margin:{t:50,b:140,l:60,r:20},height:280
-});
-
-// Filtros cruzados desde graficos
-document.getElementById("venc_bar_ejec").on("plotly_click",function(d){
-  if(!d.points||!d.points.length) return;
-  var ejec=d.points[0].x;
-  var el=document.getElementById("vf-ejec");
-  if(el){ el.value=(el.value===ejec?"":ejec); filtrarVenc(); }
-});
-document.getElementById("venc_bar_proj").on("plotly_click",function(d){
-  if(!d.points||!d.points.length) return;
-  var proj=d.points[0].y;
-  var el=document.getElementById("vf-proj");
-  if(el){ el.value=(el.value===proj?"":proj); filtrarVenc(); }
-});
-
-// ── Filtros tabla vencimientos ───────────────────────────────────────────────
-function filtrarVenc(){
-  var search  = document.getElementById("vf-search")   ? document.getElementById("vf-search").value.toLowerCase()   : "";
-  var proj    = document.getElementById("vf-proj")     ? document.getElementById("vf-proj").value     : "";
-  var tipo    = document.getElementById("vf-tipo")     ? document.getElementById("vf-tipo").value     : "";
-  var ejec    = document.getElementById("vf-ejec")     ? document.getElementById("vf-ejec").value     : "";
-  var urgSel  = document.getElementById("vf-urgencia") ? document.getElementById("vf-urgencia").value : "";
-  var rows=document.querySelectorAll("#venc-table tbody tr"), visible=0;
-  rows.forEach(function(r){
-    var d=parseInt(r.dataset.dias)||0, ok=true;
-    if(search  && !r.textContent.toLowerCase().includes(search)) ok=false;
-    if(proj    && r.dataset.proj!==proj) ok=false;
-    if(tipo    && r.dataset.tipo!==tipo) ok=false;
-    if(ejec    && r.dataset.ejec!==ejec) ok=false;
-    if(urgSel==="30" && d>30) ok=false;
-    if(urgSel==="60" && (d<=30||d>60)) ok=false;
-    r.style.display=ok?"":"none"; if(ok) visible++;
-  });
-  var cnt=document.getElementById("vf-count");
-  if(cnt) cnt.textContent="(mostrando "+visible+" de 283)";
-  var lbl=document.getElementById("vf-count-label");
-  if(lbl) lbl.textContent=visible;
-}
-
-function limpiarFiltrosVenc(){
-  ["vf-search","vf-proj","vf-tipo","vf-ejec","vf-urgencia"].forEach(function(id){
-    var el=document.getElementById(id); if(el) el.value="";
-  });
-  filtrarVenc();
-}
-
-function exportVencCSV(){
-  var tbl=document.getElementById("venc-table"); if(!tbl) return;
-  var rows=[]; tbl.querySelectorAll("tr").forEach(function(r){
-    if(r.style.display==="none") return;
-    var cols=[];
-    r.querySelectorAll("th,td").forEach(function(c){
-      cols.push('"'+c.textContent.replace(/"/g,'""').trim()+'"');
-    });
-    rows.push(cols.join(","));
-  });
-  var a=document.createElement("a");
-  a.href="data:text/csv;charset=utf-8,\uFEFF"+encodeURIComponent(rows.join("\n"));
-  a.download="Vencimientos_LAR_18_05_2026.csv"; a.click();
-}
+</script>
 
 </script>
 
