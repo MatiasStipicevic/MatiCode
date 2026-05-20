@@ -1909,23 +1909,16 @@ function exportPDF() {
   btn.addEventListener('mouseleave', function(){ if(!btn.disabled) btn.style.background='rgba(255,255,255,0.18)'; });
 
   function getPAT(){
-    var pat = sessionStorage.getItem('lar_gh_pat');
-    if(!pat){
-      pat = prompt(
-        'Ingresa tu GitHub Personal Access Token\n' +
-        '(se guarda solo en esta sesión del navegador)\n\n' +
-        'Crear en: github.com/settings/tokens\n' +
-        'Scope requerido: workflow'
-      );
-      if(pat) sessionStorage.setItem('lar_gh_pat', pat.trim());
-    }
-    return pat ? pat.trim() : null;
+    return sessionStorage.getItem('lar_gh_pat') || null;
   }
 
   window.actualizarDatos = function(){
     if(btn.disabled) return;
     var pat = getPAT();
-    if(!pat) return;
+    if(!pat){
+      alert('Cerrá sesión y volvé a ingresar para activar el botón Actualizar.');
+      return;
+    }
 
     btn.disabled = true;
     btn.style.opacity = '0.85';
