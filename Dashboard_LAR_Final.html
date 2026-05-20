@@ -1895,73 +1895,97 @@ function exportPDF() {
 }
 </script>
 <script>
-/* ── Botón Actualizar ────────────────────────────────────────────────────── */
+/* ── Botón Actualizar — GitHub Actions ──────────────────────────────────── */
 (function(){
   var btn   = document.getElementById('btn-actualizar');
   var icon  = document.getElementById('btn-act-icon');
   var label = document.getElementById('btn-act-label');
-  var API   = 'http://localhost:8765';
+  var GH_REPO = "MatiasStipicevic/MatiCode";
+  var GH_WF   = "update.yml";
 
   if(!btn) return;
 
-  // Hover visual
-  btn.addEventListener('mouseenter', function(){ btn.style.background='rgba(255,255,255,0.28)'; });
+  btn.addEventListener('mouseenter', function(){ if(!btn.disabled) btn.style.background='rgba(255,255,255,0.28)'; });
   btn.addEventListener('mouseleave', function(){ if(!btn.disabled) btn.style.background='rgba(255,255,255,0.18)'; });
 
-  window.actualizarDatos = function() {
+  function getPAT(){
+    var pat = sessionStorage.getItem('lar_gh_pat');
+    if(!pat){
+      pat = prompt(
+        'Ingresa tu GitHub Personal Access Token\n' +
+        '(se guarda solo en esta sesión del navegador)\n\n' +
+        'Crear en: github.com/settings/tokens\n' +
+        'Scope requerido: workflow'
+      );
+      if(pat) sessionStorage.setItem('lar_gh_pat', pat.trim());
+    }
+    return pat ? pat.trim() : null;
+  }
+
+  window.actualizarDatos = function(){
     if(btn.disabled) return;
+    var pat = getPAT();
+    if(!pat) return;
+
     btn.disabled = true;
     btn.style.opacity = '0.85';
-    icon.style.animation  = 'spin .7s linear infinite';
-    label.textContent = 'Actualizando…';
+    icon.style.animation = 'spin .7s linear infinite';
+    label.textContent = 'Iniciando\u2026';
 
-    fetch(API + '/actualizar', {method:'POST', signal: AbortSignal.timeout(180000)})
-      .then(function(r){ return r.json(); })
-      .then(function(data){
-        if(data.status === 'ok'){
-          icon.style.animation = 'none';
-          icon.textContent = '✓';
-          label.textContent = '¡Listo!';
-          btn.style.background = 'rgba(22,163,74,0.35)';
-          btn.style.borderColor = 'rgba(134,239,172,0.8)';
-          setTimeout(function(){ location.reload(); }, 900);
-        } else {
-          _errorBtn();
-          alert('Error al actualizar:
+    var url = 'https://api.github.com/repos/' + GH_REPO +
+              '/actions/workflows/' + GH_WF + '/dispatches';
 
-' + (data.log || '').substring(0, 400));
-        }
-      })
-      .catch(function(e){
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + pat,
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      },
+      body: JSON.stringify({ref: 'main'})
+    })
+    .then(function(r){
+      if(r.status === 204){
+        label.textContent = 'En proceso\u2026';
+        var secs = 150;
+        var iv = setInterval(function(){
+          secs--;
+          if(secs <= 0){
+            clearInterval(iv);
+            icon.style.animation = 'none';
+            icon.textContent = '\u2713';
+            label.textContent = '\u00a1Listo!';
+            btn.style.background  = 'rgba(22,163,74,0.35)';
+            btn.style.borderColor = 'rgba(134,239,172,0.8)';
+            setTimeout(function(){ location.reload(); }, 800);
+          } else {
+            label.textContent = 'En proceso\u2026 ' + secs + 's';
+          }
+        }, 1000);
+      } else if(r.status === 401){
+        sessionStorage.removeItem('lar_gh_pat');
         _errorBtn();
-        if(e.name === 'TimeoutError'){
-          alert('El proceso tardó demasiado. Intenta nuevamente.');
-        } else {
-          alert(
-            'No se pudo conectar al servidor local.
-
-' +
-            'Para usar este botón, ejecuta en la terminal:
-
-' +
-            '    python server.py
-
-' +
-            'Luego abre el dashboard en  http://localhost:8765'
-          );
-        }
-      });
+        alert('Token inv\u00e1lido o expirado. Intenta de nuevo.');
+      } else {
+        r.text().then(function(t){ _errorBtn(); alert('Error GitHub API (' + r.status + '):\n' + t.substring(0,300)); });
+      }
+    })
+    .catch(function(e){
+      _errorBtn();
+      alert('Error de red: ' + e.message);
+    });
   };
 
   function _errorBtn(){
     icon.style.animation = 'none';
-    icon.textContent = '✕';
+    icon.textContent = '\u2715';
     label.textContent = 'Error';
     btn.style.background  = 'rgba(220,38,38,0.3)';
     btn.style.borderColor = 'rgba(252,165,165,0.8)';
     btn.style.opacity = '1';
     setTimeout(function(){
-      icon.textContent  = '↻';
+      icon.textContent  = '\u21bb';
       label.textContent = 'Actualizar';
       btn.style.background  = 'rgba(255,255,255,0.18)';
       btn.style.borderColor = 'rgba(255,255,255,0.55)';

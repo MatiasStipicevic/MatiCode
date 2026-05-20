@@ -1,0 +1,39 @@
+name: Actualizar Dashboard LAR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: pip install --quiet psycopg2-binary pandas openpyxl requests
+
+      - name: Actualizar dashboard
+        env:
+          LAR_CI:      "1"
+          DB_HOST:     ${{ secrets.DB_HOST }}
+          DB_PORT:     ${{ secrets.DB_PORT }}
+          DB_NAME:     ${{ secrets.DB_NAME }}
+          DB_USER:     ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: python src/actualizar_dashboard_v2.py
+
+      - name: Commit y push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Dashboard_LAR_Final.html
+          git diff --staged --quiet && echo "Sin cambios" || \
+            git commit -m "data: auto-update $(date +'%d/%m/%Y %H:%M') UTC"
+          git push
