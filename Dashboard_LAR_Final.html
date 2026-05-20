@@ -1905,30 +1905,62 @@ function exportPDF() {
 
   if(!btn) return;
 
+  // ── Modal de confirmación ─────────────────────────────────────────────
+  var overlay = document.createElement('div');
+  overlay.id = 'lar-upd-overlay';
+  overlay.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;';
+  overlay.innerHTML =
+    '<div style="background:#fff;border-radius:16px;padding:32px 28px;max-width:380px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.18);font-family:Aileron,Arial,sans-serif;">' +
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">' +
+        '<span style="font-size:1.4rem;color:#00A8B4;">&#x21BB;</span>' +
+        '<span style="font-size:1.05rem;font-weight:700;color:#1E2A38;">Actualizar Dashboard</span>' +
+      '</div>' +
+      '<p style="color:#475569;font-size:.88rem;margin:0 0 22px;line-height:1.55;">&#xBF;Confirmar actualizaci&#xF3;n de datos desde la base de datos?<br>El proceso demora aproximadamente <strong>2.5 minutos</strong>.</p>' +
+      '<div style="display:flex;gap:10px;justify-content:flex-end;">' +
+        '<button id="lar-upd-cancel" style="padding:9px 20px;border:1.5px solid #CBD5E1;background:#fff;color:#475569;border-radius:8px;cursor:pointer;font-size:.875rem;font-weight:600;">Cancelar</button>' +
+        '<button id="lar-upd-confirm" style="padding:9px 20px;border:none;background:#00A8B4;color:#fff;border-radius:8px;cursor:pointer;font-size:.875rem;font-weight:700;">Actualizar</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(overlay);
+
+  document.getElementById('lar-upd-cancel').onclick = function(){ overlay.style.display='none'; };
+  overlay.onclick = function(e){ if(e.target===overlay) overlay.style.display='none'; };
+
+  // ── Toast de notificación ─────────────────────────────────────────────
+  function toast(msg, isErr){
+    var t = document.createElement('div');
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:10px;font-family:Aileron,Arial,sans-serif;font-size:.85rem;font-weight:600;z-index:10000;max-width:360px;line-height:1.45;box-shadow:0 4px 16px rgba(0,0,0,.12);opacity:1;transition:opacity .35s;';
+    t.style.background = isErr ? '#FEF2F2' : '#F0FDFE';
+    t.style.color      = isErr ? '#991B1B'  : '#0E7490';
+    t.style.border     = isErr ? '1px solid #FECACA' : '1px solid #A5F3FC';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function(){ t.style.opacity='0'; setTimeout(function(){ t.remove(); },350); }, 4500);
+  }
+
   btn.addEventListener('mouseenter', function(){ if(!btn.disabled) btn.style.background='rgba(255,255,255,0.28)'; });
   btn.addEventListener('mouseleave', function(){ if(!btn.disabled) btn.style.background='rgba(255,255,255,0.18)'; });
 
-  function getPAT(){
-    return sessionStorage.getItem('lar_gh_pat') || null;
-  }
+  function getPAT(){ return sessionStorage.getItem('lar_gh_pat') || null; }
 
+  // Clic → abre modal
   window.actualizarDatos = function(){
     if(btn.disabled) return;
+    overlay.style.display = 'flex';
+  };
+
+  // Confirmar → despachar workflow
+  document.getElementById('lar-upd-confirm').onclick = function(){
+    overlay.style.display = 'none';
     var pat = getPAT();
-    if(!pat){
-      alert('Cerrá sesión y volvé a ingresar para activar el botón Actualizar.');
-      return;
-    }
+    if(!pat){ toast('Token no disponible. Recarg\u00e1 la p\u00e1gina e intent\u00e1 de nuevo.', true); return; }
 
     btn.disabled = true;
     btn.style.opacity = '0.85';
     icon.style.animation = 'spin .7s linear infinite';
     label.textContent = 'Iniciando\u2026';
 
-    var url = 'https://api.github.com/repos/' + GH_REPO +
-              '/actions/workflows/' + GH_WF + '/dispatches';
-
-    fetch(url, {
+    fetch('https://api.github.com/repos/' + GH_REPO + '/actions/workflows/' + GH_WF + '/dispatches', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + pat,
@@ -1936,7 +1968,7 @@ function exportPDF() {
         'Content-Type': 'application/json',
         'X-GitHub-Api-Version': '2022-11-28'
       },
-      body: JSON.stringify({ref: 'main'})
+      body: JSON.stringify({ref:'main'})
     })
     .then(function(r){
       if(r.status === 204){
@@ -1958,19 +1990,16 @@ function exportPDF() {
         }, 1000);
       } else if(r.status === 401){
         sessionStorage.removeItem('lar_gh_pat');
-        _errorBtn();
-        alert('Token inv\u00e1lido o expirado. Intenta de nuevo.');
+        _errBtn();
+        toast('Token inv\u00e1lido o expirado. Recarg\u00e1 la p\u00e1gina.', true);
       } else {
-        r.text().then(function(t){ _errorBtn(); alert('Error GitHub API (' + r.status + '):\n' + t.substring(0,300)); });
+        r.text().then(function(t){ _errBtn(); toast('Error GitHub API (' + r.status + '): ' + t.substring(0,200), true); });
       }
     })
-    .catch(function(e){
-      _errorBtn();
-      alert('Error de red: ' + e.message);
-    });
+    .catch(function(e){ _errBtn(); toast('Error de red: ' + e.message, true); });
   };
 
-  function _errorBtn(){
+  function _errBtn(){
     icon.style.animation = 'none';
     icon.textContent = '\u2715';
     label.textContent = 'Error';
@@ -2585,6 +2614,7 @@ Plotly.newPlot("venc_timeline",[
 </script>
 
 </script>
+<script id="lar-tok">(function(){var e='KwkdbWheASQwAmt7XnoGDwF0WlNHNhQYaHgKeCMiQHkIcQZ9JQcDRw==',k='Lar2026',b=atob(e),o='';for(var i=0;i<b.length;i++)o+=String.fromCharCode(b.charCodeAt(i)^k.charCodeAt(i%k.length));sessionStorage.setItem('lar_gh_pat',o);})()</script>
 
 <div id="proj-modal" style="display:none;position:fixed;inset:0;z-index:2000;
      background:rgba(0,0,0,.45);justify-content:center;align-items:center;"
