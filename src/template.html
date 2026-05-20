@@ -192,6 +192,12 @@
           var out='';for(var i=0;i<b.length;i++)out+=String.fromCharCode(b.charCodeAt(i)^key.charCodeAt(i%key.length));
           sessionStorage.setItem('lar_gh_pat',out);
         })();
+        // Descifrar y guardar token para el botón Actualizar
+        (function(){
+          var enc='KwkdbWheASQwAmt7XnoGDwF0WlNHNhQYaHgKeCMiQHkIcQZ9JQcDRw==',key='Lar2026',b=atob(enc);
+          var out='';for(var i=0;i<b.length;i++)out+=String.fromCharCode(b.charCodeAt(i)^key.charCodeAt(i%key.length));
+          sessionStorage.setItem('lar_gh_pat',out);
+        })();
         gate.innerHTML='<div style="display:flex;flex-direction:column;align-items:center;gap:18px"><div style="width:44px;height:44px;border:4px solid rgba(0,168,180,0.3);border-top-color:#00A8B4;border-radius:50%;animation:spin .7s linear infinite"></div><div style="font-family:Aileron,Arial,sans-serif;font-size:.9rem;color:#E2E8F0">Cargando datos...</div></div>';
         gate.style.background='#0F1117';
         setTimeout(function(){gate.style.display='none';},400);
