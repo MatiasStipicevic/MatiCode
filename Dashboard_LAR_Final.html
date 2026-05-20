@@ -576,8 +576,17 @@ body.present-mode .header { padding: 16px 0 12px; }
 }
 </style>
 
-<div id="sec-proyectos" class="sec">Vista por Proyecto</div>
-<div class="sec-sub">Selecciona un proyecto para ver su an&aacute;lisis completo &mdash; Datos al 20/05/2026<span style="background:#EEF6FB;border:1px solid #BAE6FD;border-radius:99px;padding:2px 10px;font-size:.7rem;color:#0369A1;font-weight:700;margin-left:8px">UF $40,424.99</span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:28px 0 4px">
+  <div id="sec-proyectos" class="sec" style="margin:0">Vista por Proyecto</div>
+  <button onclick="exportToExcel()" title="Exportar tabla a Excel"
+    style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:#16A34A;color:#fff;
+           border:none;border-radius:8px;cursor:pointer;font-size:.78rem;font-weight:700;
+           box-shadow:0 2px 8px rgba(22,163,74,.25);transition:opacity .15s"
+    onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+    &#128229; Exportar Excel
+  </button>
+</div>
+<div class="sec-sub" style="margin-bottom:12px">Selecciona un proyecto para ver su an&aacute;lisis completo &mdash; Datos al 20/05/2026<span style="background:#EEF6FB;border:1px solid #BAE6FD;border-radius:99px;padding:2px 10px;font-size:.7rem;color:#0369A1;font-weight:700;margin-left:8px">UF $40,424.99</span></div>
 
 <div id="proj-workspace"
      style="display:flex;border:1px solid #E2E8F0;border-radius:16px;overflow:hidden;
@@ -2464,39 +2473,62 @@ function _renderPriceTable(projName) {
   var projPrices=PROJ_PRECIOS[projName]||{};
   var tips=Object.keys(projPrices).sort();
   if(tips.length===0) { el.innerHTML=""; return; }
-  var idx=-1;
-  if(typeof tipo_data!=="undefined"&&tipo_data.projects) idx=tipo_data.projects.indexOf(projName);
+  var tdB='padding:7px 10px;border-bottom:1px solid #F1F5F9;font-size:.74rem;vertical-align:middle',
+      tdR='padding:7px 10px;border-bottom:1px solid #F1F5F9;font-size:.74rem;text-align:right;vertical-align:middle',
+      tdG='padding:7px 10px;border-bottom:1px solid #F1F5F9;font-size:.74rem;text-align:right;color:#15803D;font-weight:700;vertical-align:middle',
+      tdP='padding:7px 10px;border-bottom:1px solid #F1F5F9;font-size:.68rem;text-align:right;color:#7C3AED;vertical-align:middle',
+      tdM='padding:5px 10px 5px 22px;border-bottom:1px solid #F8FAFC;font-size:.69rem;color:#6B7A8D;vertical-align:middle',
+      tdMr='padding:5px 10px;border-bottom:1px solid #F8FAFC;font-size:.69rem;text-align:right;vertical-align:middle';
+  function fmtUF(v,div){return '<b>'+v.toFixed(1)+'</b> <span style="color:#9CA3AF;font-size:.65rem">'+div+'</span>';}
   var rows="";
   tips.forEach(function(tip) {
     var pr=projPrices[tip]; if(!pr) return;
-    var uf=pr.min, div=pr.divisa||"UF";
-    var clp=UF_VALOR&&div==="UF"?Math.round(uf*UF_VALOR):0;
-    var ufStr='<b style="font-size:.82rem">'+uf.toFixed(1)+'</b> <span style="font-size:.68rem;color:#6B7A8D">'+div+'</span>';
-    var clpStr=clp?'<b style="font-size:.82rem">'+_fmtClp(clp)+'</b>':"<span style="color:#CBD5E1">—</span>";
-    // Disponibles para esta tipologia
-    var disp="—";
-    if(idx>=0&&typeof tipo_data!=="undefined"&&tipo_data[tip]) {
-      var tot=tipo_data[tip].total[idx]||0, arr=tipo_data[tip].arrendados[idx]||0;
-      disp=String(tot-arr);
+    var div=pr.divisa||"UF";
+    var mn=pr.min, mx=pr.max||mn;
+    var mnC=UF_VALOR&&div==="UF"?Math.round(mn*UF_VALOR):0;
+    var mxC=UF_VALOR&&div==="UF"?Math.round(mx*UF_VALOR):0;
+    var nd=pr.n_disp||0, ndClr=nd>0?"#D97706":"#CBD5E1";
+    var desdeVal=_projUFMode?fmtUF(mn,div):(mnC?'<b>'+_fmtClp(mnC)+'</b>':"&mdash;");
+    var hastaVal=_projUFMode?fmtUF(mx,div):(mxC?'<b>'+_fmtClp(mxC)+'</b>':"&mdash;");
+    var frVal=_projUFMode?((mn*3).toFixed(1)+"&ndash;"+(mx*3).toFixed(1)+" "+div):(mnC?_fmtClp(mnC*3)+"&ndash;"+_fmtClp(mxC*3):"&mdash;");
+    rows+='<tr>'+
+      '<td style="'+tdB+';font-weight:700;color:#1E2A38">'+tip+'</td>'+
+      '<td style="'+tdR+';font-weight:700;color:'+ndClr+'">'+nd+'</td>'+
+      '<td style="'+tdG+'">'+desdeVal+'</td>'+
+      '<td style="'+tdG+'">'+hastaVal+'</td>'+
+      '<td style="'+tdP+'">'+frVal+'</td>'+
+      '</tr>';
+    var mods=(pr.modelos||[]).filter(function(m){return m.modelo;});
+    if(mods.length>1) {
+      mods.forEach(function(m) {
+        var mmn=m.min, mmx=m.max||mmn, mnd=m.n_disp;
+        var mmnC=UF_VALOR&&div==="UF"?Math.round(mmn*UF_VALOR):0;
+        var mmxC=UF_VALOR&&div==="UF"?Math.round(mmx*UF_VALOR):0;
+        var mDesde=_projUFMode?mmn.toFixed(1)+" "+div:(mmnC?_fmtClp(mmnC):"&mdash;");
+        var mHasta=_projUFMode?mmx.toFixed(1)+" "+div:(mmxC?_fmtClp(mmxC):"&mdash;");
+        var mFr=_projUFMode?((mmn*3).toFixed(1)+"&ndash;"+(mmx*3).toFixed(1)+" "+div):(mmnC?_fmtClp(mmnC*3)+"&ndash;"+_fmtClp(mmxC*3):"&mdash;");
+        rows+='<tr>'+
+          '<td style="'+tdM+'">&#x2514; '+m.modelo+'</td>'+
+          '<td style="'+tdMr+';color:#D97706">'+mnd+'</td>'+
+          '<td style="'+tdMr+';color:#6B7A8D">'+mDesde+'</td>'+
+          '<td style="'+tdMr+';color:#6B7A8D">'+mHasta+'</td>'+
+          '<td style="'+tdMr+';color:#9061F9;font-size:.66rem">'+mFr+'</td>'+
+          '</tr>';
+      });
     }
-    var dispClr=parseInt(disp)>0?"#D97706":"#CBD5E1";
-    rows+='<tr>'
-      +'<td style="padding:8px 12px;font-weight:700;color:#1E2A38;font-size:.76rem">'+tip+'</td>'
-      +'<td style="padding:8px 12px;text-align:right;'+(_projUFMode?"color:#15803D":"color:#6B7A8D")+'">'
-        +(_projUFMode?ufStr:('<span style="font-size:.76rem">'+uf.toFixed(1)+' '+div+'</span>'))+'</td>'
-      +'<td style="padding:8px 12px;text-align:right;'+(!_projUFMode?"color:#15803D":"color:#6B7A8D")+'">'
-        +(!_projUFMode?clpStr:('<span style="font-size:.76rem">'+(clp?_fmtClp(clp):"—")+'</span>'))+'</td>'
-      +'<td style="padding:8px 12px;text-align:right;font-weight:700;color:'+dispClr+';font-size:.76rem">'+disp+'</td>'
-      +'</tr>';
   });
-  el.innerHTML='<table style="width:100%;border-collapse:collapse;border:1px solid #E2E8F0;border-radius:10px;overflow:hidden">'
-    +'<thead><tr style="background:#F8FAFC">'
-    +'<th style="padding:8px 12px;text-align:left;font-size:.67rem;color:#6B7A8D;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E2E8F0">Tipolog&iacute;a</th>'
-    +'<th style="padding:8px 12px;text-align:right;font-size:.67rem;color:'+(  _projUFMode?"#15803D":"#6B7A8D")+';font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E2E8F0">Desde (UF)</th>'
-    +'<th style="padding:8px 12px;text-align:right;font-size:.67rem;color:'+(!_projUFMode?"#15803D":"#6B7A8D")+';font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E2E8F0">Desde (CLP)</th>'
-    +'<th style="padding:8px 12px;text-align:right;font-size:.67rem;color:#6B7A8D;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E2E8F0">Disponibles</th>'
-    +'</tr></thead><tbody>'+rows+'</tbody></table>';
+  function _th(txt,align,clr){
+    return '<th style="padding:8px 10px;text-align:'+align+';font-size:.64rem;color:'+clr+';font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E2E8F0">'+txt+'</th>';
+  }
+  var hdrClr=_projUFMode?"#15803D":"#6B7A8D";
+  el.innerHTML='<table style="width:100%;border-collapse:collapse;border:1px solid #E2E8F0;border-radius:10px;overflow:hidden">'+
+    '<thead><tr style="background:#F8FAFC">'+
+    _th("Tipología","left","#6B7A8D")+_th("Disp","right","#D97706")+
+    _th("Desde","right",hdrClr)+_th("Hasta","right",hdrClr)+
+    _th("Factor Renta (3×)","right","#7C3AED")+
+    '</tr></thead><tbody>'+rows+'</tbody></table>';
 }
+
 
 // ── Render Plotly en detalle ──────────────────────────────────────────────────
 function _renderDetailCharts(projName) {
@@ -2659,6 +2691,45 @@ function refreshSidebarStatus() {
   if(footer) footer.textContent = nBelow + " bajo meta";
 }
 
+
+// ── Excel export ─────────────────────────────────────────────────────────────
+function exportToExcel() {
+  if(typeof XLSX==="undefined") {
+    var s=document.createElement("script");
+    s.src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.mini.min.js";
+    s.onload=function(){_doExport();};
+    document.head.appendChild(s);
+  } else { _doExport(); }
+}
+function _doExport() {
+  var rows=[["Proyecto","Tipología","Modelo","Disponibles",
+             "Desde UF","Hasta UF","Desde CLP","Hasta CLP",
+             "F.Renta Desde UF","F.Renta Hasta UF","F.Renta Desde CLP","F.Renta Hasta CLP"]];
+  Object.keys(PROJ_PRECIOS).sort().forEach(function(proj) {
+    var tips=PROJ_PRECIOS[proj]; if(!tips) return;
+    Object.keys(tips).sort().forEach(function(tip) {
+      var pr=tips[tip]; if(!pr) return;
+      var div=pr.divisa||"UF";
+      var mods=(pr.modelos||[]).filter(function(m){return m.modelo;});
+      var list=mods.length>1?mods:[{modelo:"",min:pr.min,max:pr.max||pr.min,n_disp:pr.n_disp||0}];
+      list.forEach(function(m) {
+        var mn=m.min, mx=m.max||mn, nd=m.n_disp;
+        var mnC=UF_VALOR&&div==="UF"?Math.round(mn*UF_VALOR):0;
+        var mxC=UF_VALOR&&div==="UF"?Math.round(mx*UF_VALOR):0;
+        rows.push([proj,tip,m.modelo,nd,
+          parseFloat(mn.toFixed(2)),parseFloat(mx.toFixed(2)),mnC,mxC,
+          parseFloat((mn*3).toFixed(2)),parseFloat((mx*3).toFixed(2)),mnC*3,mxC*3]);
+      });
+    });
+  });
+  var ws=XLSX.utils.aoa_to_sheet(rows);
+  ws["!cols"]=[{wch:28},{wch:10},{wch:18},{wch:8},
+               {wch:10},{wch:10},{wch:12},{wch:12},
+               {wch:14},{wch:14},{wch:14},{wch:14}];
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,"Precios y Factor Renta");
+  XLSX.writeFile(wb,"LAR_Precios_"+new Date().toISOString().slice(0,10)+".xlsx");
+}
 // ── Restaurar estado desde localStorage ──────────────────────────────────────
 (function() {
   var saved=localStorage.getItem("projSort");
