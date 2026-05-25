@@ -2,6 +2,8 @@ name: Actualizar Dashboard LAR
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 13 * * 1"   # Lunes 09:00 Chile (UTC-4)
 
 jobs:
   update:
