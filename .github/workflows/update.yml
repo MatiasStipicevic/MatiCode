@@ -22,6 +22,7 @@ jobs:
         run: pip install --quiet psycopg2-binary pandas openpyxl requests
 
       - name: Actualizar dashboard
+        id: dashboard
         env:
           LAR_CI:      "1"
           DB_HOST:     ${{ secrets.DB_HOST }}
@@ -31,6 +32,71 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: python src/actualizar_dashboard_v2.py
 
+      - name: Verificar datos y generar resumen
+        id: resumen
+        env:
+          DB_HOST:     ${{ secrets.DB_HOST }}
+          DB_PORT:     ${{ secrets.DB_PORT }}
+          DB_NAME:     ${{ secrets.DB_NAME }}
+          DB_USER:     ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: |
+          python - <<'EOF'
+          import psycopg2, os, json
+          from datetime import datetime
+
+          conn = psycopg2.connect(
+              host=os.environ["DB_HOST"], port=int(os.environ["DB_PORT"]),
+              dbname=os.environ["DB_NAME"], user=os.environ["DB_USER"],
+              password=os.environ["DB_PASSWORD"], connect_timeout=10
+          )
+          cur = conn.cursor()
+
+          # Totales globales
+          cur.execute("""
+              SELECT COUNT(*) AS total,
+                     SUM(CASE WHEN estado='100' THEN 1 ELSE 0 END) AS disponibles,
+                     SUM(CASE WHEN estado='200' THEN 1 ELSE 0 END) AS arrendadas,
+                     SUM(CASE WHEN estado='300' THEN 1 ELSE 0 END) AS reservadas
+              FROM unidades
+              WHERE nombre LIKE '%%-DEPA-%%'
+          """)
+          row = cur.fetchone()
+          total, disp, arr, res = int(row[0]), int(row[1] or 0), int(row[2] or 0), int(row[3] or 0)
+          pct_ocup = round((arr + res) / total * 100, 1) if total else 0
+
+          # UF más reciente en BD
+          cur.execute("""
+              SELECT divisa_conversion_valor FROM liquidacion_cargos
+              WHERE divisa='Unidad de fomento' AND divisa_conversion_valor IS NOT NULL
+              ORDER BY divisa_conversion_fecha DESC LIMIT 1
+          """)
+          uf_row = cur.fetchone()
+          uf_val = float(uf_row[0]) if uf_row else 0
+
+          # Proyectos activos
+          cur.execute("SELECT COUNT(DISTINCT nombre) FROM propiedades")
+          proyectos = int(cur.fetchone()[0])
+
+          conn.close()
+
+          now_cl = datetime.utcnow()
+          resumen = {
+              "fecha": now_cl.strftime("%d/%m/%Y"),
+              "hora":  now_cl.strftime("%H:%M") + " UTC",
+              "total": total, "disponibles": disp, "arrendadas": arr,
+              "reservadas": res, "ocupacion": pct_ocup,
+              "proyectos": proyectos, "uf": f"{uf_val:,.2f}"
+          }
+
+          # Escribir al GITHUB_OUTPUT
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              for k, v in resumen.items():
+                  fh.write(f"{k}={v}\n")
+
+          print(json.dumps(resumen, ensure_ascii=False, indent=2))
+          EOF
+
       - name: Commit y push
         run: |
           git config user.name  "github-actions[bot]"
@@ -39,3 +105,64 @@ jobs:
           git diff --staged --quiet && echo "Sin cambios" || \
             git commit -m "data: auto-update $(date +'%d/%m/%Y %H:%M') UTC"
           git push
+
+      - name: Enviar notificación por email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.office365.com
+          server_port:    587
+          secure:         false
+          username:       ${{ secrets.SMTP_USER }}
+          password:       ${{ secrets.SMTP_PASS }}
+          subject:        "✅ Dashboard LAR actualizado — ${{ steps.resumen.outputs.fecha }}"
+          to:             ${{ secrets.NOTIFY_EMAIL }}
+          from:           Dashboard LAR <${{ secrets.SMTP_USER }}>
+          html_body: |
+            <div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto">
+              <div style="background:#008E9F;padding:20px 24px;border-radius:10px 10px 0 0">
+                <h2 style="color:#fff;margin:0;font-size:1.1rem">
+                  ✅ Dashboard LAR — Actualización automática
+                </h2>
+                <p style="color:#B2EBF2;margin:4px 0 0;font-size:.85rem">
+                  ${{ steps.resumen.outputs.fecha }} · ${{ steps.resumen.outputs.hora }}
+                </p>
+              </div>
+              <div style="background:#F8FAFC;padding:20px 24px;border:1px solid #E2E8F0;border-radius:0 0 10px 10px">
+
+                <table style="width:100%;border-collapse:collapse;margin-bottom:16px">
+                  <tr>
+                    <td style="padding:8px 12px;background:#fff;border-radius:8px;text-align:center;width:25%">
+                      <div style="font-size:1.4rem;font-weight:700;color:#1E2A38">${{ steps.resumen.outputs.ocupacion }}%</div>
+                      <div style="font-size:.72rem;color:#6B7A8D">Ocupación</div>
+                    </td>
+                    <td style="width:4px"></td>
+                    <td style="padding:8px 12px;background:#fff;border-radius:8px;text-align:center;width:25%">
+                      <div style="font-size:1.4rem;font-weight:700;color:#16A34A">${{ steps.resumen.outputs.arrendadas }}</div>
+                      <div style="font-size:.72rem;color:#6B7A8D">Arrendadas</div>
+                    </td>
+                    <td style="width:4px"></td>
+                    <td style="padding:8px 12px;background:#fff;border-radius:8px;text-align:center;width:25%">
+                      <div style="font-size:1.4rem;font-weight:700;color:#D97706">${{ steps.resumen.outputs.disponibles }}</div>
+                      <div style="font-size:.72rem;color:#6B7A8D">Disponibles</div>
+                    </td>
+                    <td style="width:4px"></td>
+                    <td style="padding:8px 12px;background:#fff;border-radius:8px;text-align:center;width:25%">
+                      <div style="font-size:1.4rem;font-weight:700;color:#7C3AED">${{ steps.resumen.outputs.reservadas }}</div>
+                      <div style="font-size:.72rem;color:#6B7A8D">Reservadas</div>
+                    </td>
+                  </tr>
+                </table>
+
+                <p style="margin:0 0 8px;font-size:.8rem;color:#6B7A8D">
+                  <b style="color:#1E2A38">${{ steps.resumen.outputs.proyectos }}</b> proyectos ·
+                  UF <b style="color:#0369A1">${{ steps.resumen.outputs.uf }}</b>
+                </p>
+
+                <a href="https://matiasstipicevic.github.io/MatiCode/"
+                   style="display:inline-block;background:#008E9F;color:#fff;
+                          padding:10px 20px;border-radius:8px;text-decoration:none;
+                          font-weight:700;font-size:.85rem;margin-top:8px">
+                  Ver Dashboard →
+                </a>
+              </div>
+            </div>
