@@ -3076,7 +3076,7 @@ function exportDispGSheets() {
 <script>
 (function() {
   // Si ya está autenticado en esta sesión, ocultar gate inmediatamente
-  if (sessionStorage.getItem('lar_auth') === '1') {
+  if (sessionStorage.getItem('lar_pwd_ok') === '1') {
     document.getElementById('lar-gate').style.display = 'none';
   }
 })();
@@ -3092,7 +3092,7 @@ async function gateCheck() {
                .map(function(b) { return b.toString(16).padStart(2,'0'); }).join('');
 
   if (hex === '10ca7afef5a927a199f952212a07aff3a1a33aa98cf3b51afba65fd701c8f0d4') {
-    sessionStorage.setItem('lar_auth', '1');
+    sessionStorage.setItem('lar_pwd_ok', '1');
     var gate = document.getElementById('lar-gate');
     gate.style.opacity = '0';
     gate.style.transition = 'opacity .35s';
