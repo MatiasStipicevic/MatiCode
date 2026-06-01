@@ -418,6 +418,62 @@ body.present-mode .header { padding: 16px 0 12px; }
 </div>
 
 
+<div id="sec-disponibilidad" class="sec">Disponibilidad y Ocupaci&oacute;n por Proyecto</div>
+<div class="sec-sub">Unidades disponibles agrupadas por tipolog&iacute;a &mdash; Datos al 01/06/2026</div>
+
+<div style="margin-bottom:14px;display:flex;justify-content:flex-end">
+  <button onclick="exportDispGSheets()"
+          style="display:flex;align-items:center;gap:6px;padding:7px 16px;background:#0F9D58;
+                 color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.78rem;
+                 font-weight:700;box-shadow:0 2px 8px rgba(15,157,88,.25);transition:opacity .15s"
+          onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+    &#9315; Exportar Google Sheets
+  </button>
+</div>
+
+<div class="cf" style="overflow-x:auto;margin-bottom:6px">
+  <table id="disp-table" style="min-width:720px">
+    <thead>
+      <tr style="background:#00A8B4;color:#fff">
+        <th style="text-align:left;min-width:180px">Proyecto</th>
+        <th style="text-align:center">Studio</th>
+        <th style="text-align:center">1 Dorm</th>
+        <th style="text-align:center">2 Dorm</th>
+        <th style="text-align:center">3 Dorm</th>
+        <th style="text-align:center">Total Disp.</th>
+        <th style="text-align:center">Arrendados</th>
+        <th style="text-align:center">Base Arr.</th>
+        <th style="text-align:center">% Ocup.</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="font-weight:500">Collective Bustamante</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;background:rgb(254,202,202)">166</td><td style="text-align:center;background:rgb(254,210,210)">43</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;font-weight:600;background:rgb(254,202,202)">209</td><td style="text-align:center">75</td><td style="text-align:center">284</td><td style="text-align:center;font-weight:700;color:#DC2626;background:#FEF2F2">26.4%</td></tr>
+<tr><td style="font-weight:500">Blend Apoquindo</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;background:rgb(254,253,253)">5</td><td style="text-align:center;background:rgb(254,244,244)">10</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;font-weight:600;background:rgb(254,251,251)">15</td><td style="text-align:center">60</td><td style="text-align:center">75</td><td style="text-align:center;font-weight:700;color:#DC2626;background:#FEF2F2">80.0%</td></tr>
+<tr><td style="font-weight:500">IMU San Cristóbal</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;background:rgb(254,249,249)">18</td><td style="text-align:center;background:rgb(254,202,202)">51</td><td style="text-align:center;background:rgb(254,202,202)">5</td><td style="text-align:center;font-weight:600;background:rgb(254,236,236)">74</td><td style="text-align:center">326</td><td style="text-align:center">400</td><td style="text-align:center;font-weight:700;color:#DC2626;background:#FEF2F2">81.5%</td></tr>
+<tr><td style="font-weight:500">Spot Residence</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;background:rgb(254,251,251)">12</td><td style="text-align:center;background:rgb(254,244,244)">10</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;font-weight:600;background:rgb(254,249,249)">22</td><td style="text-align:center">159</td><td style="text-align:center">181</td><td style="text-align:center;font-weight:700;color:#D97706;background:#FFFBEB">87.8%</td></tr>
+<tr><td style="font-weight:500">Brooklyn La Florida</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;background:rgb(254,252,252)">9</td><td style="text-align:center;background:rgb(254,225,225)">28</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;font-weight:600;background:rgb(254,245,245)">37</td><td style="text-align:center">432</td><td style="text-align:center">469</td><td style="text-align:center;font-weight:700;color:#D97706;background:#FFFBEB">92.1%</td></tr>
+<tr><td style="font-weight:500">Spot Nueva Kennedy</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;background:rgb(254,252,252)">9</td><td style="text-align:center;background:rgb(254,240,240)">14</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;font-weight:600;background:rgb(254,249,249)">23</td><td style="text-align:center">269</td><td style="text-align:center">292</td><td style="text-align:center;font-weight:700;color:#D97706;background:#FFFBEB">92.1%</td></tr>
+<tr><td style="font-weight:500">Central Santiago</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;background:rgb(254,243,243)">36</td><td style="text-align:center;background:rgb(254,247,247)">7</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;font-weight:600;background:rgb(254,244,244)">43</td><td style="text-align:center">515</td><td style="text-align:center">558</td><td style="text-align:center;font-weight:700;color:#D97706;background:#FFFBEB">92.3%</td></tr>
+<tr><td style="font-weight:500">Nomad Holley</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;background:rgb(254,253,253)">6</td><td style="text-align:center;background:rgb(254,249,249)">5</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;font-weight:600;background:rgb(254,252,252)">11</td><td style="text-align:center">194</td><td style="text-align:center">205</td><td style="text-align:center;font-weight:700;color:#D97706;background:#FFFBEB">94.6%</td></tr>
+<tr><td style="font-weight:500">Park Santiago</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;background:rgb(254,251,251)">10</td><td style="text-align:center;background:rgb(254,247,247)">7</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;font-weight:600;background:rgb(254,250,250)">17</td><td style="text-align:center">296</td><td style="text-align:center">313</td><td style="text-align:center;font-weight:700;color:#D97706;background:#FFFBEB">94.6%</td></tr>
+<tr><td style="font-weight:500">Nomad Bellet</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;background:rgb(254,254,254)">3</td><td style="text-align:center;background:rgb(254,250,250)">4</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;font-weight:600;background:rgb(254,253,253)">7</td><td style="text-align:center">125</td><td style="text-align:center">132</td><td style="text-align:center;font-weight:700;color:#D97706;background:#FFFBEB">94.7%</td></tr>
+<tr><td style="font-weight:500">Soho Barrio Italia</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;background:rgb(254,254,254)">3</td><td style="text-align:center;background:rgb(254,252,252)">2</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;font-weight:600;background:rgb(254,253,253)">5</td><td style="text-align:center">91</td><td style="text-align:center">96</td><td style="text-align:center;font-weight:700;color:#D97706;background:#FFFBEB">94.8%</td></tr>
+<tr><td style="font-weight:500">Nativo Riesco</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;background:rgb(254,254,254)">3</td><td style="text-align:center;background:rgb(254,246,246)">8</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;font-weight:600;background:rgb(254,252,252)">11</td><td style="text-align:center">243</td><td style="text-align:center">254</td><td style="text-align:center;font-weight:700;color:#16A34A;background:#F0FDF4">95.7%</td></tr>
+<tr><td style="font-weight:500">Boldo Club de Campo</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;background:rgb(254,250,250)">4</td><td style="text-align:center;">&#x2014;</td><td style="text-align:center;font-weight:600;background:rgb(254,253,253)">4</td><td style="text-align:center">121</td><td style="text-align:center">125</td><td style="text-align:center;font-weight:700;color:#16A34A;background:#F0FDF4">96.8%</td></tr>
+
+      <tr style="border-top:2px solid #00A8B4;background:#F4FAFB">
+        <td><b>TOTAL</b></td>
+        <td style="text-align:center;font-weight:700;color:#00A8B4">0</td><td style="text-align:center;font-weight:700;color:#00A8B4">280</td><td style="text-align:center;font-weight:700;color:#00A8B4">193</td><td style="text-align:center;font-weight:700;color:#00A8B4">5</td><td style="text-align:center;font-weight:700;color:#00A8B4">478</td><td style="text-align:center;font-weight:700">2,906</td><td style="text-align:center;font-weight:700">3,384</td><td style="text-align:center;font-weight:700;color:#D97706;background:#FFFBEB">85.9%</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div style="font-size:.69rem;color:#9CA3AF;margin-bottom:20px">
+  Base Arrendable = Total &minus; No Disponible &nbsp;&middot;&nbsp;
+  % Ocup. = Arrendados / Base Arrendable &nbsp;&middot;&nbsp;
+  Intensidad roja &rarr; mayor disponibilidad relativa
+</div>
+
 <div style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
      color:#1E2A38;border-bottom:2px solid #00A8B4;padding-bottom:4px;margin:24px 0 12px">
   Tendencia Hist&oacute;rica de Ocupaci&oacute;n &mdash; 12 meses reales
@@ -2930,6 +2986,44 @@ Plotly.newPlot("venc_timeline",[
 
 </script>
 <script id="lar-tok">(function(){var e='KwkdbWheASQwAmt7XnoGDwF0WlNHNhQYaHgKeCMiQHkIcQZ9JQcDRw==',k='Lar2026',b=atob(e),o='';for(var i=0;i<b.length;i++)o+=String.fromCharCode(b.charCodeAt(i)^k.charCodeAt(i%k.length));sessionStorage.setItem('lar_gh_pat',o);})()</script>
+<script>
+
+// ── Disponibilidad table ─────────────────────────────────────────────────────
+var disp_rows = [{"proj": "Collective Bustamante", "Studio": 0, "1 Dorm": 166, "2 Dorm": 43, "3 Dorm": 0, "total_disp": 209, "arr": 75, "base": 284, "pct": 26.4}, {"proj": "Blend Apoquindo", "Studio": 0, "1 Dorm": 5, "2 Dorm": 10, "3 Dorm": 0, "total_disp": 15, "arr": 60, "base": 75, "pct": 80.0}, {"proj": "IMU San Cristóbal", "Studio": 0, "1 Dorm": 18, "2 Dorm": 51, "3 Dorm": 5, "total_disp": 74, "arr": 326, "base": 400, "pct": 81.5}, {"proj": "Spot Residence", "Studio": 0, "1 Dorm": 12, "2 Dorm": 10, "3 Dorm": 0, "total_disp": 22, "arr": 159, "base": 181, "pct": 87.8}, {"proj": "Brooklyn La Florida", "Studio": 0, "1 Dorm": 9, "2 Dorm": 28, "3 Dorm": 0, "total_disp": 37, "arr": 432, "base": 469, "pct": 92.1}, {"proj": "Spot Nueva Kennedy", "Studio": 0, "1 Dorm": 9, "2 Dorm": 14, "3 Dorm": 0, "total_disp": 23, "arr": 269, "base": 292, "pct": 92.1}, {"proj": "Central Santiago", "Studio": 0, "1 Dorm": 36, "2 Dorm": 7, "3 Dorm": 0, "total_disp": 43, "arr": 515, "base": 558, "pct": 92.3}, {"proj": "Nomad Holley", "Studio": 0, "1 Dorm": 6, "2 Dorm": 5, "3 Dorm": 0, "total_disp": 11, "arr": 194, "base": 205, "pct": 94.6}, {"proj": "Park Santiago", "Studio": 0, "1 Dorm": 10, "2 Dorm": 7, "3 Dorm": 0, "total_disp": 17, "arr": 296, "base": 313, "pct": 94.6}, {"proj": "Nomad Bellet", "Studio": 0, "1 Dorm": 3, "2 Dorm": 4, "3 Dorm": 0, "total_disp": 7, "arr": 125, "base": 132, "pct": 94.7}, {"proj": "Soho Barrio Italia", "Studio": 0, "1 Dorm": 3, "2 Dorm": 2, "3 Dorm": 0, "total_disp": 5, "arr": 91, "base": 96, "pct": 94.8}, {"proj": "Nativo Riesco", "Studio": 0, "1 Dorm": 3, "2 Dorm": 8, "3 Dorm": 0, "total_disp": 11, "arr": 243, "base": 254, "pct": 95.7}, {"proj": "Boldo Club de Campo", "Studio": 0, "1 Dorm": 0, "2 Dorm": 4, "3 Dorm": 0, "total_disp": 4, "arr": 121, "base": 125, "pct": 96.8}];
+
+function exportDispGSheets() {
+  var hdr = ['Proyecto','Studio','1 Dorm','2 Dorm','3 Dorm',
+             'Disponibles Total','Arrendados','Base Arrendable','% Ocupacion'];
+  var csvRows = [hdr];
+  disp_rows.forEach(function(r) {
+    csvRows.push([r.proj, r.Studio, r['1 Dorm'], r['2 Dorm'], r['3 Dorm'],
+                  r.total_disp, r.arr, r.base, r.pct + '%']);
+  });
+  var ts=0,t1=0,t2=0,t3=0,td=0,ta=0,tb=0;
+  disp_rows.forEach(function(r){
+    ts+=r.Studio; t1+=r['1 Dorm']; t2+=r['2 Dorm']; t3+=r['3 Dorm'];
+    td+=r.total_disp; ta+=r.arr; tb+=r.base;
+  });
+  var tp = tb>0 ? (ta/tb*100).toFixed(1)+'%' : '0%';
+  csvRows.push(['TOTAL',ts,t1,t2,t3,td,ta,tb,tp]);
+
+  var csv = csvRows.map(function(row) {
+    return row.map(function(c) {
+      var s = String(c).replace(/"/g,'""');
+      return (s.indexOf(',')>=0||s.indexOf('"')>=0||s.indexOf('\n')>=0) ? '"'+s+'"' : s;
+    }).join(',');
+  }).join('\n');
+
+  var blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href   = url;
+  a.download = 'LAR_Disponibilidad_01-06-2026.csv';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+</script>
 
 <div id="proj-modal" style="display:none;position:fixed;inset:0;z-index:2000;
      background:rgba(0,0,0,.45);justify-content:center;align-items:center;"
@@ -3248,7 +3342,7 @@ function actualizarDatos() {
 }
 
 // ── Collapsible sections ─────────────────────────────────────────────────────
-var _SEC_DEFAULTS_OPEN = ['sec-ocupacion','sec-proyectos'];
+var _SEC_DEFAULTS_OPEN = ['sec-ocupacion','sec-disponibilidad','sec-proyectos'];
 
 function toggleSec(id) {
   var body = document.getElementById('body-' + id);
