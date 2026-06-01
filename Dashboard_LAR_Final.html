@@ -152,6 +152,7 @@
 .sec{cursor:pointer;user-select:none;}
 .sec-chevron{display:inline-block;font-size:.58rem;color:#9CA3AF;margin-left:7px;transition:transform .22s;vertical-align:middle;}
 .sec.collapsed .sec-chevron{transform:rotate(180deg);}
+@keyframes spin{to{transform:rotate(360deg);}}
 </style>
 
 <!-- Aileron font: install from fontsquirrel.com/fonts/aileron or use Arial fallback -->
@@ -3198,6 +3199,52 @@ function closeModal() {
   var m = document.getElementById("proj-modal");
   if(m) m.style.display = "none";
   document.body.style.overflow = "";
+}
+
+// ── Botón Actualizar ─────────────────────────────────────────────────────────
+function actualizarDatos() {
+  var token = sessionStorage.getItem('lar_gh_pat');
+  var btn   = document.getElementById('btn-actualizar');
+  var lbl   = document.getElementById('btn-act-label');
+  var icon  = document.getElementById('btn-act-icon');
+
+  if (!token) {
+    alert('Token de acceso no disponible. Recarga la página e inicia sesión.');
+    return;
+  }
+
+  // Estado cargando
+  if (btn) btn.disabled = true;
+  if (lbl) lbl.textContent = 'Actualizando...';
+  if (icon) { icon.style.animation = 'spin 1s linear infinite'; icon.style.display = 'inline-block'; }
+
+  fetch('https://api.github.com/repos/MatiasStipicevic/MatiCode/actions/workflows/update.yml/dispatches', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'token ' + token,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ ref: 'main' })
+  })
+  .then(function(res) {
+    if (res.status === 204) {
+      if (lbl) lbl.textContent = '✓ Workflow iniciado';
+      if (icon) icon.style.animation = '';
+      setTimeout(function() {
+        if (lbl) lbl.textContent = 'Actualizar';
+        if (btn) btn.disabled = false;
+      }, 4000);
+    } else {
+      return res.json().then(function(j) { throw new Error(j.message || 'Error ' + res.status); });
+    }
+  })
+  .catch(function(err) {
+    if (lbl) lbl.textContent = '✗ Error: ' + err.message;
+    if (icon) icon.style.animation = '';
+    if (btn) btn.disabled = false;
+    setTimeout(function() { if (lbl) lbl.textContent = 'Actualizar'; }, 5000);
+  });
 }
 
 // ── Collapsible sections ─────────────────────────────────────────────────────
