@@ -285,8 +285,83 @@ body.present-mode .header { padding: 16px 0 12px; }
 }
 #btn-pdf:hover { border-color: #00A8B4; color: #00A8B4; transform: translateY(-2px); }
 </style>
+<script>
+(function(){
+  if(sessionStorage.getItem('lar_pwd_ok')!=='1'){
+    document.documentElement.style.visibility='hidden';
+  }
+})();
+</script>
 </head>
 <body>
+<div id="lar-gate" style="
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  width:100%;height:100%;
+  z-index:2147483647;
+  background:linear-gradient(135deg,#00A8B4 0%,#007A84 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Aileron','Arial',sans-serif;
+  visibility:visible">
+  <div style="background:#fff;border-radius:20px;padding:40px 44px 36px;
+              width:340px;box-shadow:0 24px 64px rgba(0,0,0,.3);text-align:center">
+    <img src="static/LAR-logo.png" onerror="this.style.display='none'"
+         style="height:48px;margin-bottom:20px;object-fit:contain">
+    <div style="font-size:.68rem;font-weight:700;letter-spacing:.12em;
+                text-transform:uppercase;color:#9CA3AF;margin-bottom:6px">
+      Panel de Ocupaci&oacute;n
+    </div>
+    <h2 style="font-size:1.15rem;font-weight:800;color:#1E2A38;margin:0 0 24px">
+      Acceso restringido
+    </h2>
+    <input id="gate-pwd" type="password" placeholder="Contrase&ntilde;a"
+      onkeydown="if(event.key==='Enter')gateCheck()"
+      style="width:100%;box-sizing:border-box;padding:11px 14px;
+             border:1.5px solid #E2E8F0;border-radius:10px;font-size:.95rem;
+             outline:none;color:#1E2A38;transition:border-color .15s;margin-bottom:10px"
+      onfocus="this.style.borderColor='#00A8B4'"
+      onblur="this.style.borderColor='#E2E8F0'">
+    <div id="gate-err" style="font-size:.75rem;color:#DC2626;min-height:18px;margin-bottom:10px"></div>
+    <button onclick="gateCheck()"
+      style="width:100%;padding:13px;background:#00A8B4;color:#fff;border:none;
+             border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer"
+      onmouseover="this.style.background='#007A84'"
+      onmouseout="this.style.background='#00A8B4'">
+      Ingresar
+    </button>
+    <div style="font-size:.67rem;color:#CBD5E1;margin-top:16px">LAR Group &mdash; Uso interno</div>
+  </div>
+</div>
+
+<script>
+async function gateCheck() {
+  var pwd = (document.getElementById('gate-pwd').value || '').trim();
+  var err = document.getElementById('gate-err');
+  if (!pwd) { err.textContent = 'Ingresa la contraseña'; return; }
+  var enc = new TextEncoder();
+  var buf = await crypto.subtle.digest('SHA-256', enc.encode(pwd));
+  var hex = Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+  if (hex === '10ca7afef5a927a199f952212a07aff3a1a33aa98cf3b51afba65fd701c8f0d4') {
+    sessionStorage.setItem('lar_pwd_ok', '1');
+    document.documentElement.style.visibility = '';
+    var g = document.getElementById('lar-gate');
+    g.style.opacity = '0'; g.style.transition = 'opacity .3s';
+    setTimeout(function(){ g.style.display = 'none'; }, 320);
+  } else {
+    err.textContent = 'Contraseña incorrecta';
+    document.getElementById('gate-pwd').value = '';
+    document.getElementById('gate-pwd').focus();
+  }
+}
+// Si ya autenticado: revelar página y ocultar gate
+(function(){
+  if (sessionStorage.getItem('lar_pwd_ok') === '1') {
+    document.documentElement.style.visibility = '';
+    var g = document.getElementById('lar-gate');
+    if (g) g.style.display = 'none';
+  }
+})();
+</script>
+
 
 
 </div>
@@ -3023,88 +3098,6 @@ function exportDispGSheets() {
 }
 
 </script>
-
-<div id="lar-gate" style="
-  position:fixed;inset:0;z-index:9999;
-  background:linear-gradient(135deg,#00A8B4 0%,#007A84 100%);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Aileron','Arial',sans-serif">
-  <div style="
-    background:#fff;border-radius:20px;
-    padding:40px 44px 36px;width:340px;
-    box-shadow:0 24px 64px rgba(0,0,0,.22);text-align:center">
-
-    <img src="static/LAR-logo.png"
-         onerror="this.style.display='none'"
-         style="height:48px;margin-bottom:20px;object-fit:contain">
-
-    <div style="font-size:.68rem;font-weight:700;letter-spacing:.12em;
-                text-transform:uppercase;color:#9CA3AF;margin-bottom:6px">
-      Panel de Ocupaci&oacute;n
-    </div>
-    <h2 style="font-size:1.15rem;font-weight:800;color:#1E2A38;margin:0 0 24px">
-      Acceso restringido
-    </h2>
-
-    <input id="gate-pwd" type="password" placeholder="Contrase&ntilde;a"
-      onkeydown="if(event.key==='Enter')gateCheck()"
-      style="width:100%;box-sizing:border-box;padding:11px 14px;
-             border:1.5px solid #E2E8F0;border-radius:10px;
-             font-size:.95rem;outline:none;color:#1E2A38;
-             transition:border-color .15s;margin-bottom:10px"
-      onfocus="this.style.borderColor='#00A8B4'"
-      onblur="this.style.borderColor='#E2E8F0'">
-
-    <div id="gate-err" style="
-      font-size:.75rem;color:#DC2626;min-height:18px;margin-bottom:10px"></div>
-
-    <button onclick="gateCheck()" style="
-      width:100%;padding:13px;background:#00A8B4;color:#fff;
-      border:none;border-radius:10px;font-size:.95rem;font-weight:700;
-      cursor:pointer;transition:background .15s"
-      onmouseover="this.style.background='#007A84'"
-      onmouseout="this.style.background='#00A8B4'">
-      Ingresar
-    </button>
-
-    <div style="font-size:.67rem;color:#CBD5E1;margin-top:16px">
-      LAR Group &mdash; Uso interno
-    </div>
-  </div>
-</div>
-
-<script>
-(function() {
-  // Si ya está autenticado en esta sesión, ocultar gate inmediatamente
-  if (sessionStorage.getItem('lar_pwd_ok') === '1') {
-    document.getElementById('lar-gate').style.display = 'none';
-  }
-})();
-
-async function gateCheck() {
-  var pwd = document.getElementById('gate-pwd').value;
-  var err = document.getElementById('gate-err');
-  if (!pwd) { err.textContent = 'Ingresa la contraseña'; return; }
-
-  var enc  = new TextEncoder();
-  var buf  = await crypto.subtle.digest('SHA-256', enc.encode(pwd));
-  var hex  = Array.from(new Uint8Array(buf))
-               .map(function(b) { return b.toString(16).padStart(2,'0'); }).join('');
-
-  if (hex === '10ca7afef5a927a199f952212a07aff3a1a33aa98cf3b51afba65fd701c8f0d4') {
-    sessionStorage.setItem('lar_pwd_ok', '1');
-    var gate = document.getElementById('lar-gate');
-    gate.style.opacity = '0';
-    gate.style.transition = 'opacity .35s';
-    setTimeout(function() { gate.style.display = 'none'; }, 360);
-  } else {
-    err.textContent = 'Contraseña incorrecta';
-    document.getElementById('gate-pwd').value = '';
-    document.getElementById('gate-pwd').focus();
-  }
-}
-</script>
-
 
 <div id="proj-modal" style="display:none;position:fixed;inset:0;z-index:2000;
      background:rgba(0,0,0,.45);justify-content:center;align-items:center;"
