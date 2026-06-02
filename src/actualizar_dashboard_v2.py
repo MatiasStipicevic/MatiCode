@@ -288,13 +288,17 @@ def compute(df):
 
 # ── 2b. CARGAR CONTRATOS (vencimientos) ───────────────────────────────────
 def load_precios_disponibles():
-    """Min precio de arriendo (UF) por (proyecto, tipologia) para unidades disponibles."""
+    """Min/Max precio arriendo (UF) + n_disp por (proyecto, tipologia, modelo)."""
     try:
         conn = psycopg2.connect(**DB)
         cur  = conn.cursor()
         cur.execute("""
-            SELECT p.nombre, u.tipologia,
-                   MIN(u.precio_monto) AS precio_min,
+            SELECT p.nombre,
+                   u.tipologia,
+                   COALESCE(u.raw->>'modelo','') AS modelo,
+                   MIN(u.precio_monto)           AS precio_min,
+                   MAX(u.precio_monto)           AS precio_max,
+                   COUNT(*)                      AS n_disp,
                    u.precio_divisa
             FROM public.unidades u
             JOIN public.propiedades p ON u.propiedad_id = p.id
@@ -302,25 +306,69 @@ def load_precios_disponibles():
               AND u.estado = '100'
               AND u.precio_monto IS NOT NULL
               AND u.precio_monto > 0
-            GROUP BY p.nombre, u.tipologia, u.precio_divisa
-            ORDER BY p.nombre, u.tipologia
+            GROUP BY p.nombre, u.tipologia, COALESCE(u.raw->>'modelo',''), u.precio_divisa
+            ORDER BY p.nombre, u.tipologia, modelo
         """)
-        rows = conn.cursor().fetchall() if False else cur.fetchall()
+        rows = cur.fetchall()
         conn.close()
         precios = {}
-        for proj, tip, min_p, divisa in rows:
+        for proj, tip, modelo, min_p, max_p, n_d, divisa in rows:
+            div = str(divisa or "UF")
             if proj not in precios:
                 precios[proj] = {}
-            precios[proj][tip] = {"min": float(min_p), "divisa": str(divisa or "UF")}
+            if tip not in precios[proj]:
+                precios[proj][tip] = {"min": float(min_p), "max": float(max_p),
+                                      "n_disp": 0, "divisa": div, "modelos": []}
+            entry = precios[proj][tip]
+            entry["min"]     = min(entry["min"], float(min_p))
+            entry["max"]     = max(entry["max"], float(max_p))
+            entry["n_disp"] += int(n_d)
+            entry["modelos"].append({"modelo": str(modelo), "min": float(min_p),
+                                     "max": float(max_p), "n_disp": int(n_d)})
         n = sum(len(v) for v in precios.values())
-        print(f"  Precios disponibles: {n} combinaciones proyecto/tipologia")
+        print(f"  Precios disponibles (DB): {n} combinaciones")
+        _merge_collective_precios(precios)
         return precios
     except Exception as e:
-        print(f"  [WARN] No se pudo cargar precios: {e}")
-        return {}
+        print(f"  [WARN] No se pudo cargar precios DB: {e}")
+        precios = {}
+        _merge_collective_precios(precios)
+        return precios
+
+
+def _merge_collective_precios(precios):
+    """Agrega precios de Collective Bustamante desde Excel al dict precios."""
+    if not SRC_COLLECTIVE.exists():
+        print(f"  [WARN] No se encontró {SRC_COLLECTIVE}")
+        return
+    try:
+        u  = pd.read_excel(SRC_COLLECTIVE, sheet_name="Unidades", header=1)
+        pr = pd.read_excel(SRC_COLLECTIVE, sheet_name="Precios",  header=1)
+        disp = u[(u["Tipo de unidad"] == "Departamento") & (u["Estado"] == "Disponible")].copy()
+        p_lista = pr[(pr["Tipo"] == "Lista") & (pr["Concepto"] == "Arriendo") & (pr["Monto"] > 0)]
+        merged = p_lista.merge(
+            disp[["Nombre","Tipología","Modelo"]].rename(columns={"Nombre":"Unidad"}),
+            on="Unidad", how="inner"
+        )
+        proj = "Collective Bustamante"
+        precios.setdefault(proj, {})
+        for (tip, modelo), g in merged.groupby(["Tipología","Modelo"]):
+            tip, modelo = str(tip), str(modelo)
+            mn, mx, nd = float(g["Monto"].min()), float(g["Monto"].max()), int(len(g))
+            if tip not in precios[proj]:
+                precios[proj][tip] = {"min": mn, "max": mx, "n_disp": 0, "divisa": "UF", "modelos": []}
+            e = precios[proj][tip]
+            e["min"] = min(e["min"], mn)
+            e["max"] = max(e["max"], mx)
+            e["n_disp"] += nd
+            e["modelos"].append({"modelo": modelo, "min": mn, "max": mx, "n_disp": nd})
+        n_tips = len(precios[proj])
+        print(f"  Precios Collective Bustamante (Excel): {n_tips} tipologías, {sum(e['n_disp'] for e in precios[proj].values())} unidades disp.")
+    except Exception as e:
+        print(f"  [WARN] Precios Collective desde Excel: {e}")
 
 def load_uf():
-    """Obtiene el valor actual de la UF desde mindicador.cl (sin API key)."""
+    """Obtiene el valor actual de la UF: primero mindicador.cl, luego BD."""
     import urllib.request as _urlreq, json as _json2
     try:
         req = _urlreq.Request(
@@ -334,8 +382,27 @@ def load_uf():
         print(f"  UF ({fecha}): ${uf:,.2f}")
         return uf
     except Exception as e:
-        print(f"  [WARN] No se pudo obtener UF: {e} — usando valor fallback")
-        return None
+        print(f"  [WARN] mindicador.cl falló ({e}) — obteniendo UF desde BD...")
+    # Fallback: valor más reciente de conversión en liquidacion_cargos
+    try:
+        import psycopg2 as _pg
+        conn = _pg.connect(**DB)
+        cur  = conn.cursor()
+        cur.execute("""
+            SELECT divisa_conversion_valor, divisa_conversion_fecha
+            FROM liquidacion_cargos
+            WHERE divisa='Unidad de fomento' AND divisa_conversion_valor IS NOT NULL
+            ORDER BY divisa_conversion_fecha DESC LIMIT 1
+        """)
+        row = cur.fetchone()
+        conn.close()
+        if row:
+            uf = float(row[0])
+            print(f"  UF desde BD ({row[1]}): ${uf:,.2f}")
+            return uf
+    except Exception as e2:
+        print(f"  [WARN] BD UF fallback falló: {e2}")
+    return None
 
 
 def load_tendencias_proyectos():
@@ -430,7 +497,7 @@ def build_hero_section(m, uf_valor=None, hist_data=None):
     <input id="global-search" type="text" placeholder="Buscar proyecto..."
            oninput="globalSearch(this.value)"
            style="width:100%;padding:8px 12px 8px 32px;border:1px solid #E2E8F0;border-radius:10px;font-size:.8rem;outline:none;box-sizing:border-box;background:#fff;transition:border-color .15s"
-           onfocus="this.style.borderColor='#008E9F'" onblur="this.style.borderColor='#E2E8F0'">
+           onfocus="this.style.borderColor='#00A8B4'" onblur="this.style.borderColor='#E2E8F0'">
   </div>
   <span id="search-count" style="font-size:.71rem;color:#6B7A8D;white-space:nowrap;background:#F1F5F9;padding:3px 9px;border-radius:99px"></span>
 </div>
@@ -470,6 +537,30 @@ def load_contratos():
     return df
 
 
+def load_renovaciones():
+    """Cuenta unidades con contrato nuevo (300) tras termino de contrato anterior, por período."""
+    conn = psycopg2.connect(**DB)
+    cur  = conn.cursor()
+    cur.execute("""
+        SELECT
+            COUNT(DISTINCT c_n.unidad_id) FILTER (WHERE c_n.fecha_inicio >= CURRENT_DATE - 30)  AS r30,
+            COUNT(DISTINCT c_n.unidad_id) FILTER (WHERE c_n.fecha_inicio >= CURRENT_DATE - 60)  AS r60,
+            COUNT(DISTINCT c_n.unidad_id) FILTER (WHERE c_n.fecha_inicio >= CURRENT_DATE - 90)  AS r90,
+            COUNT(DISTINCT c_n.propiedad_id) FILTER (WHERE c_n.fecha_inicio >= CURRENT_DATE - 30) AS p30
+        FROM contratos c_n
+        JOIN contratos c_a ON c_a.unidad_id = c_n.unidad_id
+            AND c_a.estado_id IN ('400','410')
+            AND c_a.fecha_fin >= c_n.fecha_inicio - INTERVAL '15 days'
+            AND c_a.folio != c_n.folio
+        WHERE c_n.estado_id = '300'
+          AND c_n.cargo_concepto = 'Arriendo'
+    """)
+    r = cur.fetchone()
+    conn.close()
+    return {"r30": int(r[0] or 0), "r60": int(r[1] or 0),
+            "r90": int(r[2] or 0), "p30": int(r[3] or 0)}
+
+
 def load_historico(n_db):
     """Reconstruye % ocupación mensual real (últimos 12 meses) contando contratos activos por mes."""
     import warnings; warnings.filterwarnings("ignore")
@@ -502,7 +593,7 @@ def load_historico(n_db):
 
 
 
-def build_vencimientos_section(df):
+def build_vencimientos_section(df, renov=None):
     """Construye la seccion HTML + JS de Vencimientos de Contratos."""
     today = pd.to_datetime(DATE_STR, dayfirst=True)
 
@@ -556,7 +647,7 @@ def build_vencimientos_section(df):
             f'<tr data-proj="{pa}" data-tipo="{r["tipologia"]}" '
             f'data-ejec="{ea}" data-dias="{int(r["dias"])}">'
             f'<td onclick="showProjModal(this.parentNode.dataset.proj)" '
-            f'style="cursor:pointer;color:#008E9F;text-decoration:underline dotted">{r["proyecto"]}</td>'
+            f'style="cursor:pointer;color:#00A8B4;text-decoration:underline dotted">{r["proyecto"]}</td>'
             f'<td>{r["unidad"]}</td>'
             f'<td>{r["tipologia"]}</td><td>{r["fecha_fin"]}</td>'
             f'<td>{badge}</td><td style="font-size:.75rem">{r["ejecutivo"]}</td></tr>\n'
@@ -566,7 +657,7 @@ def build_vencimientos_section(df):
 <div id="sec-vencimientos" class="sec">Vencimientos de Contratos</div>
 <div class="sec-sub">Contratos vigentes (estado activo) &mdash; Datos al {DATE_STR}</div>
 
-<div class="kg" style="grid-template-columns:repeat(4,1fr);max-width:800px;margin-bottom:20px">
+<div class="kg" style="grid-template-columns:repeat(5,1fr);max-width:1050px;margin-bottom:20px">
   <div class="kc" style="border-left:4px solid #DC2626">
     <div class="kl">Vencen en 30 d&iacute;as</div><div class="kv re">{n_urg}</div>
     <div class="ks">Renovaci&oacute;n urgente</div>
@@ -575,13 +666,18 @@ def build_vencimientos_section(df):
     <div class="kl">Vencen 31&ndash;60 d&iacute;as</div><div class="kv or">{n_prox}</div>
     <div class="ks">Gestionar esta semana</div>
   </div>
-  <div class="kc" style="border-left:4px solid #008E9F">
+  <div class="kc" style="border-left:4px solid #00A8B4">
     <div class="kl">Vencen 61&ndash;90 d&iacute;as</div><div class="kv ac">{n_sig}</div>
     <div class="ks">Planificar contacto</div>
   </div>
   <div class="kc">
     <div class="kl">Total pr&oacute;x. 30 d&iacute;as</div><div class="kv re">{n_urg}</div>
     <div class="ks">En {proj30.shape[0]} proyectos</div>
+  </div>
+  <div class="kc" style="border-left:4px solid #16A34A">
+    <div class="kl">Renovados &uacute;lt. 30 d&iacute;as</div>
+    <div class="kv" style="color:#16A34A">{(renov or {{}}).get('r30', '—')}</div>
+    <div class="ks">{(renov or {{}}).get('p30', '—')} proyectos &middot; 90d: {(renov or {{}}).get('r90', '—')}</div>
   </div>
 </div>
 
@@ -594,7 +690,7 @@ def build_vencimientos_section(df):
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
     <b style="font-size:.82rem">Detalle &mdash; contratos que vencen en los pr&oacute;ximos 60 d&iacute;as
        (<span id="vf-count-label">{n_det}</span> unidades)</b>
-    <button onclick="exportVencCSV()" style="padding:5px 14px;background:#008E9F;color:#fff;border:none;border-radius:6px;font-size:.73rem;cursor:pointer;">Exportar CSV</button>
+    <button onclick="exportVencCSV()" style="padding:5px 14px;background:#00A8B4;color:#fff;border:none;border-radius:6px;font-size:.73rem;cursor:pointer;">Exportar CSV</button>
   </div>
   <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center;
               padding:10px 12px;background:#F8FAFC;border-radius:8px;border:1px solid #E2E8F0">
@@ -649,7 +745,7 @@ var venc_ejec_prox  = {ejec_prox_vals};
 Plotly.newPlot("venc_bar_proj",[
   {{type:"bar",orientation:"h",
    y:venc_projs.slice().reverse(),x:venc_vals90.slice().reverse(),
-   marker:{{color:venc_vals90.slice().reverse().map(function(v){{return v>=15?"#DC2626":v>=8?"#D97706":"#008E9F";}})}},
+   marker:{{color:venc_vals90.slice().reverse().map(function(v){{return v>=15?"#DC2626":v>=8?"#D97706":"#00A8B4";}})}},
    text:venc_vals90.slice().reverse().map(String),textposition:"outside",
    hovertemplate:"%{{y}}: %{{x}} contratos<extra></extra>"}}
 ],{{...base,
@@ -660,7 +756,7 @@ Plotly.newPlot("venc_bar_proj",[
 
 Plotly.newPlot("venc_timeline",[
   {{type:"bar",x:venc_meses,y:venc_mes_v,
-   marker:{{color:venc_mes_v.map(function(v,i){{return i<1?"#DC2626":i<2?"#D97706":"#008E9F";}})}},
+   marker:{{color:venc_mes_v.map(function(v,i){{return i<1?"#DC2626":i<2?"#D97706":"#00A8B4";}})}},
    hovertemplate:"Mes %{{x}}: %{{y}} contratos<extra></extra>"}}
 ],{{...base,
   title:{{text:"Contratos que vencen por Mes (proximos 12 meses)",font:{{size:13}}}},
@@ -678,8 +774,218 @@ Plotly.newPlot("venc_timeline",[
 
 
 
+# ── Tipología grouping ────────────────────────────────────────────────────────
+TIP_GROUPS = ['Studio', '1 Dorm', '2 Dorm', '3 Dorm']
+
+def _tip_group(tip):
+    """Clasificación por tipología (sin modelo)."""
+    t = str(tip).upper().strip()
+    if re.match(r'^(ST\b|STUD|0D)', t): return 'Studio'
+    if re.match(r'^1D', t): return '1 Dorm'
+    if re.match(r'^2D', t): return '2 Dorm'
+    if re.match(r'^3D', t): return '3 Dorm'
+    return '1 Dorm'   # fallback conservador
+
+
+def _tip_group_full(tip, modelo):
+    """
+    Clasificación considerando también el campo modelo.
+    En la BD los Studios tienen tipologia=1D1B pero modelo='Studio'/'Estudio A'/etc.
+    """
+    m = str(modelo or '').lower().strip()
+    if 'studio' in m or 'estudio' in m:
+        return 'Studio'
+    return _tip_group(tip)
+
+
+def build_disponibilidad_table(df, m):
+    """
+    Tabla de Disponibilidad y Ocupación por proyecto y grupo tipológico
+    (Studio / 1 Dorm / 2 Dorm / 3 Dorm).
+    Base Arrendable = Total − No Disponible.
+    % Ocupación     = Arrendados / Base Arrendable.
+    Exportable a Google Sheets vía CSV con BOM UTF-8.
+    """
+    date_fn = DATE_STR.replace('/', '-')
+
+    # ── Compute per-project ────────────────────────────────────────────────
+    rows_data = []
+    for proj, g in df.groupby('_proj'):
+        total   = len(g)
+        no_disp = int((g['_estado'] == 'No Disponible').sum())
+        base    = total - no_disp
+        arr     = int((g['_estado'] == 'Arrendado').sum())
+        pct     = round(arr / total * 100, 1) if total else 0.0
+
+        disp_g       = g[g['_estado'] == 'Disponible'].copy()
+        disp_g['_grp'] = disp_g.apply(
+            lambda r: _tip_group_full(r['_tip'], r.get('Modelo', '')), axis=1)
+        grp_counts   = disp_g.groupby('_grp').size()
+
+        rows_data.append({
+            'proj':       proj,
+            'Studio':     int(grp_counts.get('Studio', 0)),
+            '1 Dorm':     int(grp_counts.get('1 Dorm', 0)),
+            '2 Dorm':     int(grp_counts.get('2 Dorm', 0)),
+            '3 Dorm':     int(grp_counts.get('3 Dorm', 0)),
+            'total_disp': int((g['_estado'] == 'Disponible').sum()),
+            'arr':        arr,
+            'base':       base,
+            'total':      total,
+            'pct':        pct,
+        })
+
+    # Sort: lowest occupancy first (most critical at top)
+    rows_data.sort(key=lambda x: x['pct'])
+
+    # ── Max values for color intensity ─────────────────────────────────────
+    max_vals = {grp: max((r[grp] for r in rows_data), default=1) or 1 for grp in TIP_GROUPS}
+    max_disp = max((r['total_disp'] for r in rows_data), default=1) or 1
+
+    def _red_bg(val, mx):
+        """White → light red gradient based on val/max ratio."""
+        if not val:
+            return ''
+        alpha = min(val / mx, 1.0)
+        r_ = int(255 - alpha * (255 - 254))
+        g_ = int(255 - alpha * (255 - 202))
+        b_ = int(255 - alpha * (255 - 202))
+        return f'background:rgb({r_},{g_},{b_})'
+
+    def _pct_clr(pct):
+        return '#16A34A' if pct >= 95 else '#D97706' if pct >= 85 else '#DC2626'
+
+    def _pct_bg(pct):
+        return '#F0FDF4' if pct >= 95 else '#FFFBEB' if pct >= 85 else '#FEF2F2'
+
+    # ── Totals ─────────────────────────────────────────────────────────────
+    t = {
+        'Studio':     sum(r['Studio'] for r in rows_data),
+        '1 Dorm':     sum(r['1 Dorm'] for r in rows_data),
+        '2 Dorm':     sum(r['2 Dorm'] for r in rows_data),
+        '3 Dorm':     sum(r['3 Dorm'] for r in rows_data),
+        'total_disp': sum(r['total_disp'] for r in rows_data),
+        'arr':        sum(r['arr'] for r in rows_data),
+        'base':       sum(r['base'] for r in rows_data),
+    }
+    t['total'] = sum(r['total'] for r in rows_data)
+    t['pct']   = round(t['arr'] / t['total'] * 100, 1) if t['total'] else 0.0
+
+    # ── Build table rows HTML ──────────────────────────────────────────────
+    table_rows_html = ''
+    for r in rows_data:
+        clr = _pct_clr(r['pct']); bg = _pct_bg(r['pct'])
+        cells = ''
+        for grp in TIP_GROUPS:
+            v  = r[grp]
+            rb = _red_bg(v, max_vals[grp])
+            cells += f'<td style="text-align:center;{rb}">{v if v else "&#x2014;"}</td>'
+        # Total disp
+        rb_td = _red_bg(r['total_disp'], max_disp)
+        cells += f'<td style="text-align:center;font-weight:600;{rb_td}">{r["total_disp"] if r["total_disp"] else "&#x2014;"}</td>'
+        cells += f'<td style="text-align:center">{r["arr"]:,}</td>'
+        cells += f'<td style="text-align:center">{r["total"]:,}</td>'
+        cells += (f'<td style="text-align:center;font-weight:700;color:{clr};background:{bg}">'
+                  f'{r["pct"]}%</td>')
+        table_rows_html += f'<tr><td style="font-weight:500">{r["proj"]}</td>{cells}</tr>\n'
+
+    # Totals row
+    tc = ''; tp_clr = _pct_clr(t['pct']); tp_bg = _pct_bg(t['pct'])
+    for grp in TIP_GROUPS:
+        tc += f'<td style="text-align:center;font-weight:700;color:#00A8B4">{t[grp]}</td>'
+    tc += f'<td style="text-align:center;font-weight:700;color:#00A8B4">{t["total_disp"]}</td>'
+    tc += f'<td style="text-align:center;font-weight:700">{t["arr"]:,}</td>'
+    tc += f'<td style="text-align:center;font-weight:700">{t["total"]:,}</td>'
+    tc += (f'<td style="text-align:center;font-weight:700;color:{tp_clr};background:{tp_bg}">'
+           f'{t["pct"]}%</td>')
+
+    rows_js = json.dumps(rows_data, ensure_ascii=False)
+
+    section = f"""
+<div id="sec-disponibilidad" class="sec">Disponibilidad y Ocupaci&oacute;n por Proyecto</div>
+<div class="sec-sub">Unidades disponibles agrupadas por tipolog&iacute;a &mdash; Datos al {DATE_STR}</div>
+
+<div style="margin-bottom:14px;display:flex;justify-content:flex-end">
+  <button onclick="exportDispGSheets()"
+          style="display:flex;align-items:center;gap:6px;padding:7px 16px;background:#0F9D58;
+                 color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.78rem;
+                 font-weight:700;box-shadow:0 2px 8px rgba(15,157,88,.25);transition:opacity .15s"
+          onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+    &#9315; Exportar Google Sheets
+  </button>
+</div>
+
+<div class="cf" style="overflow-x:auto;margin-bottom:6px">
+  <table id="disp-table" style="min-width:720px">
+    <thead>
+      <tr style="background:#00A8B4;color:#fff">
+        <th style="text-align:left;min-width:180px">Proyecto</th>
+        <th style="text-align:center">Studio</th>
+        <th style="text-align:center">1 Dorm</th>
+        <th style="text-align:center">2 Dorm</th>
+        <th style="text-align:center">3 Dorm</th>
+        <th style="text-align:center">Total Disp.</th>
+        <th style="text-align:center">Arrendados</th>
+        <th style="text-align:center">Total</th>
+        <th style="text-align:center">% Ocup.</th>
+      </tr>
+    </thead>
+    <tbody>
+      {table_rows_html}
+      <tr style="border-top:2px solid #00A8B4;background:#F4FAFB">
+        <td><b>TOTAL</b></td>
+        {tc}
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div style="font-size:.69rem;color:#9CA3AF;margin-bottom:20px">
+  % Ocup. = Arrendados / Total &nbsp;&middot;&nbsp;
+  Intensidad roja &rarr; mayor disponibilidad relativa
+</div>
+"""
+
+    js = f"""
+// ── Disponibilidad table ─────────────────────────────────────────────────────
+var disp_rows = {rows_js};
+
+function exportDispGSheets() {{
+  var hdr = ['Proyecto','Studio','1 Dorm','2 Dorm','3 Dorm',
+             'Disponibles Total','Arrendados','Total','% Ocupacion'];
+  var csvRows = [hdr];
+  disp_rows.forEach(function(r) {{
+    csvRows.push([r.proj, r.Studio, r['1 Dorm'], r['2 Dorm'], r['3 Dorm'],
+                  r.total_disp, r.arr, r.total, r.pct + '%']);
+  }});
+  var ts=0,t1=0,t2=0,t3=0,td=0,ta=0,tb=0;
+  disp_rows.forEach(function(r){{
+    ts+=r.Studio; t1+=r['1 Dorm']; t2+=r['2 Dorm']; t3+=r['3 Dorm'];
+    td+=r.total_disp; ta+=r.arr; tb+=r.total;
+  }});
+  var tp = tb>0 ? (ta/tb*100).toFixed(1)+'%' : '0%';
+  csvRows.push(['TOTAL',ts,t1,t2,t3,td,ta,tb,tp]);
+
+  var csv = csvRows.map(function(row) {{
+    return row.map(function(c) {{
+      var s = String(c).replace(/"/g,'""');
+      return (s.indexOf(',')>=0||s.indexOf('"')>=0||s.indexOf('\\n')>=0) ? '"'+s+'"' : s;
+    }}).join(',');
+  }}).join('\\n');
+
+  var blob = new Blob(['\\uFEFF'+csv], {{type:'text/csv;charset=utf-8'}});
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href   = url;
+  a.download = 'LAR_Disponibilidad_{date_fn}.csv';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}}
+"""
+    return section, js
+
+
 PROJ_PALETTE = [
-    "#008E9F","#0369A1","#7C3AED","#DB2777","#059669",
+    "#00A8B4","#0369A1","#7C3AED","#DB2777","#059669",
     "#D97706","#DC2626","#0891B2","#4F46E5","#BE123C",
     "#15803D","#B45309","#1D4ED8","#9333EA"
 ]
@@ -819,11 +1125,19 @@ def update_html(html, m):
         html = html.replace(f'<div class="sec">{tag}</div>',
                             f'<div id="sec-pipeline" class="sec">{tag}</div>')
 
-    # CSS hover cards
+    # CSS hover cards + brand color + collapsible sections
     css = """.kc-link{cursor:pointer;transition:border-color .2s,transform .15s,box-shadow .2s}
 .kc-link:hover{border-color:#00A8B4!important;transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,168,180,.22);background:#F0FDFE!important}
-.kc-link:hover .kl{color:#008E9F}"""
+.kc-link:hover .kl{color:#00A8B4}
+/* Collapsible sections */
+.sec{cursor:pointer;user-select:none;}
+.sec-chevron{display:inline-block;font-size:.58rem;color:#9CA3AF;margin-left:7px;transition:transform .22s;vertical-align:middle;}
+.sec.collapsed .sec-chevron{transform:rotate(180deg);}
+@keyframes spin{to{transform:rotate(360deg);}}"""
     html = html.replace('</style>', css + '\n</style>', 1)
+
+    # NOTE: Comparador Semanal id is added in main() AFTER all section insertions
+    # so the marker '<div class="sec">Comparador Semanal</div>' stays intact for those insertions.
 
     return html
 
@@ -1231,17 +1545,24 @@ def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencia
 
         sidebar_html += f"""
 <div class="proj-list-item" id="pli-{name_id}" onclick="selectProj('{name_js}')"
-     data-name="{name}" data-pct="{pct}" data-venc="{venc_n}">
+     data-name="{name}" data-pct="{pct}" data-venc="{venc_n}"
+     data-arr="{int(p['Arrendados'])}" data-disp="{int(p['Disponibles'])}"
+     data-total="{int(p['Total'])}" data-pol="{int(p['Por_Liberar'])}">
   <div{dot_cls} style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:{dot_clr}"></div>
   {logo_html_sb}
   <div style="flex:1;min-width:0;overflow:hidden">
     <div style="font-size:.76rem;font-weight:700;color:#1E2A38;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">{name}</div>
-    <div style="font-size:.68rem;color:#6B7A8D;margin:1px 0 3px">{pct}% {trend_html}</div>
+    <div class="proj-sb-pct" style="font-size:.68rem;color:#6B7A8D;margin:1px 0 3px">{pct}% {trend_html}</div>
     <div class="proj-prices-row">{pills_html}</div>
   </div>
 </div>"""
 
     # ── Cards HTML (overview panel) ───────────────────────────────────────────
+    def _fc(v):
+        """Format CLP value: 1.23M or 456k. Returns '' if zero."""
+        if not v: return ""
+        return f'${v/1e6:.2f}M' if v >= 1_000_000 else f'${round(v/1000)}k'
+
     cards_html = ""
     for p in sorted_projs:
         name    = p["Propiedad"]
@@ -1264,26 +1585,42 @@ def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencia
         else:
             card_trend = ""
 
-        # Price pills for card
+        # Price table for card: Tipo | Disp | Desde | Hasta | F.Renta
         proj_prices = (precios or {}).get(name, {})
-        card_pills  = ""
+        card_rows   = ""
         for tip, pinfo in sorted(proj_prices.items()):
-            uf_val  = pinfo["min"]
-            div     = pinfo["divisa"]
-            clp_int = round(uf_val * uf_valor) if uf_valor and div == "UF" else 0
-            clp_fmt = _fmt_clp(uf_val, uf_valor) or ""
-            card_pills += (
-                f'<span class="proj-price-pill" '
-                f'data-uf="{uf_val}" data-clp="{clp_int}" data-div="{div}" data-tip="{tip}">'
-                f'<b>{tip}</b> {uf_val:.1f}{div}'
-                + (f' · {clp_fmt}' if clp_fmt else '')
-                + '</span>'
+            mn  = pinfo["min"];  mx  = pinfo["max"]
+            div = pinfo["divisa"];  nd = pinfo["n_disp"]
+            mn_clp = round(mn * uf_valor) if uf_valor and div == "UF" else 0
+            mx_clp = round(mx * uf_valor) if uf_valor and div == "UF" else 0
+            fr_clp_s = (f'{_fc(mn_clp*3)}–{_fc(mx_clp*3)}') if mn_clp else ''
+            card_rows += (
+                f'<tr class="pct-row" '
+                f'data-mn-uf="{mn:.2f}" data-mx-uf="{mx:.2f}" '
+                f'data-mn-clp="{mn_clp}" data-mx-clp="{mx_clp}" '
+                f'data-fr-mn-uf="{mn*3:.2f}" data-fr-mx-uf="{mx*3:.2f}" '
+                f'data-fr-mn-clp="{mn_clp*3}" data-fr-mx-clp="{mx_clp*3}" '
+                f'data-div="{div}">'
+                f'<td class="pct-tip">{tip}</td>'
+                f'<td class="pct-nd">{nd}</td>'
+                f'<td class="pct-desde">{mn:.1f}&nbsp;{div}'
+                f'<span class="pct-sub">{_fc(mn_clp)}</span></td>'
+                f'<td class="pct-hasta">{mx:.1f}&nbsp;{div}'
+                f'<span class="pct-sub">{_fc(mx_clp)}</span></td>'
+                f'<td class="pct-fr">{mn*3:.1f}&ndash;{mx*3:.1f}&nbsp;{div}'
+                f'<span class="pct-sub">{fr_clp_s}</span></td>'
+                f'</tr>'
             )
         price_section = (
             f'<div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9">'
-            f'<div style="font-size:.6rem;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Desde (arriendo)</div>'
-            f'<div class="proj-prices-row">{card_pills}</div></div>'
-        ) if card_pills else ""
+            f'<table class="pct" cellspacing="0">'
+            f'<thead><tr>'
+            f'<th>Tipo</th><th>Disp</th>'
+            f'<th class="pct-h-desde">Desde</th>'
+            f'<th class="pct-h-hasta">Hasta</th>'
+            f'<th>F.Renta</th>'
+            f'</tr></thead><tbody>{card_rows}</tbody></table></div>'
+        ) if card_rows else ""
 
         venc_b = (f'<div class="proj-stat"><span style="color:#DC2626;font-weight:700">{venc_n}</span> venc.</div>') if venc_n else ""
         pol_b  = (f'<div class="proj-stat"><span style="color:#DC2626;font-weight:700">{pol_n}</span> p.lib.</div>') if pol_n else ""
@@ -1291,6 +1628,8 @@ def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencia
         cards_html += f"""
 <div class="proj-card" onclick="selectProj('{name_js}')"
      data-name="{name}" data-pct="{pct}" data-venc="{venc_n}"
+     data-arr="{int(p['Arrendados'])}" data-disp="{int(p['Disponibles'])}"
+     data-total="{int(p['Total'])}" data-pol="{int(p['Por_Liberar'])}"
      style="border-top:4px solid {color}">
   <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
     {logo_html_card}
@@ -1302,15 +1641,15 @@ def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencia
   <div style="margin-bottom:9px">
     <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
       <span style="font-size:.67rem;color:#6B7A8D">Ocupaci&oacute;n</span>
-      <span style="font-size:.86rem;font-weight:800;color:{tclr}">{pct}%</span>
+      <span class="proj-pct-val" style="font-size:.86rem;font-weight:800;color:{tclr}">{pct}%</span>
     </div>
     <div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">
-      <div style="height:100%;width:{bar_w}%;background:{color};border-radius:99px"></div>
+      <div class="proj-bar-fill" style="height:100%;width:{bar_w}%;background:{color};border-radius:99px"></div>
     </div>
   </div>
-  <div style="display:flex;gap:5px;flex-wrap:wrap">
-    <div class="proj-stat"><span style="color:#16A34A;font-weight:700">{int(p['Arrendados'])}</span> arr.</div>
-    <div class="proj-stat"><span style="color:#D97706;font-weight:700">{int(p['Disponibles'])}</span> disp.</div>
+  <div class="proj-stats-row" style="display:flex;gap:5px;flex-wrap:wrap">
+    <div class="proj-stat"><span class="proj-arr-val" style="color:#16A34A;font-weight:700">{int(p['Arrendados'])}</span> arr.</div>
+    <div class="proj-stat"><span class="proj-disp-val" style="color:#D97706;font-weight:700">{int(p['Disponibles'])}</span> disp.</div>
     {pol_b}{venc_b}
   </div>
   {price_section}
@@ -1337,22 +1676,46 @@ def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencia
 .proj-list-item{{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;cursor:pointer;
   border-bottom:1px solid #F1F5F9;transition:background .13s;border-left:3px solid transparent;}}
 .proj-list-item:hover{{background:#F0FAFB;}}
-.proj-list-item.selected{{background:#E6F7F9;border-left-color:#008E9F;}}
+.proj-list-item.selected{{background:#E6F7F9;border-left-color:#00A8B4;}}
 .proj-price-pill{{display:inline-flex;align-items:center;gap:2px;font-size:.62rem;background:#F0FDF4;
   border:1px solid #BBF7D0;border-radius:5px;padding:1px 6px;color:#15803D;margin:1px 3px 1px 0;}}
 .proj-card{{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:14px;
   cursor:pointer;transition:all .18s ease;}}
-.proj-card:hover{{border-color:#008E9F;box-shadow:0 6px 20px rgba(0,142,159,.1);transform:translateY(-2px);}}
+.proj-card:hover{{border-color:#00A8B4;box-shadow:0 6px 20px rgba(0,142,159,.1);transform:translateY(-2px);}}
 .proj-stat{{font-size:.67rem;color:#6B7A8D;background:#F8FAFC;padding:2px 7px;border-radius:99px;}}
 .proj-logo-box img{{display:block;}}
+.pct{{width:100%;border-collapse:collapse;font-size:.59rem;table-layout:fixed;}}
+.pct thead tr{{background:#F8FAFC;}}
+.pct th{{padding:3px 4px;text-align:right;color:#9CA3AF;font-weight:700;text-transform:uppercase;letter-spacing:.03em;border-bottom:1px solid #F1F5F9;white-space:nowrap;overflow:hidden;}}
+.pct th:first-child{{text-align:left;width:22%;}}
+.pct th:nth-child(2){{width:11%;}}
+.pct th:nth-child(3),.pct th:nth-child(4){{width:18%;}}
+.pct th:nth-child(5){{width:31%;}}
+.pct td{{padding:3px 4px;text-align:right;color:#374151;border-bottom:1px solid #F8FAFC;overflow:hidden;}}
+.pct td:first-child{{text-align:left;font-weight:700;color:#1E2A38;}}
+.pct-nd{{color:#D97706!important;font-weight:700!important;}}
+.pct-desde{{color:#15803D!important;}}
+.pct-hasta{{color:#0369A1!important;}}
+.pct-fr{{color:#7C3AED!important;font-size:.57rem!important;white-space:normal!important;line-height:1.3;}}
+.pct-sub{{display:block;font-size:.54rem;color:#9CA3AF;line-height:1.3;margin-top:1px;}}
 @media(max-width:840px){{
   #proj-workspace{{flex-direction:column!important;}}
   #proj-sidebar-panel{{width:100%!important;max-height:260px;border-right:none!important;border-bottom:1px solid #E2E8F0;}}
 }}
 </style>
 
-<div id="sec-proyectos" class="sec">Vista por Proyecto</div>
-<div class="sec-sub">Selecciona un proyecto para ver su an&aacute;lisis completo &mdash; Datos al {DATE_STR}{uf_badge}</div>
+<div id="sec-proyectos" class="sec"
+     style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:28px 0 4px">
+  <span>Vista por Proyecto&nbsp;<span class="sec-chevron">&#9650;</span></span>
+  <button onclick="exportToExcel();event.stopPropagation();" title="Exportar tabla a Excel"
+    style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:#16A34A;color:#fff;
+           border:none;border-radius:8px;cursor:pointer;font-size:.78rem;font-weight:700;
+           box-shadow:0 2px 8px rgba(22,163,74,.25);transition:opacity .15s"
+    onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+    &#128229; Exportar Excel
+  </button>
+</div>
+<div class="sec-sub" style="margin-bottom:12px">Selecciona un proyecto para ver su an&aacute;lisis completo &mdash; Datos al {DATE_STR}{uf_badge}</div>
 
 <div id="proj-workspace"
      style="display:flex;border:1px solid #E2E8F0;border-radius:16px;overflow:hidden;
@@ -1385,6 +1748,14 @@ def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencia
           $ CLP
         </button>
       </div>
+      <button id="proj-pol-btn" onclick="togglePorLiberar()"
+              title="Proyecci&oacute;n contabilizando unidades por liberar como disponibles"
+              style="width:100%;margin-top:6px;padding:5px 9px;border:1px solid #E2E8F0;
+                     border-radius:7px;font-size:.72rem;background:#F8FAFC;color:#374151;
+                     cursor:pointer;font-weight:600;display:flex;align-items:center;
+                     justify-content:center;gap:5px;transition:all .15s">
+        &#9654; Proyecci&oacute;n Por Liberar
+      </button>
     </div>
 
     <!-- Lista proyectos -->
@@ -1410,7 +1781,7 @@ def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencia
         Selecciona un proyecto en la lista para ver su an&aacute;lisis completo.
       </p>
       <div id="proj-cards-grid"
-           style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
+           style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px">
         {cards_html}
       </div>
     </div>
@@ -1447,7 +1818,7 @@ function _dkpi(label, val, color) {{
 
 // ── Logo fallback ─────────────────────────────────────────────────────────────
 function projLogoFallback(img) {{
-  var box=img.parentElement, init=box.dataset.init||"??", color=box.dataset.color||"#008E9F";
+  var box=img.parentElement, init=box.dataset.init||"??", color=box.dataset.color||"#00A8B4";
   var sz=box.offsetWidth||34, cx=Math.round(sz/2), cy=Math.round(sz*.64), fs=Math.round(sz*.33);
   box.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="'+sz+'" height="'+sz+'"'
     +' viewBox="0 0 '+sz+' '+sz+'"><rect width="'+sz+'" height="'+sz+'" rx="8" fill="'+color+'"/>'
@@ -1501,6 +1872,83 @@ function _refreshPricePills() {{
   }});
 }}
 
+// ── Inicializar CLP en cards (fallback cuando Python no pudo obtener UF) ─────
+function _initCardCLP() {{
+  if(!UF_VALOR) return;
+  document.querySelectorAll(".pct-row").forEach(function(row) {{
+    var mn=parseFloat(row.dataset.mnUf), mx=parseFloat(row.dataset.mxUf);
+    if(!mn||row.dataset.div!=="UF") return;
+    var mnC=Math.round(mn*UF_VALOR), mxC=Math.round(mx*UF_VALOR);
+    var subs=row.querySelectorAll(".pct-sub");
+    if(subs[0]&&!subs[0].textContent) subs[0].textContent=_fmtClp(mnC);
+    if(subs[1]&&!subs[1].textContent) subs[1].textContent=_fmtClp(mxC);
+    if(subs[2]&&!subs[2].textContent) subs[2].textContent=_fmtClp(mnC*3)+"–"+_fmtClp(mxC*3);
+  }});
+}}
+window.addEventListener('load', _initCardCLP);
+
+// ── Proyección Por Liberar ────────────────────────────────────────────────────
+var _polMode = false;
+function togglePorLiberar() {{
+  _polMode = !_polMode;
+  var btn = document.getElementById("proj-pol-btn");
+  if(_polMode) {{
+    btn.style.background="#FFF7ED"; btn.style.borderColor="#FED7AA";
+    btn.style.color="#C2410C"; btn.innerHTML="&#9646;&#9646; Proyecci&oacute;n Activa";
+  }} else {{
+    btn.style.background="#F8FAFC"; btn.style.borderColor="#E2E8F0";
+    btn.style.color="#374151"; btn.innerHTML="&#9654; Proyecci&oacute;n Por Liberar";
+  }}
+
+  // Actualizar cards
+  document.querySelectorAll(".proj-card").forEach(function(card) {{
+    var arr   = parseFloat(card.dataset.arr   || 0);
+    var disp  = parseFloat(card.dataset.disp  || 0);
+    var total = parseFloat(card.dataset.total || 1);
+    var pol   = parseFloat(card.dataset.pol   || 0);
+    var arrE  = _polMode ? arr - pol  : arr;
+    var dispE = _polMode ? disp + pol : disp;
+    var pctE  = total > 0 ? arrE / total * 100 : 0;
+    var clr   = pctE >= 95 ? "#16A34A" : pctE >= 85 ? "#D97706" : "#DC2626";
+
+    var pctEl  = card.querySelector(".proj-pct-val");
+    var barEl  = card.querySelector(".proj-bar-fill");
+    var arrEl  = card.querySelector(".proj-arr-val");
+    var dispEl = card.querySelector(".proj-disp-val");
+    if(pctEl)  {{ pctEl.textContent = pctE.toFixed(1)+"%"; pctEl.style.color = clr; }}
+    if(barEl)  {{ barEl.style.width = Math.min(pctE,100)+"%"; }}
+    if(arrEl)  {{ arrEl.textContent = Math.round(arrE); }}
+    if(dispEl) {{ dispEl.textContent = Math.round(dispE); }}
+
+    // Badge "por liberar"
+    var badge = card.querySelector(".pol-proj-badge");
+    if(_polMode && pol > 0) {{
+      if(!badge) {{
+        badge = document.createElement("div");
+        badge.className = "proj-stat pol-proj-badge";
+        badge.style.cssText = "color:#C2410C;background:#FFF7ED;border:1px solid #FED7AA;font-weight:700";
+        badge.innerHTML = '+'+pol+' p.lib.';
+        var sr = card.querySelector(".proj-stats-row");
+        if(sr) sr.appendChild(badge);
+      }}
+    }} else if(badge) {{ badge.remove(); }}
+  }});
+
+  // Actualizar sidebar
+  document.querySelectorAll(".proj-list-item").forEach(function(item) {{
+    var arr   = parseFloat(item.dataset.arr   || 0);
+    var total = parseFloat(item.dataset.total || 1);
+    var pol   = parseFloat(item.dataset.pol   || 0);
+    var arrE  = _polMode ? arr - pol : arr;
+    var pctE  = total > 0 ? arrE / total * 100 : 0;
+    var sbPct = item.querySelector(".proj-sb-pct");
+    if(sbPct) {{
+      var trend = sbPct.dataset.trendHtml || "";
+      sbPct.innerHTML = pctE.toFixed(1)+"% "+(_polMode&&pol>0?'<span style="color:#C2410C;font-size:.62rem">(+'+pol+' p.l.)</span>':"");
+    }}
+  }});
+}}
+
 // ── Seleccionar proyecto ──────────────────────────────────────────────────────
 function selectProj(projName) {{
   _selProj=projName;
@@ -1540,7 +1988,7 @@ function _buildDetailHTML(projName) {{
   for(var i=0;i<proj_desc.length;i++){{if(proj_desc[i].Propiedad===projName){{p=proj_desc[i];break;}}}}
   if(!p) return "<p>Proyecto no encontrado</p>";
 
-  var color=PROJ_COLORS[projName]||"#008E9F";
+  var color=PROJ_COLORS[projName]||"#00A8B4";
   var pct=(p.Pct_Ocup*100).toFixed(1);
   var mt=typeof META_TARGET!=="undefined"?META_TARGET:0.95;
   var tgt=(mt*100).toFixed(0);
@@ -1689,44 +2137,69 @@ function _renderPriceTable(projName) {{
   var projPrices=PROJ_PRECIOS[projName]||{{}};
   var tips=Object.keys(projPrices).sort();
   if(tips.length===0) {{ el.innerHTML=""; return; }}
-  var idx=-1;
-  if(typeof tipo_data!=="undefined"&&tipo_data.projects) idx=tipo_data.projects.indexOf(projName);
+  var tdB='padding:7px 10px;border-bottom:1px solid #F1F5F9;font-size:.74rem;vertical-align:middle',
+      tdR='padding:7px 10px;border-bottom:1px solid #F1F5F9;font-size:.74rem;text-align:right;vertical-align:middle',
+      tdG='padding:7px 10px;border-bottom:1px solid #F1F5F9;font-size:.74rem;text-align:right;color:#15803D;font-weight:700;vertical-align:middle',
+      tdP='padding:7px 10px;border-bottom:1px solid #F1F5F9;font-size:.68rem;text-align:right;color:#7C3AED;vertical-align:middle',
+      tdM='padding:5px 10px 5px 22px;border-bottom:1px solid #F8FAFC;font-size:.69rem;color:#6B7A8D;vertical-align:middle',
+      tdMr='padding:5px 10px;border-bottom:1px solid #F8FAFC;font-size:.69rem;text-align:right;vertical-align:middle';
+  function fmtUF(v,div){{return '<b>'+v.toFixed(1)+'</b> <span style="color:#9CA3AF;font-size:.65rem">'+div+'</span>';}}
   var rows="";
   tips.forEach(function(tip) {{
     var pr=projPrices[tip]; if(!pr) return;
-    var uf=pr.min, div=pr.divisa||"UF";
-    var clp=UF_VALOR&&div==="UF"?Math.round(uf*UF_VALOR):0;
-    var ufStr='<b style="font-size:.82rem">'+uf.toFixed(1)+'</b> <span style="font-size:.68rem;color:#6B7A8D">'+div+'</span>';
-    var clpStr=clp?'<b style="font-size:.82rem">'+_fmtClp(clp)+'</b>':"<span style=\"color:#CBD5E1\">—</span>";
-    // Disponibles para esta tipologia
-    var disp="—";
-    if(idx>=0&&typeof tipo_data!=="undefined"&&tipo_data[tip]) {{
-      var tot=tipo_data[tip].total[idx]||0, arr=tipo_data[tip].arrendados[idx]||0;
-      disp=String(tot-arr);
+    var div=pr.divisa||"UF";
+    var mn=pr.min, mx=pr.max||mn;
+    var mnC=UF_VALOR&&div==="UF"?Math.round(mn*UF_VALOR):0;
+    var mxC=UF_VALOR&&div==="UF"?Math.round(mx*UF_VALOR):0;
+    var nd=pr.n_disp||0, ndClr=nd>0?"#D97706":"#CBD5E1";
+    function sub(v){{return v?'<span style="display:block;font-size:.65rem;color:#9CA3AF;font-weight:400;margin-top:1px">'+_fmtClp(v)+'</span>':''}}
+    var desdeVal=fmtUF(mn,div)+sub(mnC);
+    var hastaVal=fmtUF(mx,div)+sub(mxC);
+    var frVal='<b>'+(mn*3).toFixed(1)+'</b>&ndash;<b>'+(mx*3).toFixed(1)+'</b> <span style="color:#9CA3AF;font-size:.65rem">'+div+'</span>'+
+      (mnC?'<span style="display:block;font-size:.65rem;color:#9CA3AF;font-weight:400;margin-top:1px">'+_fmtClp(mnC*3)+'&ndash;'+_fmtClp(mxC*3)+'</span>':'');
+    rows+='<tr>'+
+      '<td style="'+tdB+';font-weight:700;color:#1E2A38">'+tip+'</td>'+
+      '<td style="'+tdR+';font-weight:700;color:'+ndClr+'">'+nd+'</td>'+
+      '<td style="'+tdG+'">'+desdeVal+'</td>'+
+      '<td style="'+tdG+'">'+hastaVal+'</td>'+
+      '<td style="'+tdP+'">'+frVal+'</td>'+
+      '</tr>';
+    var mods=(pr.modelos||[]).filter(function(m){{return m.modelo;}});
+    if(mods.length>1) {{
+      mods.forEach(function(m) {{
+        var mmn=m.min, mmx=m.max||mmn, mnd=m.n_disp;
+        var mmnC=UF_VALOR&&div==="UF"?Math.round(mmn*UF_VALOR):0;
+        var mmxC=UF_VALOR&&div==="UF"?Math.round(mmx*UF_VALOR):0;
+        var mDesde=mmn.toFixed(1)+" "+div+(mmnC?'<span style="display:block;font-size:.62rem;color:#9CA3AF;margin-top:1px">'+_fmtClp(mmnC)+'</span>':'');
+        var mHasta=mmx.toFixed(1)+" "+div+(mmxC?'<span style="display:block;font-size:.62rem;color:#9CA3AF;margin-top:1px">'+_fmtClp(mmxC)+'</span>':'');
+        var mFr=(mmn*3).toFixed(1)+"&ndash;"+(mmx*3).toFixed(1)+" "+div+
+          (mmnC?'<span style="display:block;font-size:.62rem;color:#9CA3AF;margin-top:1px">'+_fmtClp(mmnC*3)+'&ndash;'+_fmtClp(mmxC*3)+'</span>':'');
+        rows+='<tr>'+
+          '<td style="'+tdM+'">&#x2514; '+m.modelo+'</td>'+
+          '<td style="'+tdMr+';color:#D97706">'+mnd+'</td>'+
+          '<td style="'+tdMr+';color:#6B7A8D;vertical-align:top">'+mDesde+'</td>'+
+          '<td style="'+tdMr+';color:#6B7A8D;vertical-align:top">'+mHasta+'</td>'+
+          '<td style="'+tdMr+';color:#9061F9;font-size:.66rem;vertical-align:top">'+mFr+'</td>'+
+          '</tr>';
+      }});
     }}
-    var dispClr=parseInt(disp)>0?"#D97706":"#CBD5E1";
-    rows+='<tr>'
-      +'<td style="padding:8px 12px;font-weight:700;color:#1E2A38;font-size:.76rem">'+tip+'</td>'
-      +'<td style="padding:8px 12px;text-align:right;'+(_projUFMode?"color:#15803D":"color:#6B7A8D")+'">'
-        +(_projUFMode?ufStr:('<span style="font-size:.76rem">'+uf.toFixed(1)+' '+div+'</span>'))+'</td>'
-      +'<td style="padding:8px 12px;text-align:right;'+(!_projUFMode?"color:#15803D":"color:#6B7A8D")+'">'
-        +(!_projUFMode?clpStr:('<span style="font-size:.76rem">'+(clp?_fmtClp(clp):"—")+'</span>'))+'</td>'
-      +'<td style="padding:8px 12px;text-align:right;font-weight:700;color:'+dispClr+';font-size:.76rem">'+disp+'</td>'
-      +'</tr>';
   }});
-  el.innerHTML='<table style="width:100%;border-collapse:collapse;border:1px solid #E2E8F0;border-radius:10px;overflow:hidden">'
-    +'<thead><tr style="background:#F8FAFC">'
-    +'<th style="padding:8px 12px;text-align:left;font-size:.67rem;color:#6B7A8D;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E2E8F0">Tipolog&iacute;a</th>'
-    +'<th style="padding:8px 12px;text-align:right;font-size:.67rem;color:'+(  _projUFMode?"#15803D":"#6B7A8D")+';font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E2E8F0">Desde (UF)</th>'
-    +'<th style="padding:8px 12px;text-align:right;font-size:.67rem;color:'+(!_projUFMode?"#15803D":"#6B7A8D")+';font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E2E8F0">Desde (CLP)</th>'
-    +'<th style="padding:8px 12px;text-align:right;font-size:.67rem;color:#6B7A8D;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E2E8F0">Disponibles</th>'
-    +'</tr></thead><tbody>'+rows+'</tbody></table>';
+  function _th(txt,align,clr){{
+    return '<th style="padding:8px 10px;text-align:'+align+';font-size:.64rem;color:'+clr+';font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E2E8F0">'+txt+'</th>';
+  }}
+  el.innerHTML='<table style="width:100%;border-collapse:collapse;border:1px solid #E2E8F0;border-radius:10px;overflow:hidden">'+
+    '<thead><tr style="background:#F8FAFC">'+
+    _th("Tipología","left","#6B7A8D")+_th("Disp","right","#D97706")+
+    _th("Desde","right","#15803D")+_th("Hasta","right","#15803D")+
+    _th("Factor Renta (3×)","right","#7C3AED")+
+    '</tr></thead><tbody>'+rows+'</tbody></table>';
 }}
+
 
 // ── Render Plotly en detalle ──────────────────────────────────────────────────
 function _renderDetailCharts(projName) {{
   _renderPriceTable(projName);
-  var color=PROJ_COLORS[projName]||"#008E9F";
+  var color=PROJ_COLORS[projName]||"#00A8B4";
   var base={{paper_bgcolor:"#FFFFFF",plot_bgcolor:"#FFFFFF",
     font:{{family:"Arial,sans-serif",size:11,color:"#1A202C"}},
     margin:{{t:10,b:55,l:40,r:10}},
@@ -1884,6 +2357,45 @@ function refreshSidebarStatus() {{
   if(footer) footer.textContent = nBelow + " bajo meta";
 }}
 
+
+// ── Excel export ─────────────────────────────────────────────────────────────
+function exportToExcel() {{
+  if(typeof XLSX==="undefined") {{
+    var s=document.createElement("script");
+    s.src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.mini.min.js";
+    s.onload=function(){{_doExport();}};
+    document.head.appendChild(s);
+  }} else {{ _doExport(); }}
+}}
+function _doExport() {{
+  var rows=[["Proyecto","Tipología","Modelo","Disponibles",
+             "Desde UF","Hasta UF","Desde CLP","Hasta CLP",
+             "F.Renta Desde UF","F.Renta Hasta UF","F.Renta Desde CLP","F.Renta Hasta CLP"]];
+  Object.keys(PROJ_PRECIOS).sort().forEach(function(proj) {{
+    var tips=PROJ_PRECIOS[proj]; if(!tips) return;
+    Object.keys(tips).sort().forEach(function(tip) {{
+      var pr=tips[tip]; if(!pr) return;
+      var div=pr.divisa||"UF";
+      var mods=(pr.modelos||[]).filter(function(m){{return m.modelo;}});
+      var list=mods.length>1?mods:[{{modelo:"",min:pr.min,max:pr.max||pr.min,n_disp:pr.n_disp||0}}];
+      list.forEach(function(m) {{
+        var mn=m.min, mx=m.max||mn, nd=m.n_disp;
+        var mnC=UF_VALOR&&div==="UF"?Math.round(mn*UF_VALOR):0;
+        var mxC=UF_VALOR&&div==="UF"?Math.round(mx*UF_VALOR):0;
+        rows.push([proj,tip,m.modelo,nd,
+          parseFloat(mn.toFixed(2)),parseFloat(mx.toFixed(2)),mnC,mxC,
+          parseFloat((mn*3).toFixed(2)),parseFloat((mx*3).toFixed(2)),mnC*3,mxC*3]);
+      }});
+    }});
+  }});
+  var ws=XLSX.utils.aoa_to_sheet(rows);
+  ws["!cols"]=[{{wch:28}},{{wch:10}},{{wch:18}},{{wch:8}},
+               {{wch:10}},{{wch:10}},{{wch:12}},{{wch:12}},
+               {{wch:14}},{{wch:14}},{{wch:14}},{{wch:14}}];
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,"Precios y Factor Renta");
+  XLSX.writeFile(wb,"LAR_Precios_"+new Date().toISOString().slice(0,10)+".xlsx");
+}}
 // ── Restaurar estado desde localStorage ──────────────────────────────────────
 (function() {{
   var saved=localStorage.getItem("projSort");
@@ -1907,6 +2419,94 @@ def add_extra_features(html, m, hist_data, uf_valor=None):
     4. Modal de detalle por proyecto
     """
 
+    # ── 0. BRAND COLOR — replace residual #008E9F from base template ─────────
+    html = html.replace('#008E9F', '#00A8B4')
+
+    # ── 0b. GATE DE ACCESO ────────────────────────────────────────────────────
+    _PWD_HASH = '10ca7afef5a927a199f952212a07aff3a1a33aa98cf3b51afba65fd701c8f0d4'
+
+    # Script en <head>: oculta el body inmediatamente si no hay sesión válida
+    head_script = f"""<script>
+(function(){{
+  if(sessionStorage.getItem('lar_pwd_ok')!=='1'){{
+    document.documentElement.style.visibility='hidden';
+  }}
+}})();
+</script>"""
+    html = html.replace('</head>', head_script + '\n</head>', 1)
+
+    # Gate como primer hijo del <body>, z-index máximo
+    gate_html = f"""<div id="lar-gate" style="
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  width:100%;height:100%;
+  z-index:2147483647;
+  background:linear-gradient(135deg,#00A8B4 0%,#007A84 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Aileron','Arial',sans-serif;
+  visibility:visible">
+  <div style="background:#fff;border-radius:20px;padding:40px 44px 36px;
+              width:340px;box-shadow:0 24px 64px rgba(0,0,0,.3);text-align:center">
+    <img src="static/LAR-logo.png" onerror="this.style.display='none'"
+         style="height:48px;margin-bottom:20px;object-fit:contain">
+    <div style="font-size:.68rem;font-weight:700;letter-spacing:.12em;
+                text-transform:uppercase;color:#9CA3AF;margin-bottom:6px">
+      Panel de Ocupaci&oacute;n
+    </div>
+    <h2 style="font-size:1.15rem;font-weight:800;color:#1E2A38;margin:0 0 24px">
+      Acceso restringido
+    </h2>
+    <input id="gate-pwd" type="password" placeholder="Contrase&ntilde;a"
+      onkeydown="if(event.key==='Enter')gateCheck()"
+      style="width:100%;box-sizing:border-box;padding:11px 14px;
+             border:1.5px solid #E2E8F0;border-radius:10px;font-size:.95rem;
+             outline:none;color:#1E2A38;transition:border-color .15s;margin-bottom:10px"
+      onfocus="this.style.borderColor='#00A8B4'"
+      onblur="this.style.borderColor='#E2E8F0'">
+    <div id="gate-err" style="font-size:.75rem;color:#DC2626;min-height:18px;margin-bottom:10px"></div>
+    <button onclick="gateCheck()"
+      style="width:100%;padding:13px;background:#00A8B4;color:#fff;border:none;
+             border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer"
+      onmouseover="this.style.background='#007A84'"
+      onmouseout="this.style.background='#00A8B4'">
+      Ingresar
+    </button>
+    <div style="font-size:.67rem;color:#CBD5E1;margin-top:16px">LAR Group &mdash; Uso interno</div>
+  </div>
+</div>
+
+<script>
+async function gateCheck() {{
+  var pwd = (document.getElementById('gate-pwd').value || '').trim();
+  var err = document.getElementById('gate-err');
+  if (!pwd) {{ err.textContent = 'Ingresa la contraseña'; return; }}
+  var enc = new TextEncoder();
+  var buf = await crypto.subtle.digest('SHA-256', enc.encode(pwd));
+  var hex = Array.from(new Uint8Array(buf)).map(function(b){{return b.toString(16).padStart(2,'0');}}).join('');
+  if (hex === '{_PWD_HASH}') {{
+    sessionStorage.setItem('lar_pwd_ok', '1');
+    document.documentElement.style.visibility = '';
+    var g = document.getElementById('lar-gate');
+    g.style.opacity = '0'; g.style.transition = 'opacity .3s';
+    setTimeout(function(){{ g.style.display = 'none'; }}, 320);
+  }} else {{
+    err.textContent = 'Contraseña incorrecta';
+    document.getElementById('gate-pwd').value = '';
+    document.getElementById('gate-pwd').focus();
+  }}
+}}
+// Si ya autenticado: revelar página y ocultar gate
+(function(){{
+  if (sessionStorage.getItem('lar_pwd_ok') === '1') {{
+    document.documentElement.style.visibility = '';
+    var g = document.getElementById('lar-gate');
+    if (g) g.style.display = 'none';
+  }}
+}})();
+</script>
+"""
+    # Insertar gate como PRIMER hijo del body
+    html = html.replace('<body>', '<body>\n' + gate_html, 1)
+
     # ── 1. META SLIDER — antes del primer KPI grid ───────────────────────────
     meta_html = """
 <div id="meta-bar" style="display:flex;align-items:center;gap:12px;margin:16px 0 8px;
@@ -1915,8 +2515,8 @@ def add_extra_features(html, m, hist_data, uf_valor=None):
   <span style="font-size:.75rem;color:#6B7A8D;font-weight:600">&#127919; Meta de ocupaci&oacute;n:</span>
   <input type="range" id="meta-slider" min="80" max="100" step="1" value="95"
          oninput="actualizarMeta(this.value)"
-         style="width:140px;accent-color:#008E9F;cursor:pointer">
-  <span id="meta-val" style="font-size:.9rem;font-weight:700;color:#008E9F">95%</span>
+         style="width:140px;accent-color:#00A8B4;cursor:pointer">
+  <span id="meta-val" style="font-size:.9rem;font-weight:700;color:#00A8B4">95%</span>
   <span id="meta-feedback" style="font-size:.68rem;color:#0369A1;background:#EFF6FF;border-radius:99px;padding:2px 9px;font-weight:600;display:none"></span>
   <span style="font-size:.71rem;color:#9CA3AF">| La tabla de alertas se recalcula en tiempo real</span>
 </div>
@@ -1924,6 +2524,7 @@ def add_extra_features(html, m, hist_data, uf_valor=None):
     hero_html = build_hero_section(m, uf_valor=uf_valor, hist_data=hist_data)
     # Actualizar texto de fuente de datos
     html = html.replace("Fuente: unidades.xlsx", "Fuente: API PostgreSQL")
+    html = html.replace("__DATE__", DATE_STR)
     html = html.replace("Target global: 95%", "Target global: <span id=\"ft-meta-pct\">95</span>%")
     kg_match = re.search(r'<div class="kg"', html)
     if kg_match:
@@ -1935,7 +2536,7 @@ def add_extra_features(html, m, hist_data, uf_valor=None):
         hist_pcts_js  = json.dumps(hist_data['pct'].tolist())
         hist_section  = f"""
 <div style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
-     color:#1E2A38;border-bottom:2px solid #008E9F;padding-bottom:4px;margin:24px 0 12px">
+     color:#1E2A38;border-bottom:2px solid #00A8B4;padding-bottom:4px;margin:24px 0 12px">
   Tendencia Hist&oacute;rica de Ocupaci&oacute;n &mdash; 12 meses reales
 </div>
 <div class="cf" style="margin-bottom:20px">
@@ -1986,7 +2587,7 @@ if(hist_meses.length && document.getElementById("hist-ocup-chart")) {{
   Plotly.newPlot("hist-ocup-chart",[
     {{type:"scatter",mode:"lines+markers",name:"Ocupacion %",
      x:hist_meses,y:hist_pcts,
-     line:{{color:"#008E9F",width:2.5}},
+     line:{{color:"#00A8B4",width:2.5}},
      marker:{{color:hist_pcts.map(function(v){{return v>=95?"#16A34A":v>=85?"#D97706":"#DC2626";}}),size:7}},
      fill:"tozeroy",fillcolor:"rgba(0,142,159,.08)",
      hovertemplate:"Mes %{{x}}: <b>%{{y:.1f}}%</b><extra></extra>"
@@ -2173,7 +2774,7 @@ function showProjModal(projName) {{
     }}
   }});
 
-  var html2 = "<div style='border-bottom:3px solid #008E9F;padding-bottom:8px;margin-bottom:18px'>" +
+  var html2 = "<div style='border-bottom:3px solid #00A8B4;padding-bottom:8px;margin-bottom:18px'>" +
     "<div style='font-size:.6rem;color:#6B7A8D;text-transform:uppercase;letter-spacing:.12em;font-weight:700'>PROYECTO</div>" +
     "<h2 style='margin:4px 0 0;font-size:1.2rem;color:#1E2A38'>" + projName + "</h2></div>" +
     "<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px'>" +
@@ -2203,7 +2804,7 @@ function showProjModal(projName) {{
   html2 += "<div style='display:flex;gap:8px;justify-content:flex-end;margin-top:8px'>" +
     "<button onclick='closeModal()' style='padding:6px 14px;background:#F8FAFC;color:#6B7A8D;border:1px solid #E2E8F0;border-radius:6px;font-size:.74rem;cursor:pointer'>Cerrar</button>" +
     "<button onclick='closeModal();setProjFilter(\\\"" + projEsc + "\\\")' " +
-    "style='padding:6px 14px;background:#008E9F;color:#fff;border:none;border-radius:6px;font-size:.74rem;cursor:pointer'>" +
+    "style='padding:6px 14px;background:#00A8B4;color:#fff;border:none;border-radius:6px;font-size:.74rem;cursor:pointer'>" +
     "&#128204; Filtrar por este proyecto</button></div>";
 
   document.getElementById("proj-modal-content").innerHTML = html2;
@@ -2222,6 +2823,124 @@ function closeModal() {{
   if(m) m.style.display = "none";
   document.body.style.overflow = "";
 }}
+
+// ── Botón Actualizar ─────────────────────────────────────────────────────────
+function actualizarDatos() {{
+  var token = sessionStorage.getItem('lar_gh_pat');
+  var btn   = document.getElementById('btn-actualizar');
+  var lbl   = document.getElementById('btn-act-label');
+  var icon  = document.getElementById('btn-act-icon');
+
+  if (!token) {{
+    alert('Token de acceso no disponible. Recarga la página e inicia sesión.');
+    return;
+  }}
+
+  // Estado cargando
+  if (btn) btn.disabled = true;
+  if (lbl) lbl.textContent = 'Actualizando...';
+  if (icon) {{ icon.style.animation = 'spin 1s linear infinite'; icon.style.display = 'inline-block'; }}
+
+  fetch('https://api.github.com/repos/MatiasStipicevic/MatiCode/actions/workflows/update.yml/dispatches', {{
+    method: 'POST',
+    headers: {{
+      'Authorization': 'token ' + token,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json'
+    }},
+    body: JSON.stringify({{ ref: 'main' }})
+  }})
+  .then(function(res) {{
+    if (res.status === 204) {{
+      if (lbl) lbl.textContent = '✓ Workflow iniciado';
+      if (icon) icon.style.animation = '';
+      setTimeout(function() {{
+        if (lbl) lbl.textContent = 'Actualizar';
+        if (btn) btn.disabled = false;
+      }}, 4000);
+    }} else {{
+      return res.json().then(function(j) {{ throw new Error(j.message || 'Error ' + res.status); }});
+    }}
+  }})
+  .catch(function(err) {{
+    if (lbl) lbl.textContent = '✗ Error: ' + err.message;
+    if (icon) icon.style.animation = '';
+    if (btn) btn.disabled = false;
+    setTimeout(function() {{ if (lbl) lbl.textContent = 'Actualizar'; }}, 5000);
+  }});
+}}
+
+// ── Collapsible sections ─────────────────────────────────────────────────────
+var _SEC_DEFAULTS_OPEN = ['sec-ocupacion','sec-disponibilidad','sec-proyectos'];
+
+function toggleSec(id) {{
+  var body = document.getElementById('body-' + id);
+  var header = document.getElementById(id);
+  if (!body || !header) return;
+  var isOpen = body.style.display !== 'none';
+  if (isOpen) {{
+    body.style.display = 'none';
+    header.classList.add('collapsed');
+    localStorage.setItem('sec-' + id, 'closed');
+  }} else {{
+    body.style.display = '';
+    header.classList.remove('collapsed');
+    localStorage.setItem('sec-' + id, 'open');
+    // Resize Plotly charts after reveal
+    setTimeout(function() {{
+      body.querySelectorAll('div[id]').forEach(function(el) {{
+        try {{ if(el._fullLayout) Plotly.Plots.resize(el); }} catch(e) {{}}
+      }});
+    }}, 80);
+  }}
+}}
+
+window.addEventListener('load', function() {{
+  document.querySelectorAll('.sec[id]').forEach(function(header) {{
+    var id = header.id;
+    if (!id) return;
+
+    // Add chevron if not already present (sec-proyectos has it inline)
+    if (!header.querySelector('.sec-chevron')) {{
+      var chev = document.createElement('span');
+      chev.className = 'sec-chevron';
+      chev.innerHTML = '&#9650;';
+      header.appendChild(chev);
+    }}
+
+    // Collect next siblings until the next .sec[id]
+    var siblings = [];
+    var el = header.nextElementSibling;
+    while (el) {{
+      if (el.classList && el.classList.contains('sec') && el.id) break;
+      siblings.push(el);
+      el = el.nextElementSibling;
+    }}
+    if (siblings.length === 0) return;
+
+    // Wrap siblings in a body div
+    var body = document.createElement('div');
+    body.id = 'body-' + id;
+    body.className = 'sec-body';
+    header.parentNode.insertBefore(body, header.nextSibling);
+    siblings.forEach(function(s) {{ body.appendChild(s); }});
+
+    // Click handler (only on the header, not children via delegation)
+    header.addEventListener('click', function(e) {{
+      // Don't toggle if clicked on a button inside the header (e.g. export)
+      if (e.target !== header && e.target.closest && e.target.closest('button')) return;
+      toggleSec(id);
+    }});
+
+    // Initial state from localStorage or defaults
+    var saved = localStorage.getItem('sec-' + id);
+    var open = saved !== null ? saved === 'open' : _SEC_DEFAULTS_OPEN.indexOf(id) >= 0;
+    if (!open) {{
+      body.style.display = 'none';
+      header.classList.add('collapsed');
+    }}
+  }});
+}});
 </script>
 """
     html = html.replace('</body>', interactive_js + '\n</body>', 1)
@@ -2285,10 +3004,13 @@ def main():
         print(f"  Fuente: Excel | Departamentos: {len(df)}")
 
     vencs = None
+    renov = None
     try:
         print("Cargando contratos (vencimientos)...")
         vencs = load_contratos()
         print(f"  Contratos activos: {len(vencs)} | Vencen 90d: {vencs['dias'].between(0,90).sum()}")
+        renov = load_renovaciones()
+        print(f"  Renovaciones: 30d={renov['r30']} | 60d={renov['r60']} | 90d={renov['r90']}")
     except Exception as e:
         print(f"  Contratos no disponibles ({e}), omitiendo seccion vencimientos...")
 
@@ -2328,7 +3050,7 @@ def main():
     # JS de ambas secciones + irA antes de </body>
     js_block = (
         f"<script>\n{res_js}\n{pol_js}\n"
-        f"function irA(id){{var el=document.getElementById(id);if(el)el.scrollIntoView({{behavior:'smooth',block:'start'}})}}\n"
+        f"function irA(id){{var el=document.getElementById(id);if(!el)return;var b=document.getElementById('body-'+id);if(b&&b.style.display==='none')toggleSec(id);el.scrollIntoView({{behavior:'smooth',block:'start'}});if(typeof closeSb==='function')closeSb();}}\n"
         f"</script>"
     )
     html = html.replace("</body>", js_block + "\n</body>")
@@ -2347,14 +3069,20 @@ def main():
     # ── Agregar sección Vencimientos ──────────────────────────────────────
     if vencs is not None:
         print("Agregando seccion Vencimientos...")
-        venc_section, venc_js = build_vencimientos_section(vencs)
+        venc_section, venc_js = build_vencimientos_section(vencs, renov=renov)
         # Insertar antes del Comparador Semanal (antes que Reservadas y PoL)
         html = html.replace('<div class="sec">Comparador Semanal</div>',
                             venc_section + '<div class="sec">Comparador Semanal</div>')
         html = html.replace("</body>", f"<script>\n{venc_js}\n</script>\n</body>", 1)
 
+    # ── Añadir id a sección Comparador Semanal (después de todas las inserciones) ──
+    html = html.replace('<div class="sec">Comparador Semanal</div>',
+                        '<div id="sec-comparador" class="sec">Comparador Semanal</div>')
+
     # ── Eliminar gate (clave de ingreso) ─────────────────────────────────
     print("Eliminando gate de acceso...")
+    # Extraer token cifrado ANTES de remover el gate
+    _tok_m = re.search(r"var enc='([A-Za-z0-9+/=]+)',key='Lar2026'", html)
     # Remover bloque gate HTML completo
     html = re.sub(r'<!-- ── Gate de acceso ── -->.*?</div>\s*</div>\s*</div>',
                   '', html, flags=re.DOTALL)
@@ -2369,6 +3097,23 @@ def main():
     # Sidebar visible al abrir la página
     html = html.replace('window.addEventListener(\'load\',function(){',
                         'window.addEventListener(\'load\',function(){ openSb();')
+    # Re-inyectar descifrado de token como script autónomo (sobrevive en deployed HTML)
+    if _tok_m:
+        _e = _tok_m.group(1)
+        _tok_s = (
+            "<script id=\"lar-tok\">(function(){var e='" + _e +
+            "',k='Lar2026',b=atob(e),o='';"
+            "for(var i=0;i<b.length;i++)o+=String.fromCharCode(b.charCodeAt(i)^k.charCodeAt(i%k.length));"
+            "sessionStorage.setItem('lar_gh_pat',o);})()</script>"
+        )
+        html = html.replace('</body>', _tok_s + '\n</body>', 1)
+
+    # ── Agregar sección Disponibilidad y Ocupación ────────────────────────
+    print("Agregando seccion Disponibilidad y Ocupacion...")
+    disp_section, disp_js = build_disponibilidad_table(df, m)
+    html = html.replace('<div id="sec-alertas"',
+                        disp_section + '<div id="sec-alertas"', 1)
+    html = html.replace("</body>", f"<script>\n{disp_js}\n</script>\n</body>", 1)
 
     print("Agregando features interactivos (meta, historico, modal, cross-filter)...")
     html = add_extra_features(html, m, hist_data, uf_valor=uf_valor)
