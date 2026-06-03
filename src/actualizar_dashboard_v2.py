@@ -1258,6 +1258,7 @@ def build_disponibilidad_table(df, m):
             lambda r: _tip_group_full(r['_tip'], r.get('Modelo', '')), axis=1)
         grp_counts   = disp_g.groupby('_grp').size()
 
+        paa = int((g['_sub'] == 'por arrendar').sum())
         rows_data.append({
             'proj':       proj,
             'Studio':     int(grp_counts.get('Studio', 0)),
@@ -1266,6 +1267,7 @@ def build_disponibilidad_table(df, m):
             '3 Dorm':     int(grp_counts.get('3 Dorm', 0)),
             'total_disp': int(((g['_estado'] == 'Disponible') & (g['_sub'] != 'por arrendar')).sum()),
             'arr':        arr,
+            'paa':        paa,   # cuántas de las "arrendadas" son "por arrendar"
             'base':       base,
             'total':      total,
             'pct':        pct,
@@ -1302,6 +1304,7 @@ def build_disponibilidad_table(df, m):
         '3 Dorm':     sum(r['3 Dorm'] for r in rows_data),
         'total_disp': sum(r['total_disp'] for r in rows_data),
         'arr':        sum(r['arr'] for r in rows_data),
+        'paa':        sum(r['paa'] for r in rows_data),
         'base':       sum(r['base'] for r in rows_data),
     }
     t['total'] = sum(r['total'] for r in rows_data)
@@ -1319,7 +1322,9 @@ def build_disponibilidad_table(df, m):
         # Total disp
         rb_td = _red_bg(r['total_disp'], max_disp)
         cells += f'<td style="text-align:center;font-weight:600;{rb_td}">{r["total_disp"] if r["total_disp"] else "&#x2014;"}</td>'
-        cells += f'<td style="text-align:center">{r["arr"]:,}</td>'
+        paa_note = (f'<div style="font-size:.62rem;color:#D97706;margin-top:1px">'
+                    f'{r["paa"]} p.arr.</div>' if r['paa'] else '')
+        cells += f'<td style="text-align:center">{r["arr"]:,}{paa_note}</td>'
         cells += f'<td style="text-align:center">{r["total"]:,}</td>'
         cells += (f'<td style="text-align:center;font-weight:700;color:{clr};background:{bg}">'
                   f'{r["pct"]}%</td>')
@@ -1330,7 +1335,9 @@ def build_disponibilidad_table(df, m):
     for grp in TIP_GROUPS:
         tc += f'<td style="text-align:center;font-weight:700;color:#00A8B4">{t[grp]}</td>'
     tc += f'<td style="text-align:center;font-weight:700;color:#00A8B4">{t["total_disp"]}</td>'
-    tc += f'<td style="text-align:center;font-weight:700">{t["arr"]:,}</td>'
+    paa_total_note = (f'<div style="font-size:.62rem;color:#D97706;margin-top:1px">'
+                      f'{t["paa"]} p.arr.</div>' if t['paa'] else '')
+    tc += f'<td style="text-align:center;font-weight:700">{t["arr"]:,}{paa_total_note}</td>'
     tc += f'<td style="text-align:center;font-weight:700">{t["total"]:,}</td>'
     tc += (f'<td style="text-align:center;font-weight:700;color:{tp_clr};background:{tp_bg}">'
            f'{t["pct"]}%</td>')
@@ -1361,7 +1368,7 @@ def build_disponibilidad_table(df, m):
         <th style="text-align:center">2 Dorm</th>
         <th style="text-align:center">3 Dorm</th>
         <th style="text-align:center">Total Disp.</th>
-        <th style="text-align:center">Arrendados</th>
+        <th style="text-align:center">Arrendados<div style="font-size:.6rem;font-weight:400;opacity:.8">incl. por arr.</div></th>
         <th style="text-align:center">Total</th>
         <th style="text-align:center">% Ocup.</th>
       </tr>
@@ -1476,7 +1483,7 @@ def update_html(html, m):
     if old_kg:
         new_kg = f"""<div class="kg" style="grid-template-columns:repeat(6,1fr)">
   <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas"><div class="kl">Total Unidades</div><div class="kv">{m['total']:,}</div><div class="ks">Departamentos en cartera</div></div>
-  <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas"><div class="kl">Arrendadas</div><div class="kv gr">{m['arrendadas']:,}</div><div class="ks">Estado: Arrendado</div></div>
+  <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas"><div class="kl">Arrendadas</div><div class="kv gr">{m['arrendadas']:,}</div><div class="ks">Activas: {m['arrendadas']-m['por_arrendar']:,} &nbsp;&middot;&nbsp; Por arrendar: <b style="color:#D97706">{m['por_arrendar']}</b></div></div>
   <div class="kc kc-link" onclick="irA('sec-disponibles')" title="Ver Disponibles"><div class="kl">Disponibles</div><div class="kv or">{m['disponibles']:,}</div><div class="ks">Libres para arrendar</div></div>
   <div class="kc kc-link" onclick="irA('sec-pipeline')" title="Ver Pipeline"><div class="kl">No Disponibles</div><div class="kv re">{m['no_disp']:,}</div><div class="ks">Incl. En Obra ({m['en_obra']})</div></div>
   <div class="kc kc-link" onclick="irA('sec-ocupacion')" title="Ver Ocupaci&oacute;n"><div class="kl">% Ocupaci&oacute;n Global</div><div class="kv ac">{pct}%</div><div class="ks">Target: 95% | Gap: {round(pct-95,1)}pp</div></div>
