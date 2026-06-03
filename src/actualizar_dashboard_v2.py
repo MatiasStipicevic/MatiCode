@@ -847,8 +847,10 @@ def load_vacancia():
 
 def build_vacancia_section(vacancia_rows):
     """
-    Sección de Días de Vacancia: tabla proyecto × tipología + ranking de peores unidades.
-    Colores semáforo: verde <30d · amarillo 30-59d · naranja 60-89d · rojo ≥90d.
+    Sección de Días de Vacancia:
+      1. Tabla resumen proyecto × tipología (con colores semáforo)
+      2. Selector de proyecto → tabla detalle de cada unidad con drill-down
+    Solo Departamentos en BBDD.
     """
     if not vacancia_rows:
         return ""
@@ -859,45 +861,54 @@ def build_vacancia_section(vacancia_rows):
         return _tip_group_full(tip, modelo or '')
 
     def _color(d):
-        if d is None:  return ('#8896A6', '#F4F6FA')   # sin historial
-        if d < 30:     return ('#16A34A', '#F0FDF4')   # verde
-        if d < 60:     return ('#D97706', '#FFFBEB')   # amarillo
-        if d < 90:     return ('#EA580C', '#FFF7ED')   # naranja
-        return             ('#DC2626', '#FEF2F2')       # rojo
+        if d is None: return ('#8896A6', '#F4F6FA')
+        if d < 30:    return ('#16A34A', '#F0FDF4')
+        if d < 60:    return ('#D97706', '#FFFBEB')
+        if d < 90:    return ('#EA580C', '#FFF7ED')
+        return            ('#DC2626', '#FEF2F2')
 
-    # ── Agregación por proyecto × grupo ────────────────────────────────────
+    # ── Procesar filas ─────────────────────────────────────────────────────
     from collections import defaultdict
-    proj_grp = defaultdict(lambda: defaultdict(list))  # {proj: {grp: [dias,...]}}
-    no_hist   = defaultdict(lambda: defaultdict(int))   # sin historial
-    worst     = []  # top unidades
+    proj_grp  = defaultdict(lambda: defaultdict(list))
+    no_hist   = defaultdict(lambda: defaultdict(int))
+    # Detalle por proyecto para JS drill-down
+    unit_data = defaultdict(list)
 
     proyectos = []
     for r in vacancia_rows:
         proj  = r['proyecto']
         grp   = _tip(r['tipologia'], r['modelo'])
         dias  = r['dias_vacancia']
+        mod   = (r['modelo'] or '').strip()
+        unidad = r['unidad']
+        ult   = str(r['ultima_fin']) if r['ultima_fin'] else None
+
         if proj not in proyectos:
             proyectos.append(proj)
+
         if dias is None:
             no_hist[proj][grp] += 1
+            unit_data[proj].append({'u': unidad, 'g': grp, 'm': mod,
+                                    'd': None, 'f': None})
         else:
-            proj_grp[proj][grp].append(int(dias))
-            worst.append({'proj': proj, 'unidad': r['unidad'], 'grp': grp, 'dias': int(dias),
-                          'ultima_fin': str(r['ultima_fin']) if r['ultima_fin'] else '—'})
+            dias = int(dias)
+            proj_grp[proj][grp].append(dias)
+            unit_data[proj].append({'u': unidad, 'g': grp, 'm': mod,
+                                    'd': dias, 'f': ult})
 
     proyectos = sorted(proyectos)
-    worst = sorted(worst, key=lambda x: -x['dias'])[:15]
 
-    # ── Tabla matriz ─────────────────────────────────────────────────────────
-    thead = '<thead><tr><th style="text-align:left;min-width:180px">Proyecto</th>'
+    # ── TABLA RESUMEN ─────────────────────────────────────────────────────
+    thead_mat = ('<thead><tr>'
+                 '<th style="text-align:left;min-width:170px;cursor:pointer" '
+                 'onclick="vacSetProj(null)">Proyecto</th>')
     for g in GRUPOS:
-        thead += f'<th style="text-align:center">{g}</th>'
-    thead += '<th style="text-align:center">Promedio</th></tr></thead>'
+        thead_mat += f'<th style="text-align:center">{g}</th>'
+    thead_mat += '<th style="text-align:center">Prom.</th></tr></thead>'
 
-    tbody = '<tbody>'
+    tbody_mat = '<tbody>'
     for proj in proyectos:
-        row_days = []
-        cells = ''
+        row_days, cells = [], ''
         for g in GRUPOS:
             vals = proj_grp[proj].get(g, [])
             nh   = no_hist[proj].get(g, 0)
@@ -905,95 +916,228 @@ def build_vacancia_section(vacancia_rows):
                 avg = round(sum(vals) / len(vals))
                 row_days.append(avg)
                 fg, bg = _color(avg)
-                n_label = f'<div style="font-size:.6rem;color:{fg};opacity:.75;margin-top:1px">{len(vals)} ud{"s" if len(vals)>1 else "."}</div>'
+                n_lbl = f'<div style="font-size:.59rem;opacity:.8;margin-top:1px">{len(vals)} ud.</div>'
                 cells += (f'<td style="text-align:center;background:{bg};color:{fg};font-weight:700">'
-                          f'{avg}d{n_label}</td>')
+                          f'{avg}d{n_lbl}</td>')
             elif nh:
-                cells += (f'<td style="text-align:center;color:#8896A6;font-size:.8rem">'
-                          f'{nh} s/h</td>')
+                cells += f'<td style="text-align:center;color:#8896A6;font-size:.78rem">{nh} s/h</td>'
             else:
                 cells += '<td style="text-align:center;color:#CBD5E1">—</td>'
 
         proj_avg = round(sum(row_days) / len(row_days)) if row_days else None
         fg_p, bg_p = _color(proj_avg)
-        avg_cell = (f'<td style="text-align:center;font-weight:800;font-size:.95rem;'
-                    f'color:{fg_p};background:{bg_p}">{proj_avg}d</td>'
-                    if proj_avg is not None else
-                    '<td style="text-align:center;color:#CBD5E1">—</td>')
+        avg_cell = (f'<td style="text-align:center;font-weight:800;color:{fg_p};background:{bg_p}">'
+                    f'{proj_avg}d</td>' if proj_avg is not None
+                    else '<td style="text-align:center;color:#CBD5E1">—</td>')
+        proj_js = proj.replace("'", "\\'")
+        tbody_mat += (f'<tr style="cursor:pointer" onclick="vacSetProj(\'{proj_js}\')" '
+                      f'title="Ver unidades de {proj_js}">'
+                      f'<td style="font-weight:600">{proj}</td>{cells}{avg_cell}</tr>\n')
+    tbody_mat += '</tbody>'
 
-        tbody += f'<tr><td style="font-weight:600">{proj}</td>{cells}{avg_cell}</tr>\n'
-    tbody += '</tbody>'
-
-    leyenda = (''.join([
-        f'<span style="display:inline-flex;align-items:center;gap:5px;margin-right:14px;font-size:.73rem">'
-        f'<span style="width:10px;height:10px;border-radius:3px;background:{bg};display:inline-block"></span>'
+    leyenda = ''.join([
+        f'<span style="display:inline-flex;align-items:center;gap:5px;margin-right:12px;font-size:.71rem">'
+        f'<span style="width:9px;height:9px;border-radius:2px;background:{bg};display:inline-block"></span>'
         f'<span style="color:#4B5A6A">{lbl}</span></span>'
-        for bg, fg, lbl in [
-            ('#F0FDF4','#16A34A','< 30 días'),
-            ('#FFFBEB','#D97706','30–59 días'),
-            ('#FFF7ED','#EA580C','60–89 días'),
-            ('#FEF2F2','#DC2626','≥ 90 días'),
+        for bg, _, lbl in [
+            ('#F0FDF4','','< 30d'),('#FFFBEB','','30–59d'),
+            ('#FFF7ED','','60–89d'),('#FEF2F2','','≥ 90d'),
         ]
-    ]))
+    ])
 
-    # ── Ranking peores unidades ───────────────────────────────────────────────
-    worst_rows = ''
-    for w in worst:
-        fg, bg = _color(w['dias'])
-        worst_rows += (
-            f'<tr>'
-            f'<td style="font-weight:600">{w["unidad"]}</td>'
-            f'<td>{w["proj"]}</td>'
-            f'<td>{w["grp"]}</td>'
-            f'<td>{w["ultima_fin"]}</td>'
-            f'<td style="text-align:center;font-weight:700;color:{fg};background:{bg};border-radius:6px">'
-            f'{w["dias"]}d</td>'
-            f'</tr>\n'
-        )
+    total_no_hist = sum(v for pr in no_hist.values() for v in pr.values())
 
-    # ── Total sin historial ───────────────────────────────────────────────────
-    total_no_hist = sum(v for proj in no_hist.values() for v in proj.values())
-    no_hist_note = (f'<div style="font-size:.75rem;color:#8896A6;margin-top:10px">'
-                    f'<b style="color:#4B5A6A">{total_no_hist}</b> unidad{"es" if total_no_hist!=1 else ""} '
-                    f'sin historial de contratos (nunca arrendadas) &mdash; '
-                    f'no incluidas en promedios. <span style="font-size:.7rem">s/h = sin historial</span>'
-                    f'</div>')
+    # ── JSON para drill-down JS ───────────────────────────────────────────
+    vac_json = json.dumps(
+        {proj: sorted(units, key=lambda x: (x['d'] is None, -(x['d'] or 0)))
+         for proj, units in unit_data.items()},
+        ensure_ascii=False
+    )
+    proj_opts = ''.join(f'<option value="{p}">{p}</option>' for p in proyectos)
 
     section = f"""
-<div id="sec-vacancia" class="sec">Días de Vacancia por Proyecto y Producto</div>
-<div class="sec-sub">Unidades disponibles &mdash; días desde fin del último contrato &mdash; solo DEPA en BBDD (excluye Collective Bustamante)</div>
+<div id="sec-vacancia" class="sec">D&iacute;as de Vacancia &mdash; Departamentos</div>
+<div class="sec-sub">
+  D&iacute;as transcurridos desde el fin del &uacute;ltimo contrato por unidad disponible &mdash;
+  solo proyectos en BBDD &mdash; excluye Collective Bustamante
+</div>
 
+<!-- ── Resumen matriz ── -->
 <div class="cf" style="overflow-x:auto;margin-bottom:20px">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
-    <div style="font-size:.78rem;font-weight:700;color:#4B5A6A">Promedio de días vacante por proyecto y tipología</div>
-    <div style="display:flex;flex-wrap:wrap">{leyenda}</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+    <div style="font-size:.78rem;font-weight:700;color:#4B5A6A">
+      Resumen por proyecto &amp; tipolog&iacute;a
+      <span style="font-weight:400;color:#8896A6;margin-left:8px">
+        &#128204; Clic en fila para ver detalle de unidades
+      </span>
+    </div>
+    <div>{leyenda}</div>
   </div>
   <table id="vac-table" style="min-width:640px">
-    {thead}
-    {tbody}
+    {thead_mat}
+    {tbody_mat}
   </table>
-  {no_hist_note}
+  <div style="font-size:.72rem;color:#8896A6;margin-top:10px">
+    <b style="color:#4B5A6A">{total_no_hist}</b>
+    unidades sin historial de contratos &mdash; marcadas <em>s/h</em>, no incluidas en promedios.
+  </div>
 </div>
 
-<div class="cf" style="margin-bottom:20px">
-  <div style="font-size:.78rem;font-weight:700;color:#4B5A6A;margin-bottom:14px">
-    Peores casos — unidades con más días sin arrendar
+<!-- ── Drill-down por proyecto ── -->
+<div class="cf" id="vac-detail-card" style="margin-bottom:20px">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+    <div>
+      <div style="font-size:.68rem;font-weight:700;color:#8896A6;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Detalle por proyecto</div>
+      <div id="vac-proj-title" style="font-size:1.1rem;font-weight:800;color:#0F172A">
+        Todos los proyectos
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <select id="vac-proj-sel" onchange="vacSetProj(this.value||null)"
+        style="background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:10px;
+               padding:8px 12px;font-size:.82rem;font-family:inherit;color:#1A2332;
+               cursor:pointer;min-width:200px">
+        <option value="">— Todos los proyectos —</option>
+        {proj_opts}
+      </select>
+      <span id="vac-count-badge"
+        style="background:#F4F6FA;color:#4B5A6A;border-radius:8px;
+               padding:6px 12px;font-size:.75rem;font-weight:700;white-space:nowrap">
+      </span>
+    </div>
   </div>
   <div style="overflow-x:auto">
-  <table id="vac-worst-table">
-    <thead>
-      <tr>
-        <th style="text-align:left">Unidad</th>
-        <th style="text-align:left">Proyecto</th>
-        <th style="text-align:left">Tipo</th>
-        <th style="text-align:left">Último contrato</th>
-        <th style="text-align:center">Días vacante</th>
-      </tr>
-    </thead>
-    <tbody>{worst_rows}</tbody>
-  </table>
+    <table id="vac-unit-table">
+      <thead>
+        <tr>
+          <th style="text-align:left">Unidad</th>
+          <th style="text-align:left">Tipolog&iacute;a</th>
+          <th style="text-align:left">Modelo</th>
+          <th style="text-align:left">Proyecto</th>
+          <th style="text-align:center">&Uacute;ltimo contrato</th>
+          <th style="text-align:center;min-width:100px">D&iacute;as vacante</th>
+        </tr>
+      </thead>
+      <tbody id="vac-unit-body"></tbody>
+    </table>
+  </div>
+  <div id="vac-no-hist-note"
+    style="display:none;font-size:.72rem;color:#8896A6;margin-top:10px;padding-top:10px;
+           border-top:1px solid #F4F6FA">
   </div>
 </div>
+
+<script>
+var _vacData = {vac_json};
+var _vacSelProj = null;
+
+function _vacColor(d) {{
+  if(d===null||d===undefined) return ['#8896A6','#F4F6FA'];
+  if(d<30)  return ['#16A34A','#F0FDF4'];
+  if(d<60)  return ['#D97706','#FFFBEB'];
+  if(d<90)  return ['#EA580C','#FFF7ED'];
+  return ['#DC2626','#FEF2F2'];
+}}
+
+function vacSetProj(proj) {{
+  _vacSelProj = proj;
+  var sel = document.getElementById('vac-proj-sel');
+  if(sel) sel.value = proj || '';
+  var title = document.getElementById('vac-proj-title');
+  if(title) title.textContent = proj || 'Todos los proyectos';
+
+  // Highlight row in matrix
+  var rows = document.querySelectorAll('#vac-table tbody tr');
+  rows.forEach(function(r) {{
+    r.style.outline = (proj && r.querySelector('td') && r.querySelector('td').textContent===proj)
+      ? '2px solid #00A8B4' : '';
+    r.style.borderRadius = '8px';
+  }});
+
+  // Build units list
+  var units = [];
+  if(proj) {{
+    units = (_vacData[proj] || []);
+  }} else {{
+    Object.keys(_vacData).sort().forEach(function(p) {{
+      (_vacData[p]||[]).forEach(function(u) {{ units.push(Object.assign({{proj:p}},u)); }});
+    }});
+    units.sort(function(a,b){{
+      if(a.d===null&&b.d===null) return 0;
+      if(a.d===null) return 1;
+      if(b.d===null) return -1;
+      return b.d - a.d;
+    }});
+  }}
+
+  var withHist  = units.filter(function(u){{return u.d!==null;}});
+  var withoutHist = units.filter(function(u){{return u.d===null;}});
+
+  var badge = document.getElementById('vac-count-badge');
+  if(badge) badge.textContent = withHist.length + ' unidad' + (withHist.length!==1?'es':'') +
+    ' con historial' + (withoutHist.length?' · '+withoutHist.length+' s/h':'');
+
+  var tbody = document.getElementById('vac-unit-body');
+  if(!tbody) return;
+  tbody.innerHTML = '';
+
+  withHist.forEach(function(u) {{
+    var clrs = _vacColor(u.d);
+    var tr = document.createElement('tr');
+    var pCol = proj ? '' : '<td>'+( u.proj||'')+'</td>';
+    tr.innerHTML =
+      '<td style="font-weight:600;font-family:monospace;font-size:.82rem">'+u.u+'</td>'+
+      '<td>'+u.g+'</td>'+
+      '<td style="color:#8896A6;font-size:.8rem">'+(u.m||'—')+'</td>'+
+      (proj?'':'<td>'+u.proj+'</td>')+
+      '<td style="text-align:center;color:#8896A6;font-size:.8rem">'+(u.f||'—')+'</td>'+
+      '<td style="text-align:center">'
+        +'<span style="display:inline-block;padding:3px 10px;border-radius:7px;'
+        +'font-weight:700;font-size:.85rem;color:'+clrs[0]+';background:'+clrs[1]+'">'
+        +u.d+'d</span></td>';
+    tbody.appendChild(tr);
+  }});
+
+  // Sin historial al final
+  var note = document.getElementById('vac-no-hist-note');
+  if(withoutHist.length) {{
+    withoutHist.forEach(function(u) {{
+      var tr = document.createElement('tr');
+      tr.style.opacity = '.6';
+      tr.innerHTML =
+        '<td style="font-weight:600;font-family:monospace;font-size:.82rem">'+u.u+'</td>'+
+        '<td>'+u.g+'</td>'+
+        '<td style="color:#8896A6;font-size:.8rem">'+(u.m||'—')+'</td>'+
+        (proj?'':'<td>'+(u.proj||'')+'</td>')+
+        '<td style="text-align:center;color:#8896A6;font-size:.8rem">Sin historial</td>'+
+        '<td style="text-align:center"><span style="color:#8896A6;font-size:.8rem">s/h</span></td>';
+      tbody.appendChild(tr);
+    }});
+    if(note) {{
+      note.style.display='block';
+      note.textContent = withoutHist.length+' unidad'+(withoutHist.length!==1?'es':'')+
+        ' nunca arrendadas — sin contrato previo en el sistema.';
+    }}
+  }} else {{
+    if(note) note.style.display='none';
+  }}
+
+  // Update table header if showing all projects
+  var thProj = document.querySelector('#vac-unit-table thead tr');
+  if(thProj) {{
+    var ths = thProj.querySelectorAll('th');
+    if(proj && ths.length===6) thProj.removeChild(ths[3]);
+    else if(!proj && ths.length===5) {{
+      var th=document.createElement('th');
+      th.textContent='Proyecto';th.style.textAlign='left';
+      thProj.insertBefore(th, ths[3]);
+    }}
+  }}
+}}
+
+// Inicializar con todos los proyectos
+vacSetProj(null);
+</script>
 """
     return section
 

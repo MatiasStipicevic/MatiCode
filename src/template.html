@@ -603,6 +603,7 @@ body.present-mode .header { padding: 16px 0 12px; }
     <div class="sbl" onclick="irA('sec-por-liberar')"><span class="ico">&#128308;</span>Por Liberar</div>
     <div class="sbl" onclick="irA('sec-vencimientos')"><span class="ico">&#128197;</span>Vencimientos</div>
     <div class="sbl" onclick="irA('sec-proyectos')"><span class="ico">&#128202;</span>Vista Proyectos</div>
+    <div class="sbl" onclick="irA('sec-vacancia')"><span class="ico">&#128336;</span>D&iacute;as de Vacancia</div>
   </div>
   <div style="padding:14px 16px;border-top:1px solid #E2E8F0;font-size:.65rem;color:#6B7A8D;">
     &copy; 2026 LAR GROUP &mdash; Uso interno
@@ -1346,7 +1347,7 @@ function toggleSb(){
 /* Active nav on scroll */
 (function(){
   var ids=['sec-ocupacion','sec-alertas','sec-disponibles','sec-reservadas',
-           'sec-por-liberar','sec-vencimientos','sec-proyectos'];
+           'sec-por-liberar','sec-vencimientos','sec-proyectos','sec-vacancia'];
   var links=document.querySelectorAll('.sbl');
   if(!links.length||!window.IntersectionObserver) return;
   var obs=new IntersectionObserver(function(entries){
