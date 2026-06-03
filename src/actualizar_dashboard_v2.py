@@ -801,6 +801,203 @@ def _tip_group_full(tip, modelo):
     return _tip_group(tip)
 
 
+def load_vacancia():
+    """
+    Días de Vacancia por unidad Departamento disponible (estado=100).
+    Vacancia = días transcurridos desde que terminó el último contrato pasado.
+    Unidades sin historial de contratos se marcan con dias_vacancia=None.
+    """
+    sql = """
+    WITH ultimo_contrato_pasado AS (
+        SELECT DISTINCT ON (unidad_id)
+            unidad_id,
+            fecha_fin AS ultima_fin
+        FROM public.contratos
+        WHERE fecha_fin < CURRENT_DATE
+        ORDER BY unidad_id, fecha_fin DESC
+    )
+    SELECT
+        p.nombre                          AS proyecto,
+        u.tipologia,
+        u.raw->>'modelo'                  AS modelo,
+        u.nombre                          AS unidad,
+        u.raw->>'sub_estado'              AS sub_estado,
+        ucp.ultima_fin,
+        (CURRENT_DATE - ucp.ultima_fin)::int AS dias_vacancia
+    FROM public.unidades u
+    JOIN public.propiedades p ON p.id = u.propiedad_id
+    LEFT JOIN ultimo_contrato_pasado ucp ON ucp.unidad_id = u.id
+    WHERE u.nombre ILIKE '%%DEPA%%'
+      AND u.raw->>'estado' = '100'
+    ORDER BY dias_vacancia DESC NULLS LAST
+    """
+    try:
+        conn = psycopg2.connect(**DB)
+        with conn.cursor() as cur:
+            cur.execute(sql)
+            cols = [d[0] for d in cur.description]
+            rows = [dict(zip(cols, r)) for r in cur.fetchall()]
+        conn.close()
+        print(f"  Vacancia: {len(rows)} unidades disponibles consultadas")
+        return rows
+    except Exception as e:
+        print(f"  vacancia: omitido ({e})")
+        return []
+
+
+def build_vacancia_section(vacancia_rows):
+    """
+    Sección de Días de Vacancia: tabla proyecto × tipología + ranking de peores unidades.
+    Colores semáforo: verde <30d · amarillo 30-59d · naranja 60-89d · rojo ≥90d.
+    """
+    if not vacancia_rows:
+        return ""
+
+    GRUPOS = ['Studio', '1 Dorm', '2 Dorm', '3 Dorm']
+
+    def _tip(tip, modelo):
+        return _tip_group_full(tip, modelo or '')
+
+    def _color(d):
+        if d is None:  return ('#8896A6', '#F4F6FA')   # sin historial
+        if d < 30:     return ('#16A34A', '#F0FDF4')   # verde
+        if d < 60:     return ('#D97706', '#FFFBEB')   # amarillo
+        if d < 90:     return ('#EA580C', '#FFF7ED')   # naranja
+        return             ('#DC2626', '#FEF2F2')       # rojo
+
+    # ── Agregación por proyecto × grupo ────────────────────────────────────
+    from collections import defaultdict
+    proj_grp = defaultdict(lambda: defaultdict(list))  # {proj: {grp: [dias,...]}}
+    no_hist   = defaultdict(lambda: defaultdict(int))   # sin historial
+    worst     = []  # top unidades
+
+    proyectos = []
+    for r in vacancia_rows:
+        proj  = r['proyecto']
+        grp   = _tip(r['tipologia'], r['modelo'])
+        dias  = r['dias_vacancia']
+        if proj not in proyectos:
+            proyectos.append(proj)
+        if dias is None:
+            no_hist[proj][grp] += 1
+        else:
+            proj_grp[proj][grp].append(int(dias))
+            worst.append({'proj': proj, 'unidad': r['unidad'], 'grp': grp, 'dias': int(dias),
+                          'ultima_fin': str(r['ultima_fin']) if r['ultima_fin'] else '—'})
+
+    proyectos = sorted(proyectos)
+    worst = sorted(worst, key=lambda x: -x['dias'])[:15]
+
+    # ── Tabla matriz ─────────────────────────────────────────────────────────
+    thead = '<thead><tr><th style="text-align:left;min-width:180px">Proyecto</th>'
+    for g in GRUPOS:
+        thead += f'<th style="text-align:center">{g}</th>'
+    thead += '<th style="text-align:center">Promedio</th></tr></thead>'
+
+    tbody = '<tbody>'
+    for proj in proyectos:
+        row_days = []
+        cells = ''
+        for g in GRUPOS:
+            vals = proj_grp[proj].get(g, [])
+            nh   = no_hist[proj].get(g, 0)
+            if vals:
+                avg = round(sum(vals) / len(vals))
+                row_days.append(avg)
+                fg, bg = _color(avg)
+                n_label = f'<div style="font-size:.6rem;color:{fg};opacity:.75;margin-top:1px">{len(vals)} ud{"s" if len(vals)>1 else "."}</div>'
+                cells += (f'<td style="text-align:center;background:{bg};color:{fg};font-weight:700">'
+                          f'{avg}d{n_label}</td>')
+            elif nh:
+                cells += (f'<td style="text-align:center;color:#8896A6;font-size:.8rem">'
+                          f'{nh} s/h</td>')
+            else:
+                cells += '<td style="text-align:center;color:#CBD5E1">—</td>'
+
+        proj_avg = round(sum(row_days) / len(row_days)) if row_days else None
+        fg_p, bg_p = _color(proj_avg)
+        avg_cell = (f'<td style="text-align:center;font-weight:800;font-size:.95rem;'
+                    f'color:{fg_p};background:{bg_p}">{proj_avg}d</td>'
+                    if proj_avg is not None else
+                    '<td style="text-align:center;color:#CBD5E1">—</td>')
+
+        tbody += f'<tr><td style="font-weight:600">{proj}</td>{cells}{avg_cell}</tr>\n'
+    tbody += '</tbody>'
+
+    leyenda = (''.join([
+        f'<span style="display:inline-flex;align-items:center;gap:5px;margin-right:14px;font-size:.73rem">'
+        f'<span style="width:10px;height:10px;border-radius:3px;background:{bg};display:inline-block"></span>'
+        f'<span style="color:#4B5A6A">{lbl}</span></span>'
+        for bg, fg, lbl in [
+            ('#F0FDF4','#16A34A','< 30 días'),
+            ('#FFFBEB','#D97706','30–59 días'),
+            ('#FFF7ED','#EA580C','60–89 días'),
+            ('#FEF2F2','#DC2626','≥ 90 días'),
+        ]
+    ]))
+
+    # ── Ranking peores unidades ───────────────────────────────────────────────
+    worst_rows = ''
+    for w in worst:
+        fg, bg = _color(w['dias'])
+        worst_rows += (
+            f'<tr>'
+            f'<td style="font-weight:600">{w["unidad"]}</td>'
+            f'<td>{w["proj"]}</td>'
+            f'<td>{w["grp"]}</td>'
+            f'<td>{w["ultima_fin"]}</td>'
+            f'<td style="text-align:center;font-weight:700;color:{fg};background:{bg};border-radius:6px">'
+            f'{w["dias"]}d</td>'
+            f'</tr>\n'
+        )
+
+    # ── Total sin historial ───────────────────────────────────────────────────
+    total_no_hist = sum(v for proj in no_hist.values() for v in proj.values())
+    no_hist_note = (f'<div style="font-size:.75rem;color:#8896A6;margin-top:10px">'
+                    f'<b style="color:#4B5A6A">{total_no_hist}</b> unidad{"es" if total_no_hist!=1 else ""} '
+                    f'sin historial de contratos (nunca arrendadas) &mdash; '
+                    f'no incluidas en promedios. <span style="font-size:.7rem">s/h = sin historial</span>'
+                    f'</div>')
+
+    section = f"""
+<div id="sec-vacancia" class="sec">Días de Vacancia por Proyecto y Producto</div>
+<div class="sec-sub">Unidades disponibles &mdash; días desde fin del último contrato &mdash; solo DEPA en BBDD (excluye Collective Bustamante)</div>
+
+<div class="cf" style="overflow-x:auto;margin-bottom:20px">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+    <div style="font-size:.78rem;font-weight:700;color:#4B5A6A">Promedio de días vacante por proyecto y tipología</div>
+    <div style="display:flex;flex-wrap:wrap">{leyenda}</div>
+  </div>
+  <table id="vac-table" style="min-width:640px">
+    {thead}
+    {tbody}
+  </table>
+  {no_hist_note}
+</div>
+
+<div class="cf" style="margin-bottom:20px">
+  <div style="font-size:.78rem;font-weight:700;color:#4B5A6A;margin-bottom:14px">
+    Peores casos — unidades con más días sin arrendar
+  </div>
+  <div style="overflow-x:auto">
+  <table id="vac-worst-table">
+    <thead>
+      <tr>
+        <th style="text-align:left">Unidad</th>
+        <th style="text-align:left">Proyecto</th>
+        <th style="text-align:left">Tipo</th>
+        <th style="text-align:left">Último contrato</th>
+        <th style="text-align:center">Días vacante</th>
+      </tr>
+    </thead>
+    <tbody>{worst_rows}</tbody>
+  </table>
+  </div>
+</div>
+"""
+    return section
+
+
 def build_disponibilidad_table(df, m):
     """
     Tabla de Disponibilidad y Ocupación por proyecto y grupo tipológico
@@ -3200,6 +3397,14 @@ def main():
     html = html.replace('<div id="sec-alertas"',
                         disp_section + '<div id="sec-alertas"', 1)
     html = html.replace("</body>", f"<script>\n{disp_js}\n</script>\n</body>", 1)
+
+    # ── Agregar sección Días de Vacancia ──────────────────────────────────
+    print("Calculando dias de vacancia...")
+    vacancia_rows = load_vacancia()
+    vac_section = build_vacancia_section(vacancia_rows)
+    if vac_section:
+        html = html.replace('<div id="sec-disponibilidad"',
+                            vac_section + '<div id="sec-disponibilidad"', 1)
 
     print("Agregando features interactivos (meta, historico, modal, cross-filter)...")
     html = add_extra_features(html, m, hist_data, uf_valor=uf_valor)
