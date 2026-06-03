@@ -55,7 +55,7 @@ else:
     # Local: rutas originales
     _DRIVE     = Path("C:/Users/mstipicevic/OneDrive - BNV/Escritorio/Claude/CODE/Ocupación")
     SRC_COLLECTIVE = _DRIVE / "unidades_collective.xlsx"
-    HTML_SRC   = Path("C:/Users/mstipicevic/Downloads/Dashboard_LAR_Final.html")
+    HTML_SRC   = Path("C:/Users/mstipicevic/Downloads/MatiCode/src/template.html")
     HTML_OUT   = Path("C:/Users/mstipicevic/Downloads/Dashboard_LAR_Final_v2.html")
     HTML_BACKUP= _DRIVE / "Dashboard_LAR_Final.html"
     HTML_REPO  = Path("C:/Users/mstipicevic/Downloads/MatiCode/Dashboard_LAR_Final.html")
@@ -143,8 +143,11 @@ def load_data_excel_fallback():
 # ── 2. CALCULAR METRICAS ───────────────────────────────────────────────────
 def compute(df):
     total       = len(df)
-    arrendadas  = int((df["_estado"] == "Arrendado").sum())
-    disponibles = int((df["_estado"] == "Disponible").sum())
+    # "por arrendar" (estado 100 / sub 600) se contabiliza dentro de Arrendadas
+    _is_arr  = (df["_estado"] == "Arrendado") | (df["_sub"] == "por arrendar")
+    _is_disp = (df["_estado"] == "Disponible") & (df["_sub"] != "por arrendar")
+    arrendadas  = int(_is_arr.sum())
+    disponibles = int(_is_disp.sum())
     no_disp     = int((df["_estado"] == "No Disponible").sum())
     en_obra     = int((df["_sub"] == "en obra").sum())
     reservadas  = int((df["_sub"] == "reservada").sum())
@@ -157,8 +160,8 @@ def compute(df):
     proj_list = []
     for proj, g in df.groupby("_proj"):
         tot = len(g)
-        arr = int((g["_estado"]=="Arrendado").sum())
-        dis = int((g["_estado"]=="Disponible").sum())
+        arr = int(((g["_estado"]=="Arrendado") | (g["_sub"]=="por arrendar")).sum())
+        dis = int(((g["_estado"]=="Disponible") & (g["_sub"]!="por arrendar")).sum())
         nod = int((g["_estado"]=="No Disponible").sum())
         eob = int((g["_sub"]=="en obra").sum())
         res = int((g["_sub"]=="reservada").sum())
@@ -188,7 +191,7 @@ def compute(df):
         row = []
         for tip in tips:
             sub = df[(df["_proj"]==proj) & (df["_tip"]==tip)]
-            t = len(sub); a = int((sub["_estado"]=="Arrendado").sum())
+            t = len(sub); a = int(((sub["_estado"]=="Arrendado")|(sub["_sub"]=="por arrendar")).sum())
             row.append(round(a/t*100, 1) if t else None)
         hm_pct.append(row)
 
@@ -212,8 +215,8 @@ def compute(df):
             risk.append({**p, "Risk_Pct": round(pli/arr*100, 1)})
     risk = sorted(risk, key=lambda x: -x["Risk_Pct"])
 
-    # Disponibles por proyecto (para tabla y JS)
-    disp = df[df["_estado"]=="Disponible"].copy()
+    # Disponibles por proyecto (para tabla y JS) — excluye "por arrendar" (ya van en arrendadas)
+    disp = df[(df["_estado"]=="Disponible") & (df["_sub"]!="por arrendar")].copy()
     disp_table = disp[["_proj","_tip","Nombre","Modelo"]].copy()
     disp_table.columns = ["Propiedad","Tipologia","Nombre","Modelo"]
     unidades_disp = []
@@ -233,7 +236,7 @@ def compute(df):
         totals_t, arr_t, pct_t = [], [], []
         for proj in projs_hm:
             sub = df[(df["_proj"]==proj) & (df["_tip"]==tip)]
-            t = len(sub); a = int((sub["_estado"]=="Arrendado").sum())
+            t = len(sub); a = int(((sub["_estado"]=="Arrendado")|(sub["_sub"]=="por arrendar")).sum())
             totals_t.append(t); arr_t.append(a)
             pct_t.append(round(a/t*100, 1) if t else 0)
         tipo_data[tip] = {"total": totals_t, "arrendados": arr_t, "pct": pct_t}
@@ -261,11 +264,11 @@ def compute(df):
 
     # Colectiva y problematicos para historico
     cb   = df[df["_proj"]=="Collective Bustamante"]
-    cb_pct = round(int((cb["_estado"]=="Arrendado").sum())/len(cb)*100, 2) if len(cb) else 0
+    cb_pct = round(int(((cb["_estado"]=="Arrendado")|(cb["_sub"]=="por arrendar")).sum())/len(cb)*100, 2) if len(cb) else 0
     imu  = df[df["_proj"]=="IMU San Cristóbal"]
-    imu_pct = round(int((imu["_estado"]=="Arrendado").sum())/len(imu)*100, 2) if len(imu) else 0
+    imu_pct = round(int(((imu["_estado"]=="Arrendado")|(imu["_sub"]=="por arrendar")).sum())/len(imu)*100, 2) if len(imu) else 0
     blend = df[df["_proj"]=="Blend Apoquindo"]
-    blend_pct = round(int((blend["_estado"]=="Arrendado").sum())/len(blend)*100, 2) if len(blend) else 0
+    blend_pct = round(int(((blend["_estado"]=="Arrendado")|(blend["_sub"]=="por arrendar")).sum())/len(blend)*100, 2) if len(blend) else 0
 
     return {
         "total": total, "arrendadas": arrendadas, "disponibles": disponibles,
@@ -814,10 +817,10 @@ def build_disponibilidad_table(df, m):
         total   = len(g)
         no_disp = int((g['_estado'] == 'No Disponible').sum())
         base    = total - no_disp
-        arr     = int((g['_estado'] == 'Arrendado').sum())
+        arr     = int(((g['_estado'] == 'Arrendado') | (g['_sub'] == 'por arrendar')).sum())
         pct     = round(arr / total * 100, 1) if total else 0.0
 
-        disp_g       = g[g['_estado'] == 'Disponible'].copy()
+        disp_g       = g[(g['_estado'] == 'Disponible') & (g['_sub'] != 'por arrendar')].copy()
         disp_g['_grp'] = disp_g.apply(
             lambda r: _tip_group_full(r['_tip'], r.get('Modelo', '')), axis=1)
         grp_counts   = disp_g.groupby('_grp').size()
@@ -828,7 +831,7 @@ def build_disponibilidad_table(df, m):
             '1 Dorm':     int(grp_counts.get('1 Dorm', 0)),
             '2 Dorm':     int(grp_counts.get('2 Dorm', 0)),
             '3 Dorm':     int(grp_counts.get('3 Dorm', 0)),
-            'total_disp': int((g['_estado'] == 'Disponible').sum()),
+            'total_disp': int(((g['_estado'] == 'Disponible') & (g['_sub'] != 'por arrendar')).sum()),
             'arr':        arr,
             'base':       base,
             'total':      total,
@@ -2421,6 +2424,89 @@ def add_extra_features(html, m, hist_data, uf_valor=None):
 
     # ── 0. BRAND COLOR — replace residual #008E9F from base template ─────────
     html = html.replace('#008E9F', '#00A8B4')
+
+    # ── 0a. CSS MODERNO — override de estilos para elementos dinámicos ────────
+    modern_css = """<style>
+/* — Collapsible sections — */
+.sec-body{padding:0 0 8px}
+.sec-toggle{cursor:pointer;user-select:none}
+.sec-toggle:hover .sec{opacity:.85}
+
+/* — Tables (override to modern) — */
+#disp-table th,#venc-table th,#res-table th{
+  background:transparent;color:#8896A6;font-weight:700;
+  font-size:.64rem;text-transform:uppercase;letter-spacing:.07em;
+  padding:8px 14px;border-bottom:1.5px solid #EEF2F7;
+}
+#disp-table td,#venc-table td,#res-table td{
+  padding:10px 14px;border-bottom:1px solid #F4F6FA;color:#1A2332;
+}
+#disp-table tbody tr:hover td,#venc-table tbody tr:hover td,#res-table tbody tr:hover td{
+  background:rgba(0,168,180,.03);
+}
+#disp-table tbody tr:last-child td,#venc-table tbody tr:last-child td{border-bottom:none}
+
+/* — KPI chips dentro de cards — */
+.proj-stat{
+  background:#F4F6FA;border-radius:8px;
+  padding:3px 9px;font-size:.69rem;font-weight:600;color:#4B5A6A;
+  border:none;
+}
+
+/* — Proyectos: proj-card — */
+.proj-card{
+  background:#fff;border:none!important;
+  border-radius:18px!important;
+  padding:16px!important;
+  box-shadow:0 1px 3px rgba(0,0,0,.04),0 8px 28px rgba(0,0,0,.06)!important;
+  transition:transform .22s ease,box-shadow .22s ease!important;
+}
+.proj-card:hover{
+  transform:translateY(-4px)!important;
+  box-shadow:0 4px 8px rgba(0,0,0,.05),0 20px 48px rgba(0,0,0,.1)!important;
+}
+
+/* — Barra de progreso de ocupación — */
+.proj-bar-track{background:#EEF2F7!important;border-radius:99px!important}
+.proj-bar-fill{border-radius:99px!important}
+
+/* — Vista por Proyecto sidebar — */
+#proj-sidebar{background:#fff!important;border-radius:16px!important;border:none!important;box-shadow:0 1px 3px rgba(0,0,0,.04),0 8px 28px rgba(0,0,0,.06)!important}
+.proj-list-item{border-bottom:1px solid #F4F6FA!important;transition:background .14s!important}
+.proj-list-item:hover{background:#F8FAFC!important}
+.proj-list-item.selected{background:rgba(0,168,180,.07)!important;border-left:3px solid #00A8B4!important}
+
+/* — Meta bar slider — */
+#meta-bar{
+  background:#fff;border-radius:14px;padding:14px 20px;
+  border:none;box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.05);
+  margin-bottom:20px;
+}
+
+/* — Inputs y selects globales — */
+select,input[type=text],input[type=number]{
+  background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:10px;
+  padding:7px 11px;font-family:'Aileron',Arial,sans-serif;color:#1A2332;
+  font-size:.82rem;transition:border-color .15s;
+}
+select:focus,input[type=text]:focus,input[type=number]:focus{
+  outline:none;border-color:#00A8B4;background:#fff;
+}
+
+/* — Botones primarios — */
+button[style*="background:#00A8B4"],button[style*="background: #00A8B4"]{
+  border-radius:10px!important;font-weight:700!important;
+  transition:background .15s,transform .15s,box-shadow .15s!important;
+  box-shadow:0 2px 10px rgba(0,168,180,.3)!important;
+}
+
+/* — Scrollbar minimalista — */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:#94A3B8}
+</style>"""
+    html = html.replace('</head>', modern_css + '\n</head>', 1)
 
     # ── 0b. GATE DE ACCESO ────────────────────────────────────────────────────
     _PWD_HASH = '10ca7afef5a927a199f952212a07aff3a1a33aa98cf3b51afba65fd701c8f0d4'
