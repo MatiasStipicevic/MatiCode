@@ -905,41 +905,60 @@ def build_vacancia_section(vacancia_rows):
 
     proyectos = sorted(proyectos)
 
-    # ── TABLA RESUMEN ─────────────────────────────────────────────────────
+    # ── TABLA RESUMEN (cada celda cliqueable: proyecto + tipología) ───────
+    _td_style = ('padding:10px 16px;border-bottom:1px solid #F4F6FA;'
+                 'cursor:pointer;transition:opacity .15s;')
+
     thead_mat = ('<thead><tr>'
-                 '<th style="text-align:left;min-width:170px;cursor:pointer" '
-                 'onclick="vacSetProj(null)">Proyecto</th>')
+                 '<th style="text-align:left;min-width:170px">Proyecto</th>')
     for g in GRUPOS:
         thead_mat += f'<th style="text-align:center">{g}</th>'
     thead_mat += '<th style="text-align:center">Prom.</th></tr></thead>'
 
     tbody_mat = '<tbody>'
     for proj in proyectos:
-        row_days, cells = [], ''
+        row_days = []
+        cells    = ''
+        proj_js  = proj.replace("'", "\\'")
         for g in GRUPOS:
             vals = proj_grp[proj].get(g, [])
             nh   = no_hist[proj].get(g, 0)
+            g_js = g.replace("'", "\\'")
             if vals:
                 avg = round(sum(vals) / len(vals))
                 row_days.append(avg)
                 fg, bg = _color(avg)
-                n_lbl = f'<div style="font-size:.59rem;opacity:.8;margin-top:1px">{len(vals)} ud.</div>'
-                cells += (f'<td style="text-align:center;background:{bg};color:{fg};font-weight:700">'
-                          f'{avg}d{n_lbl}</td>')
+                n_lbl = f'<div style="font-size:.59rem;opacity:.8;margin-top:2px">{len(vals)} ud.</div>'
+                cells += (
+                    f'<td style="{_td_style}text-align:center;background:{bg};color:{fg};font-weight:700" '
+                    f'onclick="vacSetProj(\'{proj_js}\',\'{g_js}\')" '
+                    f'title="Ver {g} — {proj}">'
+                    f'{avg}d{n_lbl}</td>'
+                )
             elif nh:
-                cells += f'<td style="text-align:center;color:#8896A6;font-size:.78rem">{nh} s/h</td>'
+                cells += (
+                    f'<td style="{_td_style}text-align:center;color:#8896A6;font-size:.78rem" '
+                    f'onclick="vacSetProj(\'{proj_js}\',\'{g_js}\')" '
+                    f'title="Ver {g} sin historial — {proj}">'
+                    f'{nh} s/h</td>'
+                )
             else:
-                cells += '<td style="text-align:center;color:#CBD5E1">—</td>'
+                cells += f'<td style="text-align:center;color:#CBD5E1;padding:10px 16px">—</td>'
 
         proj_avg = round(sum(row_days) / len(row_days)) if row_days else None
         fg_p, bg_p = _color(proj_avg)
-        avg_cell = (f'<td style="text-align:center;font-weight:800;color:{fg_p};background:{bg_p}">'
-                    f'{proj_avg}d</td>' if proj_avg is not None
-                    else '<td style="text-align:center;color:#CBD5E1">—</td>')
-        proj_js = proj.replace("'", "\\'")
-        tbody_mat += (f'<tr style="cursor:pointer" onclick="vacSetProj(\'{proj_js}\')" '
-                      f'title="Ver unidades de {proj_js}">'
-                      f'<td style="font-weight:600">{proj}</td>{cells}{avg_cell}</tr>\n')
+        avg_cell = (
+            f'<td style="{_td_style}text-align:center;font-weight:800;color:{fg_p};background:{bg_p}" '
+            f'onclick="vacSetProj(\'{proj_js}\')" title="Ver todo {proj}">{proj_avg}d</td>'
+            if proj_avg is not None
+            else '<td style="text-align:center;color:#CBD5E1;padding:10px 16px">—</td>'
+        )
+        # La celda del nombre del proyecto filtra el proyecto completo (sin grp)
+        proj_cell = (
+            f'<td style="{_td_style}font-weight:600" '
+            f'onclick="vacSetProj(\'{proj_js}\')" title="Ver todo {proj}">{proj}</td>'
+        )
+        tbody_mat += f'<tr onmouseenter="vacRowHover(this,true)" onmouseleave="vacRowHover(this,false)">{proj_cell}{cells}{avg_cell}</tr>\n'
     tbody_mat += '</tbody>'
 
     leyenda = ''.join([
@@ -1006,13 +1025,21 @@ def build_vacancia_section(vacancia_rows):
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <select id="vac-proj-sel" onchange="vacSetProj(this.value||null)"
+      <select id="vac-proj-sel" onchange="vacSetProj(this.value||null,null)"
         style="background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:10px;
                padding:8px 12px;font-size:.82rem;font-family:inherit;color:#1A2332;
                cursor:pointer;min-width:200px">
         <option value="">— Todos los proyectos —</option>
         {proj_opts}
       </select>
+      <span id="vac-grp-chip"
+        style="display:none;align-items:center;gap:6px;background:#E0F7FA;color:#00838F;
+               border-radius:8px;padding:5px 10px 5px 12px;font-size:.74rem;font-weight:700">
+        <span></span>
+        <button onclick="vacSetProj(_vacSelProj,null)"
+          style="background:none;border:none;cursor:pointer;color:#00838F;font-size:.85rem;
+                 line-height:1;padding:0 2px" title="Quitar filtro tipología">&#x2715;</button>
+      </span>
       <span id="vac-count-badge"
         style="background:#F4F6FA;color:#4B5A6A;border-radius:8px;
                padding:6px 12px;font-size:.75rem;font-weight:700;white-space:nowrap">
@@ -1043,6 +1070,7 @@ def build_vacancia_section(vacancia_rows):
 <script>
 var _vacData = {vac_json};
 var _vacSelProj = null;
+var _vacSelGrp  = null;
 
 function _vacColor(d) {{
   if(d===null||d===undefined) return ['#8896A6','#F4F6FA'];
@@ -1052,38 +1080,64 @@ function _vacColor(d) {{
   return ['#DC2626','#FEF2F2'];
 }}
 
-function vacSetProj(proj) {{
-  _vacSelProj = proj;
+function vacRowHover(row, on) {{
+  row.querySelectorAll('td[onclick]').forEach(function(td){{
+    td.style.opacity = on ? '.75' : '1';
+  }});
+}}
+
+function vacSetProj(proj, grp) {{
+  _vacSelProj = proj || null;
+  _vacSelGrp  = grp  || null;
+
+  // Sync selector
   var sel = document.getElementById('vac-proj-sel');
   if(sel) sel.value = proj || '';
-  var title = document.getElementById('vac-proj-title');
-  if(title) title.textContent = proj || 'Todos los proyectos';
 
-  // Highlight row in matrix
-  var rows = document.querySelectorAll('#vac-table tbody tr');
-  rows.forEach(function(r) {{
-    r.style.outline = (proj && r.querySelector('td') && r.querySelector('td').textContent===proj)
-      ? '2px solid #00A8B4' : '';
-    r.style.borderRadius = '8px';
+  // Breadcrumb title
+  var title = document.getElementById('vac-proj-title');
+  if(title) {{
+    title.innerHTML = proj
+      ? (grp
+          ? '<span style="color:#8896A6;font-weight:400">' + proj + '</span>'
+            + ' <span style="color:#CBD5E1;margin:0 6px">›</span> '
+            + '<span style="color:#00A8B4">' + grp + '</span>'
+          : proj)
+      : 'Todos los proyectos';
+  }}
+
+  // Chip de filtro activo
+  var chip = document.getElementById('vac-grp-chip');
+  if(chip) {{
+    if(grp) {{
+      chip.style.display = 'inline-flex';
+      chip.querySelector('span').textContent = grp;
+    }} else {{
+      chip.style.display = 'none';
+    }}
+  }}
+
+  // Resaltar celda/fila activa en matriz
+  document.querySelectorAll('#vac-table tbody tr').forEach(function(r) {{
+    var firstTd = r.querySelector('td');
+    var isProj  = proj && firstTd && firstTd.textContent.trim() === proj;
+    r.style.background = isProj ? 'rgba(0,168,180,.05)' : '';
   }});
 
-  // Build units list
+  // Construir lista de unidades
   var units = [];
   if(proj) {{
-    units = (_vacData[proj] || []);
+    units = (_vacData[proj] || []).map(function(u){{ return Object.assign({{proj:proj}},u); }});
   }} else {{
     Object.keys(_vacData).sort().forEach(function(p) {{
       (_vacData[p]||[]).forEach(function(u) {{ units.push(Object.assign({{proj:p}},u)); }});
     }});
-    units.sort(function(a,b){{
-      if(a.d===null&&b.d===null) return 0;
-      if(a.d===null) return 1;
-      if(b.d===null) return -1;
-      return b.d - a.d;
-    }});
   }}
 
-  var withHist  = units.filter(function(u){{return u.d!==null;}});
+  // Filtrar por tipología si se seleccionó
+  if(grp) units = units.filter(function(u){{ return u.g === grp; }});
+
+  var withHist    = units.filter(function(u){{return u.d!==null;}});
   var withoutHist = units.filter(function(u){{return u.d===null;}});
 
   var libres = withHist.filter(function(u){{return !u.r;}});
@@ -1151,21 +1205,30 @@ function vacSetProj(proj) {{
     if(note) note.style.display='none';
   }}
 
-  // Update table header if showing all projects
-  var thProj = document.querySelector('#vac-unit-table thead tr');
-  if(thProj) {{
-    var ths = thProj.querySelectorAll('th');
-    if(proj && ths.length===6) thProj.removeChild(ths[3]);
-    else if(!proj && ths.length===5) {{
-      var th=document.createElement('th');
-      th.textContent='Proyecto';th.style.textAlign='left';
-      thProj.insertBefore(th, ths[3]);
+  // Columna Proyecto: visible solo cuando se ven todos los proyectos
+  var thRow = document.querySelector('#vac-unit-table thead tr');
+  if(thRow) {{
+    var ths = thRow.querySelectorAll('th');
+    var hasProjCol = ths.length >= 6;
+    if(proj && hasProjCol)      thRow.removeChild(ths[3]);
+    else if(!proj && !hasProjCol) {{
+      var th = document.createElement('th');
+      th.textContent = 'Proyecto'; th.style.textAlign = 'left';
+      thRow.insertBefore(th, ths[3]);
     }}
+  }}
+
+  // Scroll automático al panel de detalle
+  var card = document.getElementById('vac-detail-card');
+  if(card && (proj || grp)) {{
+    setTimeout(function(){{
+      card.scrollIntoView({{behavior:'smooth', block:'start'}});
+    }}, 60);
   }}
 }}
 
 // Inicializar con todos los proyectos
-vacSetProj(null);
+vacSetProj(null, null);
 </script>
 """
     return section
