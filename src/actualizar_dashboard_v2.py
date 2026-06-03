@@ -809,21 +809,25 @@ def load_vacancia():
     """
     sql = """
     WITH ultimo_contrato_pasado AS (
+        -- Usa fecha_termino_real cuando existe (salida anticipada del inquilino),
+        -- si no, usa fecha_fin (vencimiento contractual normal).
         SELECT DISTINCT ON (unidad_id)
             unidad_id,
-            fecha_fin AS ultima_fin
+            COALESCE(fecha_termino_real, fecha_fin) AS salida_real,
+            fecha_fin                               AS fecha_fin_contrato
         FROM public.contratos
-        WHERE fecha_fin < CURRENT_DATE
-        ORDER BY unidad_id, fecha_fin DESC
+        WHERE COALESCE(fecha_termino_real, fecha_fin) < CURRENT_DATE
+        ORDER BY unidad_id, COALESCE(fecha_termino_real, fecha_fin) DESC
     )
     SELECT
-        p.nombre                          AS proyecto,
+        p.nombre                                    AS proyecto,
         u.tipologia,
-        u.raw->>'modelo'                  AS modelo,
-        u.nombre                          AS unidad,
-        u.raw->>'sub_estado'              AS sub_estado,
-        ucp.ultima_fin,
-        (CURRENT_DATE - ucp.ultima_fin)::int AS dias_vacancia
+        u.raw->>'modelo'                            AS modelo,
+        u.nombre                                    AS unidad,
+        u.raw->>'sub_estado'                        AS sub_estado,
+        ucp.salida_real                             AS ultima_salida,
+        ucp.fecha_fin_contrato,
+        (CURRENT_DATE - ucp.salida_real)::int       AS dias_vacancia
     FROM public.unidades u
     JOIN public.propiedades p ON p.id = u.propiedad_id
     LEFT JOIN ultimo_contrato_pasado ucp ON ucp.unidad_id = u.id
@@ -869,32 +873,35 @@ def build_vacancia_section(vacancia_rows):
 
     # ── Procesar filas ─────────────────────────────────────────────────────
     from collections import defaultdict
-    proj_grp  = defaultdict(lambda: defaultdict(list))
+    proj_grp  = defaultdict(lambda: defaultdict(list))   # solo unidades libres
     no_hist   = defaultdict(lambda: defaultdict(int))
-    # Detalle por proyecto para JS drill-down
-    unit_data = defaultdict(list)
+    unit_data = defaultdict(list)   # para JS drill-down (todas)
 
     proyectos = []
     for r in vacancia_rows:
-        proj  = r['proyecto']
-        grp   = _tip(r['tipologia'], r['modelo'])
-        dias  = r['dias_vacancia']
-        mod   = (r['modelo'] or '').strip()
-        unidad = r['unidad']
-        ult   = str(r['ultima_fin']) if r['ultima_fin'] else None
+        proj     = r['proyecto']
+        grp      = _tip(r['tipologia'], r['modelo'])
+        dias     = r['dias_vacancia']
+        mod      = (r['modelo'] or '').strip()
+        unidad   = r['unidad']
+        sub      = (r['sub_estado'] or '').strip()
+        reservada = (sub == '800')
+        ult      = str(r['ultima_salida']) if r['ultima_salida'] else None
+        fin_c    = str(r['fecha_fin_contrato']) if r.get('fecha_fin_contrato') else None
 
         if proj not in proyectos:
             proyectos.append(proj)
 
+        entry = {'u': unidad, 'g': grp, 'm': mod,
+                 'd': int(dias) if dias is not None else None,
+                 'f': ult, 'fc': fin_c, 'r': reservada}
+        unit_data[proj].append(entry)
+
         if dias is None:
             no_hist[proj][grp] += 1
-            unit_data[proj].append({'u': unidad, 'g': grp, 'm': mod,
-                                    'd': None, 'f': None})
-        else:
-            dias = int(dias)
-            proj_grp[proj][grp].append(dias)
-            unit_data[proj].append({'u': unidad, 'g': grp, 'm': mod,
-                                    'd': dias, 'f': ult})
+        elif not reservada:
+            # Reservadas se excluyen de promedios — ya hay gestión activa
+            proj_grp[proj][grp].append(int(dias))
 
     proyectos = sorted(proyectos)
 
@@ -948,8 +955,14 @@ def build_vacancia_section(vacancia_rows):
     total_no_hist = sum(v for pr in no_hist.values() for v in pr.values())
 
     # ── JSON para drill-down JS ───────────────────────────────────────────
+    # Orden: libres primero (peores arriba), luego reservadas, luego sin historial
+    def _sort_key(x):
+        if x['d'] is None: return (2, 0)
+        if x['r']:         return (1, -(x['d']))
+        return                    (0, -(x['d']))
+
     vac_json = json.dumps(
-        {proj: sorted(units, key=lambda x: (x['d'] is None, -(x['d'] or 0)))
+        {proj: sorted(units, key=_sort_key)
          for proj, units in unit_data.items()},
         ensure_ascii=False
     )
@@ -1073,28 +1086,44 @@ function vacSetProj(proj) {{
   var withHist  = units.filter(function(u){{return u.d!==null;}});
   var withoutHist = units.filter(function(u){{return u.d===null;}});
 
+  var libres = withHist.filter(function(u){{return !u.r;}});
+  var reserv = withHist.filter(function(u){{return u.r;}});
   var badge = document.getElementById('vac-count-badge');
-  if(badge) badge.textContent = withHist.length + ' unidad' + (withHist.length!==1?'es':'') +
-    ' con historial' + (withoutHist.length?' · '+withoutHist.length+' s/h':'');
+  if(badge) badge.textContent =
+    libres.length + ' libre'+(libres.length!==1?'s':'')+
+    (reserv.length ? ' · '+reserv.length+' reservada'+(reserv.length!==1?'s':'') : '')+
+    (withoutHist.length ? ' · '+withoutHist.length+' s/h' : '');
 
   var tbody = document.getElementById('vac-unit-body');
   if(!tbody) return;
   tbody.innerHTML = '';
 
   withHist.forEach(function(u) {{
-    var clrs = _vacColor(u.d);
+    var clrs = _vacColor(u.r ? null : u.d);   // reservadas → gris
+    var reservBadge = u.r
+      ? '<span style="font-size:.66rem;font-weight:700;color:#2563EB;background:#EFF6FF;'
+        +'border-radius:5px;padding:2px 7px;margin-left:5px">Reservada</span>'
+      : '';
+    // Mostrar fecha real de salida; si difiere del fin contractual, indicar ambas
+    var fechaLabel = u.f || '—';
+    if(u.fc && u.f && u.fc !== u.f)
+      fechaLabel = u.f
+        +'<div style="font-size:.65rem;color:#CBD5E1">Fin contrato: '+u.fc+'</div>';
     var tr = document.createElement('tr');
-    var pCol = proj ? '' : '<td>'+( u.proj||'')+'</td>';
     tr.innerHTML =
-      '<td style="font-weight:600;font-family:monospace;font-size:.82rem">'+u.u+'</td>'+
+      '<td style="font-weight:600;font-family:monospace;font-size:.82rem">'
+        +u.u+reservBadge+'</td>'+
       '<td>'+u.g+'</td>'+
       '<td style="color:#8896A6;font-size:.8rem">'+(u.m||'—')+'</td>'+
-      (proj?'':'<td>'+u.proj+'</td>')+
-      '<td style="text-align:center;color:#8896A6;font-size:.8rem">'+(u.f||'—')+'</td>'+
+      (proj?'':'<td>'+(u.proj||'')+'</td>')+
+      '<td style="text-align:center;color:#8896A6;font-size:.8rem">'+fechaLabel+'</td>'+
       '<td style="text-align:center">'
-        +'<span style="display:inline-block;padding:3px 10px;border-radius:7px;'
-        +'font-weight:700;font-size:.85rem;color:'+clrs[0]+';background:'+clrs[1]+'">'
-        +u.d+'d</span></td>';
+        +(u.r
+          ? '<span style="font-size:.8rem;color:#8896A6">'+u.d+'d</span>'
+          : '<span style="display:inline-block;padding:3px 10px;border-radius:7px;'
+            +'font-weight:700;font-size:.85rem;color:'+clrs[0]+';background:'+clrs[1]+'">'
+            +u.d+'d</span>')
+        +'</td>';
     tbody.appendChild(tr);
   }});
 
