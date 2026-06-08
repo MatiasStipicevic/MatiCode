@@ -31,9 +31,9 @@ _HERE  = Path(__file__).parent  # directorio del script
 ESTADO_MAP  = {"100": "Disponible", "200": "Arrendado", "400": "No Disponible"}
 SUBEST_MAP  = {               # (estado_raw, sub_estado_raw) → sub label
     ("100", "800"): "reservada",
-    ("100", "600"): "por arrendar",
+    ("100", "600"): "por arrendar",   # contrato en proceso → cuenta como arrendada
     ("100", "510"): "en obra",
-    ("100", ""):    "por arrendar",   # disponible sin sub = libre para arrendar
+    ("100", ""):    "disponible",     # libre sin sub-estado → disponible real
     ("200", "700"): "por liberar",
     ("200", "800"): "por renovar",
     ("200", "200"): "activo",
@@ -394,7 +394,8 @@ def load_uf():
         cur.execute("""
             SELECT divisa_conversion_valor, divisa_conversion_fecha
             FROM liquidacion_cargos
-            WHERE divisa='Unidad de fomento' AND divisa_conversion_valor IS NOT NULL
+            WHERE divisa='Unidad de fomento'
+              AND divisa_conversion_valor > 1000
             ORDER BY divisa_conversion_fecha DESC LIMIT 1
         """)
         row = cur.fetchone()
