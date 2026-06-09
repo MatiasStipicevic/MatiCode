@@ -1375,8 +1375,8 @@ def build_disponibilidad_table(df, m):
             'pct':        pct,
         })
 
-    # Sort: lowest occupancy first (most critical at top)
-    rows_data.sort(key=lambda x: x['pct'])
+    # Orden alfabético por proyecto (igual que la imagen de referencia)
+    rows_data.sort(key=lambda x: x['proj'])
 
     # ── Max values for color intensity ─────────────────────────────────────
     max_vals = {grp: max((r[grp] for r in rows_data), default=1) or 1 for grp in TIP_GROUPS}
