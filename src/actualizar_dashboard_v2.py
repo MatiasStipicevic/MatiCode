@@ -418,6 +418,73 @@ def load_uf():
     return None
 
 
+def load_forecast_data():
+    """
+    Por Liberar e Ingresos por proyecto para el mes en curso, siguiente y sub-siguiente.
+    Devuelve:
+      {proyecto: {"Jun 2026": {"pl": N, "ing": N}, "Jul 2026": {...}, "Aug 2026": {...}}}
+    """
+    from datetime import date
+    import calendar
+
+    # Calcular los 3 meses
+    today = date.today()
+    months = []
+    for offset in range(3):
+        y, m = today.year, today.month + offset
+        if m > 12: y, m = y + 1, m - 12
+        months.append((y, m, f"{calendar.month_abbr[m]} {y}"))
+
+    data = {}   # {proj: {mes_label: {"pl": 0, "ing": 0}}}
+
+    try:
+        conn = psycopg2.connect(**DB)
+        cur  = conn.cursor()
+
+        # ── Por Liberar: contratos venciendo por mes ──────────────────────
+        cur.execute("""
+            SELECT proyecto,
+                   to_char(date_trunc('month', fecha_fin), 'Mon YYYY') AS mes,
+                   COUNT(DISTINCT folio) AS n
+            FROM dbo.contratosact
+            WHERE fecha_fin >= date_trunc('month', CURRENT_DATE)
+              AND fecha_fin <  date_trunc('month', CURRENT_DATE) + INTERVAL '3 months'
+            GROUP BY proyecto, date_trunc('month', fecha_fin)
+        """)
+        for proj, mes, n in cur.fetchall():
+            data.setdefault(proj, {}).setdefault(mes, {"pl": 0, "ing": 0})
+            data[proj][mes]["pl"] = int(n)
+
+        # ── Ingresos: contratos iniciando por mes ─────────────────────────
+        cur.execute("""
+            SELECT p.nombre,
+                   to_char(date_trunc('month', c.fecha_inicio), 'Mon YYYY') AS mes,
+                   COUNT(DISTINCT c.contrato_id) AS n
+            FROM public.contratos c
+            JOIN public.unidades u ON u.id = c.unidad_id
+            JOIN public.propiedades p ON p.id = u.propiedad_id
+            WHERE u.nombre ILIKE '%%-DEPA-%%'
+              AND c.fecha_inicio >= date_trunc('month', CURRENT_DATE)
+              AND c.fecha_inicio <  date_trunc('month', CURRENT_DATE) + INTERVAL '3 months'
+            GROUP BY p.nombre, date_trunc('month', c.fecha_inicio)
+        """)
+        for proj, mes, n in cur.fetchall():
+            data.setdefault(proj, {}).setdefault(mes, {"pl": 0, "ing": 0})
+            data[proj][mes]["ing"] = int(n)
+
+        conn.close()
+        print(f"  Forecast: {len(data)} proyectos con datos de PL/Ingresos")
+    except Exception as e:
+        print(f"  forecast: omitido ({e})")
+
+    # Rellenar meses faltantes con cero para todos los proyectos conocidos
+    for proj in data:
+        for _, _, lbl in months:
+            data[proj].setdefault(lbl, {"pl": 0, "ing": 0})
+
+    return data, [lbl for _, _, lbl in months]
+
+
 def load_tendencias_proyectos():
     """Ocupacion activa por proyecto: mes actual vs mes anterior (para flechas de tendencia)."""
     try:
@@ -1896,7 +1963,8 @@ def _fmt_clp(uf_val, uf_valor):
     return f"${clp/1_000_000:.2f}M" if clp >= 1_000_000 else f"${clp/1_000:.0f}k"
 
 
-def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencias=None):
+def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencias=None,
+                           forecast_data=None, forecast_months=None):
     """Vista por Proyecto v3 — sidebar de proyectos + panel de detalle inline."""
 
     sorted_projs   = sorted(m["proj_desc"], key=lambda x: x["Propiedad"])
@@ -2113,7 +2181,9 @@ def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencia
     logos_js       = json.dumps(proj_logos,      ensure_ascii=False)
     venc_mo_js     = json.dumps(venc_monthly,    ensure_ascii=False)
     precios_js     = json.dumps(precios or {},   ensure_ascii=False)
-    trends_js      = json.dumps(proj_trends,     ensure_ascii=False)
+    trends_js      = json.dumps(proj_trends,              ensure_ascii=False)
+    forecast_js    = json.dumps(forecast_data or {},      ensure_ascii=False)
+    fmonths_js     = json.dumps(forecast_months or [],    ensure_ascii=False)
     uf_js          = str(round(uf_valor, 2)) if uf_valor else "null"
 
     uf_badge = (
@@ -2253,8 +2323,10 @@ var PROJ_COLORS  = {colors_js};
 var PROJ_LOGOS   = {logos_js};
 var PROJ_VENC_MO = {venc_mo_js};
 var PROJ_PRECIOS = {precios_js};
-var PROJ_TRENDS  = {trends_js};
-var UF_VALOR     = {uf_js};
+var PROJ_TRENDS    = {trends_js};
+var PROJ_FORECAST  = {forecast_js};   // {{proj: {{mes: {{pl, ing}}}}}}
+var FORECAST_MONTHS = {fmonths_js};   // ["Jun 2026","Jul 2026","Aug 2026"]
+var UF_VALOR       = {uf_js};
 var _projUFMode  = true;   // true=UF primero, false=CLP primero
 var _selProj     = null;
 
@@ -2541,6 +2613,68 @@ function _buildDetailHTML(projName) {{
   h+=_dkpi("Por Liberar",  Math.round(p.Por_Liberar), "#DC2626");
   h+=_dkpi("Reservadas",   Math.round(p.Reservadas),  "#0369A1");
   h+='</div>';
+
+  // ── Forecast: Por Liberar / Ingresos / Proyección (3 meses) ─────────
+  (function() {{
+    var fd  = (PROJ_FORECAST[projName] || {{}});
+    var ms  = FORECAST_MONTHS;
+    if(!ms || !ms.length) return;
+
+    // Arrendadas actuales del proyecto
+    var arrBase = Math.round(p.Arrendados);
+
+    // Helpers de estilo
+    function chip(label, val, color, bg) {{
+      return '<div style="background:'+bg+';border-radius:12px;padding:10px 14px;text-align:center;flex:1">'
+        +'<div style="font-size:.62rem;font-weight:700;color:'+color+';text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">'+label+'</div>'
+        +'<div style="font-size:1.35rem;font-weight:800;color:'+color+'">'+val+'</div>'
+        +'</div>';
+    }}
+    function rowLabel(txt) {{
+      return '<div style="font-size:.65rem;font-weight:700;color:#8896A6;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">'+txt+'</div>';
+    }}
+
+    var plRow='', ingRow='', fcRow='';
+    var arrProj = arrBase;
+    ms.forEach(function(mes) {{
+      var d   = fd[mes] || {{pl:0, ing:0}};
+      var pl  = d.pl  || 0;
+      var ing = d.ing || 0;
+
+      // PL chips — rojo si hay muchas salidas
+      var plColor = pl >= 20 ? '#DC2626' : pl >= 10 ? '#EA580C' : pl > 0 ? '#D97706' : '#8896A6';
+      var plBg    = pl >= 20 ? '#FEF2F2' : pl >= 10 ? '#FFF7ED' : pl > 0 ? '#FFFBEB' : '#F8FAFC';
+      plRow += chip(mes, pl, plColor, plBg);
+
+      // Ingresos chips — verde
+      var ingColor = ing > 0 ? '#16A34A' : '#8896A6';
+      var ingBg    = ing > 0 ? '#F0FDF4' : '#F8FAFC';
+      ingRow += chip(mes, ing, ingColor, ingBg);
+
+      // Forecast acumulado: A + R - PL
+      arrProj = arrProj + ing - pl;
+      var pct   = p.Total > 0 ? (arrProj / p.Total * 100).toFixed(1) : '—';
+      var fcClr = arrProj/p.Total >= 0.95 ? '#16A34A' : arrProj/p.Total >= 0.85 ? '#D97706' : '#DC2626';
+      var fcBg  = arrProj/p.Total >= 0.95 ? '#F0FDF4' : arrProj/p.Total >= 0.85 ? '#FFFBEB' : '#FEF2F2';
+      fcRow += chip(mes, arrProj+' ud<div style="font-size:.7rem;font-weight:600">'+pct+'%</div>', fcClr, fcBg);
+    }});
+
+    h+='<div style="background:#F8FAFC;border-radius:14px;padding:16px;margin-bottom:16px">';
+    h+='<div style="font-size:.75rem;font-weight:800;color:#0F172A;margin-bottom:14px">Proyección 3 Meses</div>';
+
+    h+=rowLabel('Por Liberar (contratos que vencen)');
+    h+='<div style="display:flex;gap:8px;margin-bottom:14px">'+plRow+'</div>';
+
+    h+=rowLabel('Ingresos (contratos que inician)');
+    h+='<div style="display:flex;gap:8px;margin-bottom:14px">'+ingRow+'</div>';
+
+    h+=rowLabel('Forecast  A + Ingresos − Por Liberar');
+    h+='<div style="display:flex;gap:8px">'+fcRow+'</div>';
+
+    h+='<div style="font-size:.67rem;color:#CBD5E1;margin-top:10px">Base actual: '+arrBase+' arrendadas / '
+      +Math.round(p.Total)+' total</div>';
+    h+='</div>';
+  }})();
 
   // Charts (side by side)
   h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">';
@@ -3596,8 +3730,10 @@ def main():
     precios    = load_precios_disponibles()
     uf_valor   = load_uf()
     tendencias = load_tendencias_proyectos()
+    forecast_data, forecast_months = load_forecast_data()
     proj_section, proj_js = build_projects_section(
-        m, vencs, precios=precios, uf_valor=uf_valor, tendencias=tendencias)
+        m, vencs, precios=precios, uf_valor=uf_valor, tendencias=tendencias,
+        forecast_data=forecast_data, forecast_months=forecast_months)
     html = html.replace('<div class="sec">Comparador Semanal</div>',
                         proj_section + '<div class="sec">Comparador Semanal</div>')
     html = html.replace("</body>", "<script>\n" + proj_js + "\n</script>\n</body>", 1)
