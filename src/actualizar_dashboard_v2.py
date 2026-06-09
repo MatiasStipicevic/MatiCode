@@ -114,7 +114,8 @@ def load_data():
     raw_sub = df_cb["Sub estado"].astype(str).str.strip().str.lower()
     def _map_sub_excel(row, sub):
         if sub in ("nan", "", "none", "nat"):
-            return {"Arrendado": "activo", "Disponible": "por arrendar"}.get(row["_estado"], "no disponible")
+            # "Disponible" sin sub-estado = libre real, NO "por arrendar"
+            return {"Arrendado": "activo", "Disponible": "disponible"}.get(row["_estado"], "no disponible")
         return sub
     df_cb["_sub"] = [_map_sub_excel(row, sub) for row, sub in
                      zip(df_cb.itertuples(), raw_sub)]
@@ -123,6 +124,12 @@ def load_data():
     # ── Combinar ──────────────────────────────────────────────────────────
     cols = ["_proj","_tip","_estado","_sub","Nombre","Modelo"]
     df = pd.concat([df_db[cols], df_cb[cols]], ignore_index=True)
+
+    # ── Tipología agrupada (Studio / 1 Dorm / 2 Dorm / 3 Dorm) ───────────
+    # Considera modelo para separar Studios de 1D1B
+    df["_tip_grp"] = df.apply(
+        lambda r: _tip_group_full(r["_tip"], r["Modelo"]), axis=1
+    )
     return df
 
 
@@ -183,14 +190,15 @@ def compute(df):
     proj_desc = sorted(proj_list, key=lambda x: -x["Pct_Ocup"])
     proj_asc  = sorted(proj_list, key=lambda x:  x["Pct_Ocup"])
 
-    # Tipologias para heatmap
-    tips = sorted(df["_tip"].unique())
+    # Tipologias para heatmap — usa _tip_grp (Studio / 1 Dorm / 2 Dorm / 3 Dorm)
+    GRP_ORDER = ["Studio", "1 Dorm", "2 Dorm", "3 Dorm"]
+    tips = [g for g in GRP_ORDER if g in df["_tip_grp"].unique()]
     projs_hm = [p["Propiedad"] for p in proj_asc]
     hm_pct = []
     for proj in projs_hm:
         row = []
         for tip in tips:
-            sub = df[(df["_proj"]==proj) & (df["_tip"]==tip)]
+            sub = df[(df["_proj"]==proj) & (df["_tip_grp"]==tip)]
             t = len(sub); a = int(((sub["_estado"]=="Arrendado")|(sub["_sub"]=="por arrendar")).sum())
             row.append(round(a/t*100, 1) if t else None)
         hm_pct.append(row)
@@ -223,19 +231,20 @@ def compute(df):
     for _, row in disp.iterrows():
         unidades_disp.append({
             "Propiedad": str(row["_proj"]),
-            "Tipologia": str(row["_tip"]),
+            "Tipologia": str(row["_tip_grp"]),   # grupo friendly (Studio / 1 Dorm / …)
+            "TipRaw":    str(row["_tip"]),        # código original (1D1B / 2D2B / …)
             "Modelo":    str(row["Modelo"]) if pd.notna(row["Modelo"]) else "",
             "Nombre":    str(row["Nombre"]) if pd.notna(row["Nombre"]) else "",
             "SubEstado": str(row["_sub"])   if pd.notna(row["_sub"])   else "",
         })
 
-    # tipo_data para chart de Composicion por Tipologia
-    tips_all = sorted(df["_tip"].unique().tolist())
+    # tipo_data para chart de Composicion por Tipologia — usa grupos friendly
+    tips_all = [g for g in GRP_ORDER if g in df["_tip_grp"].unique()]
     tipo_data = {"tipologias": tips_all, "projects": projs_hm}
     for tip in tips_all:
         totals_t, arr_t, pct_t = [], [], []
         for proj in projs_hm:
-            sub = df[(df["_proj"]==proj) & (df["_tip"]==tip)]
+            sub = df[(df["_proj"]==proj) & (df["_tip_grp"]==tip)]
             t = len(sub); a = int(((sub["_estado"]=="Arrendado")|(sub["_sub"]=="por arrendar")).sum())
             totals_t.append(t); arr_t.append(a)
             pct_t.append(round(a/t*100, 1) if t else 0)
