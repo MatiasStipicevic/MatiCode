@@ -418,6 +418,171 @@ def load_uf():
     return None
 
 
+# ── Metas mensuales de ocupación por proyecto (Ene–Dic 2026) ──────────────────
+TARGETS_MENSUALES = {
+    "Soho Barrio Italia":    [94.3,97.0,97.0,97.0,97.0,97.0,97.0,97.0,97.0,97.0,97.0,97.0],
+    "Park Santiago":         [95.5,95.5,95.5,95.5,95.5,95.5,95.5,95.5,95.5,95.5,95.5,95.5],
+    "Central Santiago":      [91.5,90.0,92.0,93.6,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0],
+    "Brooklyn La Florida":   [73.4,81.0,90.0,94.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0],
+    "Boldo Club de Campo":   [93.6,94.0,95.2,95.2,95.2,95.2,95.2,95.2,95.2,95.2,95.2,95.2],
+    "Nativo Riesco":         [81.6,89.0,93.5,95.3,95.3,95.3,95.3,95.3,95.3,95.3,95.3,95.3],
+    "Blend Apoquindo":       [28.0,47.0,63.0,79.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0,95.0],
+    "Spot Nueva Kennedy":    [91.2,87.8,88.0,90.0,92.0,94.0,95.0,95.0,95.0,95.0,95.0,95.0],
+    "Spot Residence":        [68.5,73.5,74.0,74.5,78.5,82.5,86.5,90.5,94.5,95.0,95.0,95.0],
+    "Nomad Holley":          [94.0,95.0,95.5,95.5,95.5,95.5,95.5,95.5,95.5,95.5,95.5,95.5],
+    "Nomad Bellet":          [91.0,94.4,95.0,95.5,95.5,95.5,95.5,95.5,95.5,95.5,95.5,95.5],
+    "IMU San Cristóbal":     [56.9,64.7,70.0,74.5,78.5,82.5,86.5,90.5,94.5,95.0,95.0,95.0],
+    "Collective Bustamante": [None,None,20.8,26.6,31.9,37.3,44.4,50.0,55.0,60.7,66.5,72.4],
+}
+MESES_ES = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"]
+
+
+def build_metas_section(m):
+    """
+    Sección de Metas Mensuales: bullet chart actual vs objetivo por proyecto.
+    Ordena de mayor gap negativo (más crítico) a mejor.
+    """
+    import calendar as _cal
+    from datetime import date as _date
+
+    today    = _date.today()
+    mi       = today.month - 1   # 0-indexed
+    mes_lbl  = MESES_ES[mi] + " " + str(today.year)
+
+    rows = []
+    for p in m['proj_desc']:
+        proj    = p['Propiedad']
+        actual  = round(p['Pct_Ocup'] * 100, 1)
+        total   = int(p.get('Total', 0))
+        targets = TARGETS_MENSUALES.get(proj, [None]*12)
+        tgt     = targets[mi]
+
+        gap = None if tgt is None else round(actual - tgt, 1)
+        uds = 0 if (tgt is None or gap is None or gap >= 0) else int(round((tgt - actual) / 100 * total))
+
+        # Próximos 3 meses
+        next_t = [(MESES_ES[(mi+i) % 12], targets[(mi+i) % 12])
+                  for i in range(1, 4)]
+
+        rows.append({'proj': proj, 'actual': actual, 'tgt': tgt,
+                     'gap': gap, 'uds': uds, 'total': total, 'next': next_t})
+
+    # Ordenar: sin meta al final; con meta: peor gap primero
+    rows.sort(key=lambda x: (x['gap'] is None, x['gap'] if x['gap'] is not None else 0))
+
+    # Summary KPIs
+    con_meta  = [r for r in rows if r['gap'] is not None]
+    en_meta   = sum(1 for r in con_meta if r['gap'] >= 0)
+    fuera     = len(con_meta) - en_meta
+    total_uds = sum(r['uds'] for r in rows)
+
+    def _clr(gap):
+        if gap is None:   return '#8896A6', '#F4F6FA'
+        if gap >= 0:      return '#16A34A', '#F0FDF4'
+        if gap >= -5:     return '#D97706', '#FFFBEB'
+        return                   '#DC2626', '#FEF2F2'
+
+    rows_html = ''
+    for r in rows:
+        fg, bg = _clr(r['gap'])
+        actual_pct = r['actual']
+        tgt_pct    = r['tgt'] or 0
+
+        # Bullet bar: fondo gris, barra real teal/naranja/rojo, marcador target
+        bar_clr    = fg
+        bar_w      = min(actual_pct, 100)
+        tgt_x      = min(tgt_pct, 100)
+
+        # Gap badge
+        if r['gap'] is None:
+            gap_badge = '<span style="color:#8896A6;font-size:.75rem">—</span>'
+        elif r['gap'] >= 0:
+            gap_badge = (f'<span style="background:#F0FDF4;color:#16A34A;font-weight:700;'
+                        f'font-size:.75rem;padding:2px 8px;border-radius:6px">+{r["gap"]}pp</span>')
+        else:
+            gap_badge = (f'<span style="background:#FEF2F2;color:#DC2626;font-weight:700;'
+                        f'font-size:.75rem;padding:2px 8px;border-radius:6px">{r["gap"]}pp</span>')
+
+        # Unidades necesarias
+        uds_html = (f'<span style="color:#DC2626;font-size:.73rem;font-weight:700">'
+                    f'+{r["uds"]} ud.</span>' if r['uds'] > 0 else
+                    f'<span style="color:#16A34A;font-size:.73rem">&#10003;</span>')
+
+        # Próximos meses
+        next_html = ''
+        for lbl, t in r['next']:
+            if t is not None:
+                next_html += (f'<span style="font-size:.68rem;color:#8896A6;margin-right:8px">'
+                              f'{lbl}: <b style="color:#1A2332">{t}%</b></span>')
+
+        rows_html += f"""
+<tr>
+  <td style="font-weight:600;min-width:170px;padding:10px 14px">{r['proj']}</td>
+  <td style="padding:10px 14px;min-width:260px">
+    <div style="position:relative;height:20px;background:#EEF2F7;border-radius:99px;overflow:visible">
+      <div style="position:absolute;left:0;top:0;height:100%;width:{bar_w}%;
+                  background:{bar_clr};border-radius:99px;opacity:.85;transition:width .4s"></div>
+      {"" if not tgt_pct else f'<div style="position:absolute;top:-3px;bottom:-3px;left:{tgt_x}%;width:2px;background:#1A2332;opacity:.5;border-radius:2px" title="Meta: {tgt_pct}%"></div>'}
+      <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);
+                   font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)">
+        {actual_pct}%
+      </span>
+    </div>
+    <div style="font-size:.62rem;color:#8896A6;margin-top:3px">
+      Meta {mes_lbl}: <b style="color:#1A2332">{f'{tgt_pct}%' if tgt_pct else '—'}</b>
+      &nbsp;{next_html}
+    </div>
+  </td>
+  <td style="text-align:center;padding:10px 8px">{gap_badge}</td>
+  <td style="text-align:center;padding:10px 8px">{uds_html}</td>
+</tr>"""
+
+    summary_html = f"""
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px">
+  <div style="background:#F0FDF4;border-radius:14px;padding:16px 20px;border-left:4px solid #16A34A">
+    <div style="font-size:.65rem;color:#16A34A;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">En Meta</div>
+    <div style="font-size:2rem;font-weight:800;color:#16A34A">{en_meta}</div>
+    <div style="font-size:.72rem;color:#6B7A8D">de {len(con_meta)} proyectos con meta</div>
+  </div>
+  <div style="background:#FEF2F2;border-radius:14px;padding:16px 20px;border-left:4px solid #DC2626">
+    <div style="font-size:.65rem;color:#DC2626;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Bajo Meta</div>
+    <div style="font-size:2rem;font-weight:800;color:#DC2626">{fuera}</div>
+    <div style="font-size:.72rem;color:#6B7A8D">proyectos que requieren foco</div>
+  </div>
+  <div style="background:#FEF2F2;border-radius:14px;padding:16px 20px;border-left:4px solid #EA580C">
+    <div style="font-size:.65rem;color:#EA580C;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Unidades Necesarias</div>
+    <div style="font-size:2rem;font-weight:800;color:#EA580C">{total_uds}</div>
+    <div style="font-size:.72rem;color:#6B7A8D">para alcanzar la meta de {mes_lbl}</div>
+  </div>
+</div>"""
+
+    section = f"""
+<div id="sec-metas" class="sec">Metas de Ocupaci&oacute;n &mdash; {mes_lbl}</div>
+<div class="sec-sub">Actual vs objetivo mensual por proyecto &mdash; ordenado de mayor a menor gap</div>
+
+{summary_html}
+
+<div class="cf" style="overflow-x:auto">
+  <table style="min-width:640px;width:100%">
+    <thead>
+      <tr>
+        <th style="text-align:left">Proyecto</th>
+        <th style="text-align:left">% Ocupaci&oacute;n actual &amp; meta</th>
+        <th style="text-align:center">Gap</th>
+        <th style="text-align:center">Uds. para meta</th>
+      </tr>
+    </thead>
+    <tbody>{rows_html}</tbody>
+  </table>
+</div>
+<div style="font-size:.7rem;color:#8896A6;margin-top:10px">
+  La barra vertical oscura indica la meta del mes actual. Barra de color = ocupaci&oacute;n real.
+  Meses siguientes mostrados como referencia.
+</div>
+"""
+    return section
+
+
 def load_forecast_data():
     """
     Por Liberar e Ingresos por proyecto para el mes en curso, siguiente y sub-siguiente.
@@ -3564,7 +3729,7 @@ function actualizarDatos() {{
 }}
 
 // ── Collapsible sections ─────────────────────────────────────────────────────
-var _SEC_DEFAULTS_OPEN = ['sec-ocupacion','sec-disponibilidad','sec-proyectos'];
+var _SEC_DEFAULTS_OPEN = ['sec-ocupacion','sec-metas','sec-disponibilidad','sec-proyectos'];
 
 function toggleSec(id) {{
   var body = document.getElementById('body-' + id);
@@ -3820,6 +3985,12 @@ def main():
     if vac_section:
         html = html.replace('<div id="sec-disponibilidad"',
                             vac_section + '<div id="sec-disponibilidad"', 1)
+
+    # ── Agregar sección Metas (DESPUÉS de disponibilidad, para que exista sec-disponibilidad) ──
+    print("Agregando seccion Metas de Ocupacion...")
+    metas_section = build_metas_section(m)
+    html = html.replace('<div id="sec-disponibilidad"',
+                        metas_section + '<div id="sec-disponibilidad"', 1)
 
     print("Agregando features interactivos (meta, historico, modal, cross-filter)...")
     html = add_extra_features(html, m, hist_data, uf_valor=uf_valor)

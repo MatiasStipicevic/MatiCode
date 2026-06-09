@@ -597,6 +597,7 @@ body.present-mode .header { padding: 16px 0 12px; }
   <div id="sb-date">Actualizado: <b>__DATE__</b></div>
   <div class="sbn">
     <div class="sbl on"  onclick="irA('sec-ocupacion')"><span class="ico">&#127970;</span>Ocupaci&oacute;n Global</div>
+    <div class="sbl" onclick="irA('sec-metas')"><span class="ico">&#127919;</span>Metas</div>
     <div class="sbl" onclick="irA('sec-alertas')"><span class="ico">&#9888;</span>Alertas por Proyecto</div>
     <div class="sbl" onclick="irA('sec-disponibilidad')"><span class="ico">&#128202;</span>Bajada Agencia</div>
     <div class="sbl" onclick="irA('sec-disponibles')"><span class="ico">&#128994;</span>Disponibles</div>
@@ -1296,8 +1297,8 @@ function toggleSb(){
 }
 /* Active nav on scroll */
 (function(){
-  var ids=['sec-ocupacion','sec-alertas','sec-disponibilidad','sec-disponibles','sec-reservadas',
-           'sec-por-liberar','sec-vencimientos','sec-proyectos','sec-vacancia','sec-historico'];
+  var ids=['sec-ocupacion','sec-metas','sec-alertas','sec-disponibilidad','sec-disponibles',
+           'sec-reservadas','sec-por-liberar','sec-vencimientos','sec-proyectos','sec-vacancia','sec-historico'];
   var links=document.querySelectorAll('.sbl');
   if(!links.length||!window.IntersectionObserver) return;
   var obs=new IntersectionObserver(function(entries){

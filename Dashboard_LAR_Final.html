@@ -650,6 +650,7 @@ async function gateCheck() {
   <div id="sb-date">Actualizado: <b>09/06/2026</b></div>
   <div class="sbn">
     <div class="sbl on"  onclick="irA('sec-ocupacion')"><span class="ico">&#127970;</span>Ocupaci&oacute;n Global</div>
+    <div class="sbl" onclick="irA('sec-metas')"><span class="ico">&#127919;</span>Metas</div>
     <div class="sbl" onclick="irA('sec-alertas')"><span class="ico">&#9888;</span>Alertas por Proyecto</div>
     <div class="sbl" onclick="irA('sec-disponibilidad')"><span class="ico">&#128202;</span>Bajada Agencia</div>
     <div class="sbl" onclick="irA('sec-disponibles')"><span class="ico">&#128994;</span>Disponibles</div>
@@ -992,6 +993,306 @@ function vacSetProj(proj, grp) {
 // Inicializar con todos los proyectos
 vacSetProj(null, null);
 </script>
+
+<div id="sec-metas" class="sec">Metas de Ocupaci&oacute;n &mdash; Jun 2026</div>
+<div class="sec-sub">Actual vs objetivo mensual por proyecto &mdash; ordenado de mayor a menor gap</div>
+
+
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px">
+  <div style="background:#F0FDF4;border-radius:14px;padding:16px 20px;border-left:4px solid #16A34A">
+    <div style="font-size:.65rem;color:#16A34A;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">En Meta</div>
+    <div style="font-size:2rem;font-weight:800;color:#16A34A">2</div>
+    <div style="font-size:.72rem;color:#6B7A8D">de 13 proyectos con meta</div>
+  </div>
+  <div style="background:#FEF2F2;border-radius:14px;padding:16px 20px;border-left:4px solid #DC2626">
+    <div style="font-size:.65rem;color:#DC2626;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Bajo Meta</div>
+    <div style="font-size:2rem;font-weight:800;color:#DC2626">11</div>
+    <div style="font-size:.72rem;color:#6B7A8D">proyectos que requieren foco</div>
+  </div>
+  <div style="background:#FEF2F2;border-radius:14px;padding:16px 20px;border-left:4px solid #EA580C">
+    <div style="font-size:.65rem;color:#EA580C;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Unidades Necesarias</div>
+    <div style="font-size:2rem;font-weight:800;color:#EA580C">174</div>
+    <div style="font-size:.72rem;color:#6B7A8D">para alcanzar la meta de Jun 2026</div>
+  </div>
+</div>
+
+<div class="cf" style="overflow-x:auto">
+  <table style="min-width:640px;width:100%">
+    <thead>
+      <tr>
+        <th style="text-align:left">Proyecto</th>
+        <th style="text-align:left">% Ocupaci&oacute;n actual &amp; meta</th>
+        <th style="text-align:center">Gap</th>
+        <th style="text-align:center">Uds. para meta</th>
+      </tr>
+    </thead>
+    <tbody>
+<tr>
+  <td style="font-weight:600;min-width:170px;padding:10px 14px">Blend Apoquindo</td>
+  <td style="padding:10px 14px;min-width:260px">
+    <div style="position:relative;height:20px;background:#EEF2F7;border-radius:99px;overflow:visible">
+      <div style="position:absolute;left:0;top:0;height:100%;width:66.3%;
+                  background:#DC2626;border-radius:99px;opacity:.85;transition:width .4s"></div>
+      <div style="position:absolute;top:-3px;bottom:-3px;left:95.0%;width:2px;background:#1A2332;opacity:.5;border-radius:2px" title="Meta: 95.0%"></div>
+      <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);
+                   font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)">
+        66.3%
+      </span>
+    </div>
+    <div style="font-size:.62rem;color:#8896A6;margin-top:3px">
+      Meta Jun 2026: <b style="color:#1A2332">95.0%</b>
+      &nbsp;<span style="font-size:.68rem;color:#8896A6;margin-right:8px">Jul: <b style="color:#1A2332">95.0%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Ago: <b style="color:#1A2332">95.0%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Sep: <b style="color:#1A2332">95.0%</b></span>
+    </div>
+  </td>
+  <td style="text-align:center;padding:10px 8px"><span style="background:#FEF2F2;color:#DC2626;font-weight:700;font-size:.75rem;padding:2px 8px;border-radius:6px">-28.7pp</span></td>
+  <td style="text-align:center;padding:10px 8px"><span style="color:#DC2626;font-size:.73rem;font-weight:700">+27 ud.</span></td>
+</tr>
+<tr>
+  <td style="font-weight:600;min-width:170px;padding:10px 14px">Collective Bustamante</td>
+  <td style="padding:10px 14px;min-width:260px">
+    <div style="position:relative;height:20px;background:#EEF2F7;border-radius:99px;overflow:visible">
+      <div style="position:absolute;left:0;top:0;height:100%;width:24.0%;
+                  background:#DC2626;border-radius:99px;opacity:.85;transition:width .4s"></div>
+      <div style="position:absolute;top:-3px;bottom:-3px;left:37.3%;width:2px;background:#1A2332;opacity:.5;border-radius:2px" title="Meta: 37.3%"></div>
+      <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);
+                   font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)">
+        24.0%
+      </span>
+    </div>
+    <div style="font-size:.62rem;color:#8896A6;margin-top:3px">
+      Meta Jun 2026: <b style="color:#1A2332">37.3%</b>
+      &nbsp;<span style="font-size:.68rem;color:#8896A6;margin-right:8px">Jul: <b style="color:#1A2332">44.4%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Ago: <b style="color:#1A2332">50.0%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Sep: <b style="color:#1A2332">55.0%</b></span>
+    </div>
+  </td>
+  <td style="text-align:center;padding:10px 8px"><span style="background:#FEF2F2;color:#DC2626;font-weight:700;font-size:.75rem;padding:2px 8px;border-radius:6px">-13.3pp</span></td>
+  <td style="text-align:center;padding:10px 8px"><span style="color:#DC2626;font-size:.73rem;font-weight:700">+49 ud.</span></td>
+</tr>
+<tr>
+  <td style="font-weight:600;min-width:170px;padding:10px 14px">IMU San Cristóbal</td>
+  <td style="padding:10px 14px;min-width:260px">
+    <div style="position:relative;height:20px;background:#EEF2F7;border-radius:99px;overflow:visible">
+      <div style="position:absolute;left:0;top:0;height:100%;width:73.1%;
+                  background:#DC2626;border-radius:99px;opacity:.85;transition:width .4s"></div>
+      <div style="position:absolute;top:-3px;bottom:-3px;left:82.5%;width:2px;background:#1A2332;opacity:.5;border-radius:2px" title="Meta: 82.5%"></div>
+      <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);
+                   font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)">
+        73.1%
+      </span>
+    </div>
+    <div style="font-size:.62rem;color:#8896A6;margin-top:3px">
+      Meta Jun 2026: <b style="color:#1A2332">82.5%</b>
+      &nbsp;<span style="font-size:.68rem;color:#8896A6;margin-right:8px">Jul: <b style="color:#1A2332">86.5%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Ago: <b style="color:#1A2332">90.5%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Sep: <b style="color:#1A2332">94.5%</b></span>
+    </div>
+  </td>
+  <td style="text-align:center;padding:10px 8px"><span style="background:#FEF2F2;color:#DC2626;font-weight:700;font-size:.75rem;padding:2px 8px;border-radius:6px">-9.4pp</span></td>
+  <td style="text-align:center;padding:10px 8px"><span style="color:#DC2626;font-size:.73rem;font-weight:700">+43 ud.</span></td>
+</tr>
+<tr>
+  <td style="font-weight:600;min-width:170px;padding:10px 14px">Brooklyn La Florida</td>
+  <td style="padding:10px 14px;min-width:260px">
+    <div style="position:relative;height:20px;background:#EEF2F7;border-radius:99px;overflow:visible">
+      <div style="position:absolute;left:0;top:0;height:100%;width:90.4%;
+                  background:#D97706;border-radius:99px;opacity:.85;transition:width .4s"></div>
+      <div style="position:absolute;top:-3px;bottom:-3px;left:95.0%;width:2px;background:#1A2332;opacity:.5;border-radius:2px" title="Meta: 95.0%"></div>
+      <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);
+                   font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)">
+        90.4%
+      </span>
+    </div>
+    <div style="font-size:.62rem;color:#8896A6;margin-top:3px">
+      Meta Jun 2026: <b style="color:#1A2332">95.0%</b>
+      &nbsp;<span style="font-size:.68rem;color:#8896A6;margin-right:8px">Jul: <b style="color:#1A2332">95.0%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Ago: <b style="color:#1A2332">95.0%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Sep: <b style="color:#1A2332">95.0%</b></span>
+    </div>
+  </td>
+  <td style="text-align:center;padding:10px 8px"><span style="background:#FEF2F2;color:#DC2626;font-weight:700;font-size:.75rem;padding:2px 8px;border-radius:6px">-4.6pp</span></td>
+  <td style="text-align:center;padding:10px 8px"><span style="color:#DC2626;font-size:.73rem;font-weight:700">+22 ud.</span></td>
+</tr>
+<tr>
+  <td style="font-weight:600;min-width:170px;padding:10px 14px">Nomad Bellet</td>
+  <td style="padding:10px 14px;min-width:260px">
+    <div style="position:relative;height:20px;background:#EEF2F7;border-radius:99px;overflow:visible">
+      <div style="position:absolute;left:0;top:0;height:100%;width:92.5%;
+                  background:#D97706;border-radius:99px;opacity:.85;transition:width .4s"></div>
+      <div style="position:absolute;top:-3px;bottom:-3px;left:95.5%;width:2px;background:#1A2332;opacity:.5;border-radius:2px" title="Meta: 95.5%"></div>
+      <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);
+                   font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)">
+        92.5%
+      </span>
+    </div>
+    <div style="font-size:.62rem;color:#8896A6;margin-top:3px">
+      Meta Jun 2026: <b style="color:#1A2332">95.5%</b>
+      &nbsp;<span style="font-size:.68rem;color:#8896A6;margin-right:8px">Jul: <b style="color:#1A2332">95.5%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Ago: <b style="color:#1A2332">95.5%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Sep: <b style="color:#1A2332">95.5%</b></span>
+    </div>
+  </td>
+  <td style="text-align:center;padding:10px 8px"><span style="background:#FEF2F2;color:#DC2626;font-weight:700;font-size:.75rem;padding:2px 8px;border-radius:6px">-3.0pp</span></td>
+  <td style="text-align:center;padding:10px 8px"><span style="color:#DC2626;font-size:.73rem;font-weight:700">+4 ud.</span></td>
+</tr>
+<tr>
+  <td style="font-weight:600;min-width:170px;padding:10px 14px">Spot Nueva Kennedy</td>
+  <td style="padding:10px 14px;min-width:260px">
+    <div style="position:relative;height:20px;background:#EEF2F7;border-radius:99px;overflow:visible">
+      <div style="position:absolute;left:0;top:0;height:100%;width:91.2%;
+                  background:#D97706;border-radius:99px;opacity:.85;transition:width .4s"></div>
+      <div style="position:absolute;top:-3px;bottom:-3px;left:94.0%;width:2px;background:#1A2332;opacity:.5;border-radius:2px" title="Meta: 94.0%"></div>
+      <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);
+                   font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)">
+        91.2%
+      </span>
+    </div>
+    <div style="font-size:.62rem;color:#8896A6;margin-top:3px">
+      Meta Jun 2026: <b style="color:#1A2332">94.0%</b>
+      &nbsp;<span style="font-size:.68rem;color:#8896A6;margin-right:8px">Jul: <b style="color:#1A2332">95.0%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Ago: <b style="color:#1A2332">95.0%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Sep: <b style="color:#1A2332">95.0%</b></span>
+    </div>
+  </td>
+  <td style="text-align:center;padding:10px 8px"><span style="background:#FEF2F2;color:#DC2626;font-weight:700;font-size:.75rem;padding:2px 8px;border-radius:6px">-2.8pp</span></td>
+  <td style="text-align:center;padding:10px 8px"><span style="color:#DC2626;font-size:.73rem;font-weight:700">+8 ud.</span></td>
+</tr>
+<tr>
+  <td style="font-weight:600;min-width:170px;padding:10px 14px">Soho Barrio Italia</td>
+  <td style="padding:10px 14px;min-width:260px">
+    <div style="position:relative;height:20px;background:#EEF2F7;border-radius:99px;overflow:visible">
+      <div style="position:absolute;left:0;top:0;height:100%;width:94.8%;
+                  background:#D97706;border-radius:99px;opacity:.85;transition:width .4s"></div>
+      <div style="position:absolute;top:-3px;bottom:-3px;left:97.0%;width:2px;background:#1A2332;opacity:.5;border-radius:2px" title="Meta: 97.0%"></div>
+      <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);
+                   font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)">
+        94.8%
+      </span>
+    </div>
+    <div style="font-size:.62rem;color:#8896A6;margin-top:3px">
+      Meta Jun 2026: <b style="color:#1A2332">97.0%</b>
+      &nbsp;<span style="font-size:.68rem;color:#8896A6;margin-right:8px">Jul: <b style="color:#1A2332">97.0%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Ago: <b style="color:#1A2332">97.0%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Sep: <b style="color:#1A2332">97.0%</b></span>
+    </div>
+  </td>
+  <td style="text-align:center;padding:10px 8px"><span style="background:#FEF2F2;color:#DC2626;font-weight:700;font-size:.75rem;padding:2px 8px;border-radius:6px">-2.2pp</span></td>
+  <td style="text-align:center;padding:10px 8px"><span style="color:#DC2626;font-size:.73rem;font-weight:700">+2 ud.</span></td>
+</tr>
+<tr>
+  <td style="font-weight:600;min-width:170px;padding:10px 14px">Nomad Holley</td>
+  <td style="padding:10px 14px;min-width:260px">
+    <div style="position:relative;height:20px;background:#EEF2F7;border-radius:99px;overflow:visible">
+      <div style="position:absolute;left:0;top:0;height:100%;width:93.3%;
+                  background:#D97706;border-radius:99px;opacity:.85;transition:width .4s"></div>
+      <div style="position:absolute;top:-3px;bottom:-3px;left:95.5%;width:2px;background:#1A2332;opacity:.5;border-radius:2px" title="Meta: 95.5%"></div>
+      <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);
+                   font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)">
+        93.3%
+      </span>
+    </div>
+    <div style="font-size:.62rem;color:#8896A6;margin-top:3px">
+      Meta Jun 2026: <b style="color:#1A2332">95.5%</b>
+      &nbsp;<span style="font-size:.68rem;color:#8896A6;margin-right:8px">Jul: <b style="color:#1A2332">95.5%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Ago: <b style="color:#1A2332">95.5%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Sep: <b style="color:#1A2332">95.5%</b></span>
+    </div>
+  </td>
+  <td style="text-align:center;padding:10px 8px"><span style="background:#FEF2F2;color:#DC2626;font-weight:700;font-size:.75rem;padding:2px 8px;border-radius:6px">-2.2pp</span></td>
+  <td style="text-align:center;padding:10px 8px"><span style="color:#DC2626;font-size:.73rem;font-weight:700">+5 ud.</span></td>
+</tr>
+<tr>
+  <td style="font-weight:600;min-width:170px;padding:10px 14px">Central Santiago</td>
+  <td style="padding:10px 14px;min-width:260px">
+    <div style="position:relative;height:20px;background:#EEF2F7;border-radius:99px;overflow:visible">
+      <div style="position:absolute;left:0;top:0;height:100%;width:93.4%;
+                  background:#D97706;border-radius:99px;opacity:.85;transition:width .4s"></div>
+      <div style="position:absolute;top:-3px;bottom:-3px;left:95.0%;width:2px;background:#1A2332;opacity:.5;border-radius:2px" title="Meta: 95.0%"></div>
+      <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);
+                   font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)">
+        93.4%
+      </span>
+    </div>
+    <div style="font-size:.62rem;color:#8896A6;margin-top:3px">
+      Meta Jun 2026: <b style="color:#1A2332">95.0%</b>
+      &nbsp;<span style="font-size:.68rem;color:#8896A6;margin-right:8px">Jul: <b style="color:#1A2332">95.0%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Ago: <b style="color:#1A2332">95.0%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Sep: <b style="color:#1A2332">95.0%</b></span>
+    </div>
+  </td>
+  <td style="text-align:center;padding:10px 8px"><span style="background:#FEF2F2;color:#DC2626;font-weight:700;font-size:.75rem;padding:2px 8px;border-radius:6px">-1.6pp</span></td>
+  <td style="text-align:center;padding:10px 8px"><span style="color:#DC2626;font-size:.73rem;font-weight:700">+9 ud.</span></td>
+</tr>
+<tr>
+  <td style="font-weight:600;min-width:170px;padding:10px 14px">Park Santiago</td>
+  <td style="padding:10px 14px;min-width:260px">
+    <div style="position:relative;height:20px;background:#EEF2F7;border-radius:99px;overflow:visible">
+      <div style="position:absolute;left:0;top:0;height:100%;width:94.3%;
+                  background:#D97706;border-radius:99px;opacity:.85;transition:width .4s"></div>
+      <div style="position:absolute;top:-3px;bottom:-3px;left:95.5%;width:2px;background:#1A2332;opacity:.5;border-radius:2px" title="Meta: 95.5%"></div>
+      <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);
+                   font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)">
+        94.3%
+      </span>
+    </div>
+    <div style="font-size:.62rem;color:#8896A6;margin-top:3px">
+      Meta Jun 2026: <b style="color:#1A2332">95.5%</b>
+      &nbsp;<span style="font-size:.68rem;color:#8896A6;margin-right:8px">Jul: <b style="color:#1A2332">95.5%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Ago: <b style="color:#1A2332">95.5%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Sep: <b style="color:#1A2332">95.5%</b></span>
+    </div>
+  </td>
+  <td style="text-align:center;padding:10px 8px"><span style="background:#FEF2F2;color:#DC2626;font-weight:700;font-size:.75rem;padding:2px 8px;border-radius:6px">-1.2pp</span></td>
+  <td style="text-align:center;padding:10px 8px"><span style="color:#DC2626;font-size:.73rem;font-weight:700">+4 ud.</span></td>
+</tr>
+<tr>
+  <td style="font-weight:600;min-width:170px;padding:10px 14px">Boldo Club de Campo</td>
+  <td style="padding:10px 14px;min-width:260px">
+    <div style="position:relative;height:20px;background:#EEF2F7;border-radius:99px;overflow:visible">
+      <div style="position:absolute;left:0;top:0;height:100%;width:94.4%;
+                  background:#D97706;border-radius:99px;opacity:.85;transition:width .4s"></div>
+      <div style="position:absolute;top:-3px;bottom:-3px;left:95.2%;width:2px;background:#1A2332;opacity:.5;border-radius:2px" title="Meta: 95.2%"></div>
+      <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);
+                   font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)">
+        94.4%
+      </span>
+    </div>
+    <div style="font-size:.62rem;color:#8896A6;margin-top:3px">
+      Meta Jun 2026: <b style="color:#1A2332">95.2%</b>
+      &nbsp;<span style="font-size:.68rem;color:#8896A6;margin-right:8px">Jul: <b style="color:#1A2332">95.2%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Ago: <b style="color:#1A2332">95.2%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Sep: <b style="color:#1A2332">95.2%</b></span>
+    </div>
+  </td>
+  <td style="text-align:center;padding:10px 8px"><span style="background:#FEF2F2;color:#DC2626;font-weight:700;font-size:.75rem;padding:2px 8px;border-radius:6px">-0.8pp</span></td>
+  <td style="text-align:center;padding:10px 8px"><span style="color:#DC2626;font-size:.73rem;font-weight:700">+1 ud.</span></td>
+</tr>
+<tr>
+  <td style="font-weight:600;min-width:170px;padding:10px 14px">Nativo Riesco</td>
+  <td style="padding:10px 14px;min-width:260px">
+    <div style="position:relative;height:20px;background:#EEF2F7;border-radius:99px;overflow:visible">
+      <div style="position:absolute;left:0;top:0;height:100%;width:95.3%;
+                  background:#16A34A;border-radius:99px;opacity:.85;transition:width .4s"></div>
+      <div style="position:absolute;top:-3px;bottom:-3px;left:95.3%;width:2px;background:#1A2332;opacity:.5;border-radius:2px" title="Meta: 95.3%"></div>
+      <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);
+                   font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)">
+        95.3%
+      </span>
+    </div>
+    <div style="font-size:.62rem;color:#8896A6;margin-top:3px">
+      Meta Jun 2026: <b style="color:#1A2332">95.3%</b>
+      &nbsp;<span style="font-size:.68rem;color:#8896A6;margin-right:8px">Jul: <b style="color:#1A2332">95.3%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Ago: <b style="color:#1A2332">95.3%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Sep: <b style="color:#1A2332">95.3%</b></span>
+    </div>
+  </td>
+  <td style="text-align:center;padding:10px 8px"><span style="background:#F0FDF4;color:#16A34A;font-weight:700;font-size:.75rem;padding:2px 8px;border-radius:6px">+0.0pp</span></td>
+  <td style="text-align:center;padding:10px 8px"><span style="color:#16A34A;font-size:.73rem">&#10003;</span></td>
+</tr>
+<tr>
+  <td style="font-weight:600;min-width:170px;padding:10px 14px">Spot Residence</td>
+  <td style="padding:10px 14px;min-width:260px">
+    <div style="position:relative;height:20px;background:#EEF2F7;border-radius:99px;overflow:visible">
+      <div style="position:absolute;left:0;top:0;height:100%;width:85.6%;
+                  background:#16A34A;border-radius:99px;opacity:.85;transition:width .4s"></div>
+      <div style="position:absolute;top:-3px;bottom:-3px;left:82.5%;width:2px;background:#1A2332;opacity:.5;border-radius:2px" title="Meta: 82.5%"></div>
+      <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);
+                   font-size:.72rem;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)">
+        85.6%
+      </span>
+    </div>
+    <div style="font-size:.62rem;color:#8896A6;margin-top:3px">
+      Meta Jun 2026: <b style="color:#1A2332">82.5%</b>
+      &nbsp;<span style="font-size:.68rem;color:#8896A6;margin-right:8px">Jul: <b style="color:#1A2332">86.5%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Ago: <b style="color:#1A2332">90.5%</b></span><span style="font-size:.68rem;color:#8896A6;margin-right:8px">Sep: <b style="color:#1A2332">94.5%</b></span>
+    </div>
+  </td>
+  <td style="text-align:center;padding:10px 8px"><span style="background:#F0FDF4;color:#16A34A;font-weight:700;font-size:.75rem;padding:2px 8px;border-radius:6px">+3.1pp</span></td>
+  <td style="text-align:center;padding:10px 8px"><span style="color:#16A34A;font-size:.73rem">&#10003;</span></td>
+</tr></tbody>
+  </table>
+</div>
+<div style="font-size:.7rem;color:#8896A6;margin-top:10px">
+  La barra vertical oscura indica la meta del mes actual. Barra de color = ocupaci&oacute;n real.
+  Meses siguientes mostrados como referencia.
+</div>
 <div id="sec-disponibilidad" class="sec">Disponibilidad y Ocupaci&oacute;n por Proyecto</div>
 <div class="sec-sub">Unidades disponibles agrupadas por tipolog&iacute;a &mdash; Datos al 09/06/2026</div>
 
@@ -1698,8 +1999,8 @@ function toggleSb(){
 }
 /* Active nav on scroll */
 (function(){
-  var ids=['sec-ocupacion','sec-alertas','sec-disponibilidad','sec-disponibles','sec-reservadas',
-           'sec-por-liberar','sec-vencimientos','sec-proyectos','sec-vacancia','sec-historico'];
+  var ids=['sec-ocupacion','sec-metas','sec-alertas','sec-disponibilidad','sec-disponibles',
+           'sec-reservadas','sec-por-liberar','sec-vencimientos','sec-proyectos','sec-vacancia','sec-historico'];
   var links=document.querySelectorAll('.sbl');
   if(!links.length||!window.IntersectionObserver) return;
   var obs=new IntersectionObserver(function(entries){
@@ -2879,7 +3180,7 @@ function actualizarDatos() {
 }
 
 // ── Collapsible sections ─────────────────────────────────────────────────────
-var _SEC_DEFAULTS_OPEN = ['sec-ocupacion','sec-disponibilidad','sec-proyectos'];
+var _SEC_DEFAULTS_OPEN = ['sec-ocupacion','sec-metas','sec-disponibilidad','sec-proyectos'];
 
 function toggleSec(id) {
   var body = document.getElementById('body-' + id);
