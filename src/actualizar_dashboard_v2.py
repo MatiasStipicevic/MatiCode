@@ -1360,14 +1360,18 @@ def build_disponibilidad_table(df, m):
     max_disp = max((r['total_disp'] for r in rows_data), default=1) or 1
 
     def _red_bg(val, mx):
-        """White → light red gradient based on val/max ratio."""
+        """Gradiente de disponibilidad con visibilidad mínima garantizada.
+        Valores bajos = rosa pálido, valores altos = rojo visible."""
         if not val:
-            return ''
-        alpha = min(val / mx, 1.0)
-        r_ = int(255 - alpha * (255 - 254))
-        g_ = int(255 - alpha * (255 - 202))
-        b_ = int(255 - alpha * (255 - 202))
-        return f'background:rgb({r_},{g_},{b_})'
+            return 'background:#F8FAFC'   # gris muy sutil para cero
+        # Mínimo 20% alpha para que incluso 1 unidad sea visible
+        alpha = 0.20 + 0.80 * min(val / mx, 1.0)
+        r_ = int(255 - alpha * (255 - 239))
+        g_ = int(255 - alpha * (255 - 68))
+        b_ = int(255 - alpha * (255 - 68))
+        # Texto: blanco si fondo es oscuro, rojo oscuro si es claro
+        fg = '#fff' if alpha > 0.6 else '#991B1B'
+        return f'background:rgb({r_},{g_},{b_});color:{fg};font-weight:600'
 
     def _pct_clr(pct):
         return '#16A34A' if pct >= 95 else '#D97706' if pct >= 85 else '#DC2626'
@@ -1401,12 +1405,17 @@ def build_disponibilidad_table(df, m):
         # Total disp
         rb_td = _red_bg(r['total_disp'], max_disp)
         cells += f'<td style="text-align:center;font-weight:600;{rb_td}">{r["total_disp"] if r["total_disp"] else "&#x2014;"}</td>'
-        paa_note = (f'<div style="font-size:.62rem;color:#D97706;margin-top:1px">'
-                    f'{r["paa"]} p.arr.</div>' if r['paa'] else '')
-        cells += f'<td style="text-align:center">{r["arr"]:,}{paa_note}</td>'
+        paa_note = (f'<span style="display:inline-block;margin-left:5px;'
+                    f'font-size:.6rem;font-weight:700;'
+                    f'background:#FEF3C7;color:#92400E;'
+                    f'border-radius:4px;padding:1px 5px;vertical-align:middle">'
+                    f'+{r["paa"]} p.a.</span>' if r['paa'] else '')
+        cells += f'<td style="text-align:center;white-space:nowrap">{r["arr"]:,}{paa_note}</td>'
         cells += f'<td style="text-align:center">{r["total"]:,}</td>'
-        cells += (f'<td style="text-align:center;font-weight:700;color:{clr};background:{bg}">'
-                  f'{r["pct"]}%</td>')
+        cells += (f'<td style="text-align:center;background:#F8FAFC">'
+                  f'<span style="display:inline-block;padding:3px 10px;border-radius:20px;'
+                  f'background:{bg};color:{clr};font-weight:800;font-size:.88rem">'
+                  f'{r["pct"]}%</span></td>')
         table_rows_html += f'<tr><td style="font-weight:500">{r["proj"]}</td>{cells}</tr>\n'
 
     # Totals row
@@ -1414,12 +1423,17 @@ def build_disponibilidad_table(df, m):
     for grp in TIP_GROUPS:
         tc += f'<td style="text-align:center;font-weight:700;color:#00A8B4">{t[grp]}</td>'
     tc += f'<td style="text-align:center;font-weight:700;color:#00A8B4">{t["total_disp"]}</td>'
-    paa_total_note = (f'<div style="font-size:.62rem;color:#D97706;margin-top:1px">'
-                      f'{t["paa"]} p.arr.</div>' if t['paa'] else '')
-    tc += f'<td style="text-align:center;font-weight:700">{t["arr"]:,}{paa_total_note}</td>'
+    paa_total_note = (f'<span style="display:inline-block;margin-left:5px;'
+                      f'font-size:.6rem;font-weight:700;'
+                      f'background:#FEF3C7;color:#92400E;'
+                      f'border-radius:4px;padding:1px 5px;vertical-align:middle">'
+                      f'+{t["paa"]} p.a.</span>' if t['paa'] else '')
+    tc += f'<td style="text-align:center;font-weight:700;white-space:nowrap">{t["arr"]:,}{paa_total_note}</td>'
     tc += f'<td style="text-align:center;font-weight:700">{t["total"]:,}</td>'
-    tc += (f'<td style="text-align:center;font-weight:700;color:{tp_clr};background:{tp_bg}">'
-           f'{t["pct"]}%</td>')
+    tc += (f'<td style="text-align:center;background:#F8FAFC">'
+           f'<span style="display:inline-block;padding:3px 10px;border-radius:20px;'
+           f'background:{tp_bg};color:{tp_clr};font-weight:800;font-size:.88rem">'
+           f'{t["pct"]}%</span></td>')
 
     rows_js = json.dumps(rows_data, ensure_ascii=False)
 
@@ -1441,15 +1455,15 @@ def build_disponibilidad_table(df, m):
   <table id="disp-table" style="min-width:720px">
     <thead>
       <tr style="background:#00A8B4;color:#fff">
-        <th style="text-align:left;min-width:180px">Proyecto</th>
-        <th style="text-align:center">Studio</th>
-        <th style="text-align:center">1 Dorm</th>
-        <th style="text-align:center">2 Dorm</th>
-        <th style="text-align:center">3 Dorm</th>
-        <th style="text-align:center">Total Disp.</th>
-        <th style="text-align:center">Arrendados<div style="font-size:.6rem;font-weight:400;opacity:.8">incl. por arr.</div></th>
-        <th style="text-align:center">Total</th>
-        <th style="text-align:center">% Ocup.</th>
+        <th style="text-align:left;min-width:180px;padding:12px 14px">Proyecto</th>
+        <th style="text-align:center;padding:12px 10px">Studio</th>
+        <th style="text-align:center;padding:12px 10px">1 Dorm</th>
+        <th style="text-align:center;padding:12px 10px">2 Dorm</th>
+        <th style="text-align:center;padding:12px 10px">3 Dorm</th>
+        <th style="text-align:center;padding:12px 10px">Total Disp.</th>
+        <th style="text-align:center;padding:12px 10px">Arrendados</th>
+        <th style="text-align:center;padding:12px 10px">Total</th>
+        <th style="text-align:center;padding:12px 10px;min-width:90px">% Ocup.</th>
       </tr>
     </thead>
     <tbody>
@@ -1461,9 +1475,10 @@ def build_disponibilidad_table(df, m):
     </tbody>
   </table>
 </div>
-<div style="font-size:.69rem;color:#9CA3AF;margin-bottom:20px">
-  % Ocup. = Arrendados / Total &nbsp;&middot;&nbsp;
-  Intensidad roja &rarr; mayor disponibilidad relativa
+<div style="font-size:.72rem;color:#8896A6;margin-bottom:20px;display:flex;gap:20px;flex-wrap:wrap">
+  <span>% Ocup. = Arrendados / Total</span>
+  <span>Intensidad roja = mayor disponibilidad relativa</span>
+  <span><span style="display:inline-block;background:#FEF3C7;color:#92400E;border-radius:4px;padding:1px 6px;font-weight:700;font-size:.68rem">+N p.a.</span> = unidades por arrendar (contrato en proceso)</span>
 </div>
 """
 
