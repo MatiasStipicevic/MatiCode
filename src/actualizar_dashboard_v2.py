@@ -1184,7 +1184,7 @@ def build_vacancia_section(vacancia_rows):
                     f'<td style="{_td_style}text-align:center;color:#8896A6;font-size:.78rem" '
                     f'onclick="vacSetProj(\'{proj_js}\',\'{g_js}\')" '
                     f'title="Ver {g} sin historial — {proj}">'
-                    f'{nh} s/h</td>'
+                    f'<span title="Nunca arrendadas">{nh}</span></td>'
                 )
             else:
                 cells += f'<td style="text-align:center;color:#CBD5E1;padding:10px 16px">—</td>'
@@ -1631,19 +1631,22 @@ def build_disponibilidad_table(df, m):
   </button>
 </div>
 
-<div class="cf" style="overflow-x:auto;margin-bottom:6px">
-  <table id="disp-table" style="min-width:720px">
+<div class="cf" style="overflow-x:auto;margin-bottom:6px;padding:0">
+  <table id="disp-table" style="min-width:720px;border-collapse:separate;border-spacing:0">
     <thead>
-      <tr style="background:#00A8B4;color:#fff">
-        <th style="text-align:left;min-width:180px;padding:12px 14px">Proyecto</th>
-        <th style="text-align:center;padding:12px 10px">Studio</th>
-        <th style="text-align:center;padding:12px 10px">1 Dorm</th>
-        <th style="text-align:center;padding:12px 10px">2 Dorm</th>
-        <th style="text-align:center;padding:12px 10px">3 Dorm</th>
-        <th style="text-align:center;padding:12px 10px">Total Disp.</th>
-        <th style="text-align:center;padding:12px 10px">Arrendados</th>
-        <th style="text-align:center;padding:12px 10px">Total</th>
-        <th style="text-align:center;padding:12px 10px;min-width:90px">% Ocup.</th>
+      <tr>
+        <th style="text-align:left;min-width:180px;padding:10px 16px;
+                   font-size:.65rem;font-weight:700;color:#8896A6;
+                   text-transform:uppercase;letter-spacing:.08em;
+                   border-bottom:2px solid #00A8B4;background:transparent">Proyecto</th>
+        <th style="text-align:center;padding:10px 10px;font-size:.65rem;font-weight:700;color:#8896A6;text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid #00A8B4;background:transparent">Studio</th>
+        <th style="text-align:center;padding:10px 10px;font-size:.65rem;font-weight:700;color:#8896A6;text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid #00A8B4;background:transparent">1 Dorm</th>
+        <th style="text-align:center;padding:10px 10px;font-size:.65rem;font-weight:700;color:#8896A6;text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid #00A8B4;background:transparent">2 Dorm</th>
+        <th style="text-align:center;padding:10px 10px;font-size:.65rem;font-weight:700;color:#8896A6;text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid #00A8B4;background:transparent">3 Dorm</th>
+        <th style="text-align:center;padding:10px 10px;font-size:.65rem;font-weight:700;color:#8896A6;text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid #00A8B4;background:transparent">Disp.</th>
+        <th style="text-align:center;padding:10px 10px;font-size:.65rem;font-weight:700;color:#8896A6;text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid #00A8B4;background:transparent">Arrendados</th>
+        <th style="text-align:center;padding:10px 10px;font-size:.65rem;font-weight:700;color:#8896A6;text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid #00A8B4;background:transparent">Total</th>
+        <th style="text-align:center;padding:10px 10px;min-width:100px;font-size:.65rem;font-weight:700;color:#8896A6;text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid #00A8B4;background:transparent">Ocupación</th>
       </tr>
     </thead>
     <tbody>
@@ -1777,14 +1780,14 @@ def update_html(html, m, uf_valor=None):
     # KPI cards superiores (7 cards cliqueables)
     pct = round(m["ocup_global"], 1)
     uf_str_kg = f"${uf_valor:,.2f}" if uf_valor else "—"
-    new_kg = f"""<div class="kg" style="grid-template-columns:repeat(7,1fr)">
-  <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas"><div class="kl">Total Unidades</div><div class="kv">{m['total']:,}</div><div class="ks">Departamentos en cartera</div></div>
-  <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas"><div class="kl">Arrendadas</div><div class="kv gr">{m['arrendadas']:,}</div><div class="ks">Activas: {m['arrendadas']-m['por_arrendar']:,} &nbsp;&middot;&nbsp; Por arrendar: <b style="color:#D97706">{m['por_arrendar']}</b></div></div>
+    uf_display = f"${uf_valor:,.0f}" if uf_valor else "—"   # sin decimales para que quepa
+    new_kg = f"""<div class="kg" style="grid-template-columns:repeat(6,1fr)">
+  <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas"><div class="kl">Arrendadas</div><div class="kv gr">{m['arrendadas']:,}</div><div class="ks">{m['total']:,} total &nbsp;&middot;&nbsp; Por arr: <b style="color:#D97706">{m['por_arrendar']}</b></div></div>
   <div class="kc kc-link" onclick="irA('sec-disponibles')" title="Ver Disponibles"><div class="kl">Disponibles</div><div class="kv or">{m['disponibles']:,}</div><div class="ks">Libres para arrendar</div></div>
   <div class="kc"><div class="kl">No Disponibles</div><div class="kv re">{m['no_disp']:,}</div><div class="ks">Incl. En Obra ({m['en_obra']})</div></div>
-  <div class="kc kc-link" onclick="irA('sec-ocupacion')" title="Ver Ocupaci&oacute;n"><div class="kl">% Ocupaci&oacute;n Global</div><div class="kv ac">{pct}%</div><div class="ks">Target: 95% | Gap: {round(pct-95,1)}pp</div></div>
+  <div class="kc kc-link" onclick="irA('sec-ocupacion')" title="Ver Ocupaci&oacute;n"><div class="kl">% Ocupaci&oacute;n</div><div class="kv ac">{pct}%</div><div class="ks">Meta: 95% &nbsp;&middot;&nbsp; Gap: {round(pct-95,1)}pp</div></div>
   <div class="kc kc-link" onclick="irA('sec-por-liberar')" title="Ver Por Liberar"><div class="kl">Por Liberar</div><div class="kv re">{m['por_liberar']}</div><div class="ks">{len(m['pol_by_proj'])} proyectos afectados</div></div>
-  <div class="kc"><div class="kl">UF Hoy</div><div class="kv" style="color:#0369A1">{uf_str_kg}</div><div class="ks">{DATE_STR}</div></div>
+  <div class="kc"><div class="kl">UF Hoy</div><div class="kv" style="color:#0369A1;font-size:2rem">{uf_display}</div><div class="ks">{DATE_STR}</div></div>
 </div>"""
     html = _replace_outer_div(html, 'kg', new_kg)
 
