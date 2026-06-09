@@ -647,9 +647,6 @@ body.present-mode .header { padding: 16px 0 12px; }
   <span id="filter-badge" class="filter-badge" style="display:none"></span>
 </div>
 
-<div class="sec">Resumen Ejecutivo</div>
-<div id="exec-summary" class="exec-card"></div>
-
 <div class="sec">Ocupación Global</div>
 <div class="cr">
   <div class="cc"><div id="donut_gauge" style="height:350px"></div></div>
@@ -675,22 +672,6 @@ body.present-mode .header { padding: 16px 0 12px; }
 </tbody></table>
 </div>
 
-<div class="sec">Composici&oacute;n por Tipolog&iacute;a &mdash; Unidades y Ocupaci&oacute;n</div>
-<div class="sec-sub">Altura del pilar = unidades totales | Texto = % ocupaci&oacute;n por tipolog&iacute;a</div>
-<div class="cf"><div id="tipo_stacked" style="height:500px"></div></div>
-
-<div class="sec">FASE 2 &mdash; Heatmap Tipolog&iacute;a &times; Proyecto</div>
-<div class="sec-sub">Rojo = prioridad campa&ntilde;a | Proyectos ordenados por % Ocup (menor arriba)</div>
-<div class="cf"><div id="heatmap" style="height:520px"></div></div>
-
-<div class="sec">Top 5 Oportunidades de Marketing</div>
-<div class="t5g">
-<div class="t5c urgent"><div class="t5p">Collective Bustamante</div><div class="t5t">1D1B</div><div class="t5m"><div class="t5mi">Disponibles: <span>171</span></div><div class="t5mi"><span class="dot dot-red"></span>20.3% ocup.</div></div><div class="t5r">Campa&ntilde;a urgente + revisi&oacute;n de pricing</div></div>
-<div class="t5c urgent"><div class="t5p">IMU San Crist&oacute;bal</div><div class="t5t">2D2B</div><div class="t5m"><div class="t5mi">Disponibles: <span>53</span></div><div class="t5mi"><span class="dot dot-red"></span>51.1% ocup.</div></div><div class="t5r">Activar campa&ntilde;a digital focalizada</div></div>
-<div class="t5c high"><div class="t5p">Collective Bustamante</div><div class="t5t">2D1B</div><div class="t5m"><div class="t5mi">Disponibles: <span>34</span></div><div class="t5mi"><span class="dot dot-red"></span>7.5% ocup.</div></div><div class="t5r">Campa&ntilde;a urgente + revisi&oacute;n de pricing</div></div>
-<div class="t5c medium"><div class="t5p">Central Santiago</div><div class="t5t">1D1B</div><div class="t5m"><div class="t5mi">Disponibles: <span>34</span></div><div class="t5mi"><span class="dot dot-orange"></span>93.3% ocup.</div></div><div class="t5r">Optimizar conversi&oacute;n de leads</div></div>
-<div class="t5c low"><div class="t5p">Brooklyn La Florida</div><div class="t5t">2D2B</div><div class="t5m"><div class="t5mi">Disponibles: <span>32</span></div><div class="t5mi"><span class="dot dot-orange"></span>82.0% ocup.</div></div><div class="t5r">Reforzar presencia en portales</div></div>
-</div>
 
 
 <div class="sec">Unidades Disponibles por Proyecto</div>
@@ -710,41 +691,9 @@ body.present-mode .header { padding: 16px 0 12px; }
   </div>
 </div>
 
-<div class="sec">FASE 3 &mdash; Pipeline de Acci&oacute;n</div>
-<div class="kg" style="grid-template-columns:repeat(5,1fr)">
-  <div class="kc"><div class="kl">Por Arrendar</div><div class="kv or">35</div><div class="ks">Disponibles activos</div></div>
-  <div class="kc"><div class="kl">Por Liberar</div><div class="kv re">87</div><div class="ks">Riesgo de baja ocupaci&oacute;n</div></div>
-  <div class="kc"><div class="kl">Por Renovar</div><div class="kv ac">51</div><div class="ks">Contratos por vencer</div></div>
-  <div class="kc"><div class="kl">Reservadas</div><div class="kv gr">56</div><div class="ks">En proceso de firma</div></div>
-  <div class="kc"><div class="kl">En Obra</div><div class="kv" style="color:#747678">5</div><div class="ks">No disponibles temp.</div></div>
-</div>
-
-<div class="ab">&#x26A0;&#xFE0F; <span><b>87 unidades Por Liberar</b> en 11 proyectos. Mayor riesgo: <b>Central Santiago</b> con <b>21 unidades</b>.</span></div>
-
-<div class="cr">
-  <div class="cc"><div id="stacked_pipeline" style="height:420px"></div></div>
-  <div class="cc"><div id="risk_bar" style="height:420px"></div></div>
-</div>
 
 
-<div class="sec">Comparador Semanal</div>
-<div class="sec-sub" id="comp-subtitle"></div>
-<div class="cf">
-  <table id="comp-table">
-    <thead>
-      <tr>
-        <th>Proyecto</th>
-        <th>Semana actual</th>
-        <th>Semana anterior</th>
-        <th>Cambio (pp)</th>
-        <th>Tendencia</th>
-      </tr>
-    </thead>
-    <tbody id="comp-tbody"></tbody>
-  </table>
-</div>
-
-<div class="sec">FASE 4 &mdash; Evoluci&oacute;n Hist&oacute;rica</div>
+<div class="sec">Evoluci&oacute;n Hist&oacute;rica</div>
 <div class="cf"><div id="hist_line" style="height:350px"></div></div>
 
 <div class="ft">Datos al 06/05/2026 | Fuente: unidades.xlsx | Target global: 95% | LAR GROUP — Tu nueva forma de arrendar</div>
@@ -1348,7 +1297,7 @@ function toggleSb(){
 /* Active nav on scroll */
 (function(){
   var ids=['sec-ocupacion','sec-alertas','sec-disponibilidad','sec-disponibles','sec-reservadas',
-           'sec-por-liberar','sec-vencimientos','sec-proyectos','sec-vacancia'];
+           'sec-por-liberar','sec-vencimientos','sec-proyectos','sec-vacancia','sec-historico'];
   var links=document.querySelectorAll('.sbl');
   if(!links.length||!window.IntersectionObserver) return;
   var obs=new IntersectionObserver(function(entries){

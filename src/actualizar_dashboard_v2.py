@@ -573,29 +573,6 @@ def build_hero_section(m, uf_valor=None, hist_data=None):
     today_str  = datetime.date.today().strftime("%d/%m/%Y")
 
     return f"""
-<div id="hero-kpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px">
-  <div style="background:#fff;border-radius:14px;padding:18px 20px;border:1px solid #E2E8F0;border-left:4px solid {ocup_clr};box-shadow:0 1px 6px rgba(0,0,0,.05)">
-    <div style="font-size:.58rem;color:#9CA3AF;font-weight:700;text-transform:uppercase;letter-spacing:.1em">Ocupaci&oacute;n Total</div>
-    <div style="font-size:2rem;font-weight:800;color:{ocup_clr};line-height:1.2">{ocup_pct}%</div>
-    <div style="font-size:.68rem;color:#6B7A8D;margin-top:2px">{arrendadas:,} / {total:,} unidades</div>
-    <div style="margin-top:4px">{trend_html}</div>
-  </div>
-  <div style="background:#fff;border-radius:14px;padding:18px 20px;border:1px solid #E2E8F0;border-left:4px solid #D97706;box-shadow:0 1px 6px rgba(0,0,0,.05)">
-    <div style="font-size:.58rem;color:#9CA3AF;font-weight:700;text-transform:uppercase;letter-spacing:.1em">Bajo Meta</div>
-    <div style="font-size:2rem;font-weight:800;color:#D97706;line-height:1.2" id="hero-bajo-meta">{n_below}</div>
-    <div style="font-size:.68rem;color:#6B7A8D;margin-top:2px">de {n_total} proyectos &mdash; meta <span id="hero-meta-pct">95</span>%</div>
-  </div>
-  <div style="background:#fff;border-radius:14px;padding:18px 20px;border:1px solid #E2E8F0;border-left:4px solid #DC2626;box-shadow:0 1px 6px rgba(0,0,0,.05)">
-    <div style="font-size:.58rem;color:#9CA3AF;font-weight:700;text-transform:uppercase;letter-spacing:.1em">Por Liberar</div>
-    <div style="font-size:2rem;font-weight:800;color:#DC2626;line-height:1.2">{por_lib}</div>
-    <div style="font-size:.68rem;color:#6B7A8D;margin-top:2px">contratos vencidos activos</div>
-  </div>
-  <div style="background:#fff;border-radius:14px;padding:18px 20px;border:1px solid #E2E8F0;border-left:4px solid #0369A1;box-shadow:0 1px 6px rgba(0,0,0,.05)">
-    <div style="font-size:.58rem;color:#9CA3AF;font-weight:700;text-transform:uppercase;letter-spacing:.1em">UF Hoy</div>
-    <div style="font-size:2rem;font-weight:800;color:#0369A1;line-height:1.2">{uf_str}</div>
-    <div style="font-size:.68rem;color:#6B7A8D;margin-top:2px">Valor al {today_str}</div>
-  </div>
-</div>
 <div id="global-search-bar" style="margin-bottom:18px;display:flex;align-items:center;gap:10px">
   <div style="flex:1;position:relative;max-width:400px">
     <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#9CA3AF;font-size:.8rem;pointer-events:none">&#128269;</span>
@@ -1578,18 +1555,20 @@ def js_replace(html, var_name, new_value):
     return re.sub(pattern, rf'\g<1>{new_value}\g<3>', html)
 
 
-def update_html(html, m):
-    # KPI cards superiores (6 cards cliqueables)
+def update_html(html, m, uf_valor=None):
+    # KPI cards superiores (7 cards cliqueables)
     pct = round(m["ocup_global"], 1)
     old_kg = re.search(r'<div class="kg"[^>]*>.*?</div>\s*</div>', html, re.DOTALL)
     if old_kg:
-        new_kg = f"""<div class="kg" style="grid-template-columns:repeat(6,1fr)">
+        uf_str_kg = f"${uf_valor:,.2f}" if uf_valor else "—"
+        new_kg = f"""<div class="kg" style="grid-template-columns:repeat(7,1fr)">
   <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas"><div class="kl">Total Unidades</div><div class="kv">{m['total']:,}</div><div class="ks">Departamentos en cartera</div></div>
   <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas"><div class="kl">Arrendadas</div><div class="kv gr">{m['arrendadas']:,}</div><div class="ks">Activas: {m['arrendadas']-m['por_arrendar']:,} &nbsp;&middot;&nbsp; Por arrendar: <b style="color:#D97706">{m['por_arrendar']}</b></div></div>
   <div class="kc kc-link" onclick="irA('sec-disponibles')" title="Ver Disponibles"><div class="kl">Disponibles</div><div class="kv or">{m['disponibles']:,}</div><div class="ks">Libres para arrendar</div></div>
-  <div class="kc kc-link" onclick="irA('sec-pipeline')" title="Ver Pipeline"><div class="kl">No Disponibles</div><div class="kv re">{m['no_disp']:,}</div><div class="ks">Incl. En Obra ({m['en_obra']})</div></div>
+  <div class="kc"><div class="kl">No Disponibles</div><div class="kv re">{m['no_disp']:,}</div><div class="ks">Incl. En Obra ({m['en_obra']})</div></div>
   <div class="kc kc-link" onclick="irA('sec-ocupacion')" title="Ver Ocupaci&oacute;n"><div class="kl">% Ocupaci&oacute;n Global</div><div class="kv ac">{pct}%</div><div class="ks">Target: 95% | Gap: {round(pct-95,1)}pp</div></div>
   <div class="kc kc-link" onclick="irA('sec-por-liberar')" title="Ver Por Liberar"><div class="kl">Por Liberar</div><div class="kv re">{m['por_liberar']}</div><div class="ks">{len(m['pol_by_proj'])} proyectos afectados</div></div>
+  <div class="kc"><div class="kl">UF Hoy</div><div class="kv" style="color:#0369A1">{uf_str_kg}</div><div class="ks">{DATE_STR}</div></div>
 </div>"""
         html = html[:old_kg.start()] + new_kg + html[old_kg.end():]
 
@@ -1682,7 +1661,7 @@ def update_html(html, m):
     html = html.replace('</style>', css + '\n</style>', 1)
 
     # NOTE: Comparador Semanal id is added in main() AFTER all section insertions
-    # so the marker '<div class="sec">Comparador Semanal</div>' stays intact for those insertions.
+    # so the marker '<div class="sec">Evolución Histórica</div>' stays intact for those insertions.
 
     return html
 
@@ -3730,15 +3709,18 @@ def main():
     print("Leyendo HTML fuente...")
     html = HTML_SRC.read_text(encoding="utf-8")
 
+    # Cargar UF antes de update_html (necesario para el KPI card)
+    _uf_early = load_uf()
+
     print("Actualizando datos...")
-    html = update_html(html, m)
+    html = update_html(html, m, uf_valor=_uf_early)
 
     print("Aplicando rediseno visual...")
     html = apply_redesign(html, m)
 
     print("Agregando seccion Reservadas...")
     res_section, res_js = build_res_section(m)
-    marker = '<div class="sec">Comparador Semanal</div>'
+    marker = '<div class="sec">Evolución Histórica</div>'
     html = html.replace(marker, res_section + marker)
 
     print("Agregando seccion Por Liberar...")
@@ -3757,14 +3739,14 @@ def main():
     # ── Agregar sección Vista por Proyecto ───────────────────────────────
     print("Agregando seccion Vista por Proyecto...")
     precios    = load_precios_disponibles()
-    uf_valor   = load_uf()
+    uf_valor   = _uf_early   # ya cargada arriba, reutilizar
     tendencias = load_tendencias_proyectos()
     forecast_data, forecast_months = load_forecast_data()
     proj_section, proj_js = build_projects_section(
         m, vencs, precios=precios, uf_valor=uf_valor, tendencias=tendencias,
         forecast_data=forecast_data, forecast_months=forecast_months)
-    html = html.replace('<div class="sec">Comparador Semanal</div>',
-                        proj_section + '<div class="sec">Comparador Semanal</div>')
+    html = html.replace('<div class="sec">Evolución Histórica</div>',
+                        proj_section + '<div class="sec">Evolución Histórica</div>')
     html = html.replace("</body>", "<script>\n" + proj_js + "\n</script>\n</body>", 1)
 
     # ── Agregar sección Vencimientos ──────────────────────────────────────
@@ -3772,13 +3754,13 @@ def main():
         print("Agregando seccion Vencimientos...")
         venc_section, venc_js = build_vencimientos_section(vencs, renov=renov)
         # Insertar antes del Comparador Semanal (antes que Reservadas y PoL)
-        html = html.replace('<div class="sec">Comparador Semanal</div>',
-                            venc_section + '<div class="sec">Comparador Semanal</div>')
+        html = html.replace('<div class="sec">Evolución Histórica</div>',
+                            venc_section + '<div class="sec">Evolución Histórica</div>')
         html = html.replace("</body>", f"<script>\n{venc_js}\n</script>\n</body>", 1)
 
-    # ── Añadir id a sección Comparador Semanal (después de todas las inserciones) ──
-    html = html.replace('<div class="sec">Comparador Semanal</div>',
-                        '<div id="sec-comparador" class="sec">Comparador Semanal</div>')
+    # ── Añadir id a sección Evolución Histórica (después de todas las inserciones) ──
+    html = html.replace('<div class="sec">Evolución Histórica</div>',
+                        '<div id="sec-historico" class="sec">Evolución Histórica</div>')
 
     # ── Eliminar gate (clave de ingreso) ─────────────────────────────────
     print("Eliminando gate de acceso...")
