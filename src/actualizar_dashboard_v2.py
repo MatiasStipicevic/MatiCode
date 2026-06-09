@@ -472,8 +472,33 @@ def load_forecast_data():
             data.setdefault(proj, {}).setdefault(mes, {"pl": 0, "ing": 0})
             data[proj][mes]["ing"] = int(n)
 
+        # ── Reservadas sin contrato → ingreso proyectado del mes en curso ──
+        # Solo estado=100 (disponible con reserva), NO estado=200 (esos son "por renovar").
+        # Unidades que tienen reserva activa pero contrato aún no generado en el sistema.
+        mes_actual = months[0][2]   # ej. "Jun 2026"
+        cur.execute("""
+            SELECT p.nombre, COUNT(*) AS n
+            FROM public.unidades u
+            JOIN public.propiedades p ON p.id = u.propiedad_id
+            WHERE u.nombre ILIKE '%%-DEPA-%%'
+              AND u.raw->>'estado'     = '100'
+              AND u.raw->>'sub_estado' = '800'
+              AND NOT EXISTS (
+                  SELECT 1 FROM public.contratos c
+                  WHERE c.unidad_id = u.id
+                    AND c.fecha_inicio >= CURRENT_DATE
+              )
+            GROUP BY p.nombre
+        """)
+        reserv_sin_contrato = 0
+        for proj, n in cur.fetchall():
+            data.setdefault(proj, {}).setdefault(mes_actual, {"pl": 0, "ing": 0})
+            data[proj][mes_actual]["ing"]  += int(n)
+            data[proj][mes_actual]["res_sin_c"] = int(n)   # flag para tooltip
+            reserv_sin_contrato += int(n)
+
         conn.close()
-        print(f"  Forecast: {len(data)} proyectos con datos de PL/Ingresos")
+        print(f"  Forecast: {len(data)} proyectos | {reserv_sin_contrato} reservadas sin contrato sumadas como ingreso")
     except Exception as e:
         print(f"  forecast: omitido ({e})")
 
@@ -2646,10 +2671,14 @@ function _buildDetailHTML(projName) {{
       var plBg    = pl >= 20 ? '#FEF2F2' : pl >= 10 ? '#FFF7ED' : pl > 0 ? '#FFFBEB' : '#F8FAFC';
       plRow += chip(mes, pl, plColor, plBg);
 
-      // Ingresos chips — verde
+      // Ingresos chips — verde (incluye reservadas sin contrato)
       var ingColor = ing > 0 ? '#16A34A' : '#8896A6';
       var ingBg    = ing > 0 ? '#F0FDF4' : '#F8FAFC';
-      ingRow += chip(mes, ing, ingColor, ingBg);
+      var resSC    = (d.res_sin_c || 0);
+      var ingLabel = ing + (resSC > 0
+        ? '<div style="font-size:.6rem;font-weight:600;margin-top:2px">incl. '+resSC+' reservada'+(resSC>1?'s':'')+' s/c</div>'
+        : '');
+      ingRow += chip(mes, ingLabel, ingColor, ingBg);
 
       // Forecast acumulado: A + R - PL
       arrProj = arrProj + ing - pl;
