@@ -651,6 +651,7 @@ async function gateCheck() {
   <div class="sbn">
     <div class="sbl on"  onclick="irA('sec-ocupacion')"><span class="ico">&#127970;</span>Ocupaci&oacute;n Global</div>
     <div class="sbl" onclick="irA('sec-alertas')"><span class="ico">&#9888;</span>Alertas por Proyecto</div>
+    <div class="sbl" onclick="irA('sec-disponibilidad')"><span class="ico">&#128202;</span>Bajada Agencia</div>
     <div class="sbl" onclick="irA('sec-disponibles')"><span class="ico">&#128994;</span>Disponibles</div>
     <div class="sbl" onclick="irA('sec-reservadas')"><span class="ico">&#128203;</span>Reservadas</div>
     <div class="sbl" onclick="irA('sec-por-liberar')"><span class="ico">&#128308;</span>Por Liberar</div>
@@ -2843,7 +2844,7 @@ function toggleSb(){
 }
 /* Active nav on scroll */
 (function(){
-  var ids=['sec-ocupacion','sec-alertas','sec-disponibles','sec-reservadas',
+  var ids=['sec-ocupacion','sec-alertas','sec-disponibilidad','sec-disponibles','sec-reservadas',
            'sec-por-liberar','sec-vencimientos','sec-proyectos','sec-vacancia'];
   var links=document.querySelectorAll('.sbl');
   if(!links.length||!window.IntersectionObserver) return;
