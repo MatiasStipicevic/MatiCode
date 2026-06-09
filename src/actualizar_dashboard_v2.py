@@ -1259,8 +1259,15 @@ def build_vacancia_section(vacancia_rows):
   </div>
 </div>
 
+<!-- ── Placeholder: selecciona un proyecto ── -->
+<div id="vac-placeholder" class="cf" style="margin-bottom:20px;text-align:center;padding:40px 20px;color:#8896A6">
+  <div style="font-size:2rem;margin-bottom:10px">&#128270;</div>
+  <div style="font-weight:700;color:#4B5A6A;margin-bottom:6px">Selecciona un proyecto para ver el detalle de unidades</div>
+  <div style="font-size:.8rem">Haz click en una fila de la tabla resumen o usa el selector de arriba</div>
+</div>
+
 <!-- ── Drill-down por proyecto ── -->
-<div class="cf" id="vac-detail-card" style="margin-bottom:20px">
+<div class="cf" id="vac-detail-card" style="margin-bottom:20px;display:none">
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
     <div>
       <div style="font-size:.68rem;font-weight:700;color:#8896A6;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Detalle por proyecto</div>
@@ -1334,6 +1341,13 @@ function vacSetProj(proj, grp) {{
   _vacSelProj = proj || null;
   _vacSelGrp  = grp  || null;
 
+  // Mostrar/ocultar placeholder vs detalle
+  var placeholder = document.getElementById('vac-placeholder');
+  var card = document.getElementById('vac-detail-card');
+  if(placeholder) placeholder.style.display = proj ? 'none' : 'block';
+  if(card)        card.style.display        = proj ? 'block' : 'none';
+  if(!proj) return;   // sin proyecto seleccionado → no renderizar tabla
+
   // Sync selector
   var sel = document.getElementById('vac-proj-sel');
   if(sel) sel.value = proj || '';
@@ -1406,7 +1420,8 @@ function vacSetProj(proj, grp) {{
     var fechaLabel = u.f || '—';
     if(u.fc && u.f && u.fc !== u.f)
       fechaLabel = u.f
-        +'<div style="font-size:.65rem;color:#CBD5E1">Fin contrato: '+u.fc+'</div>';
+        +'<div style="font-size:.68rem;color:#8896A6;margin-top:2px">'
+        +'<span style="background:#F1F5F9;border-radius:4px;padding:1px 5px">Fin ctto: '+u.fc+'</span></div>';
     var tr = document.createElement('tr');
     tr.innerHTML =
       '<td style="font-weight:600;font-family:monospace;font-size:.82rem">'
@@ -1463,16 +1478,16 @@ function vacSetProj(proj, grp) {{
   }}
 
   // Scroll automático al panel de detalle
-  var card = document.getElementById('vac-detail-card');
-  if(card && (proj || grp)) {{
+  if(proj) {{
     setTimeout(function(){{
-      card.scrollIntoView({{behavior:'smooth', block:'start'}});
+      var target = document.getElementById('vac-detail-card');
+      if(target) target.scrollIntoView({{behavior:'smooth', block:'start'}});
     }}, 60);
   }}
 }}
 
-// Inicializar con todos los proyectos
-vacSetProj(null, null);
+// No inicializar con datos — esperar a que el usuario seleccione un proyecto
+// vacSetProj se llama al hacer click en la tabla resumen o en el selector
 </script>
 """
     return section
