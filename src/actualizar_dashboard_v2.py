@@ -1255,7 +1255,7 @@ def build_vacancia_section(vacancia_rows):
   </table>
   <div style="font-size:.72rem;color:#8896A6;margin-top:10px">
     <b style="color:#4B5A6A">{total_no_hist}</b>
-    unidades sin historial de contratos &mdash; marcadas <em>s/h</em>, no incluidas en promedios.
+    unidades que nunca han sido arrendadas &mdash; no incluidas en promedios de d&iacute;as.
   </div>
 </div>
 
@@ -1404,7 +1404,7 @@ function vacSetProj(proj, grp) {{
   if(badge) badge.textContent =
     libres.length + ' libre'+(libres.length!==1?'s':'')+
     (reserv.length ? ' · '+reserv.length+' reservada'+(reserv.length!==1?'s':'') : '')+
-    (withoutHist.length ? ' · '+withoutHist.length+' s/h' : '');
+    (withoutHist.length ? ' · '+withoutHist.length+' nunca arrendada'+(withoutHist.length!==1?'s':'') : '');
 
   var tbody = document.getElementById('vac-unit-body');
   if(!tbody) return;
@@ -1451,14 +1451,14 @@ function vacSetProj(proj, grp) {{
         '<td>'+u.g+'</td>'+
         '<td style="color:#8896A6;font-size:.8rem">'+(u.m||'—')+'</td>'+
         (proj?'':'<td>'+(u.proj||'')+'</td>')+
-        '<td style="text-align:center;color:#8896A6;font-size:.8rem">Sin historial</td>'+
-        '<td style="text-align:center"><span style="color:#8896A6;font-size:.8rem">s/h</span></td>';
+        '<td style="text-align:center;color:#8896A6;font-size:.8rem">Nunca arrendada</td>'+
+        '<td style="text-align:center"><span style="color:#8896A6;font-size:.8rem">Sin historial</span></td>';
       tbody.appendChild(tr);
     }});
     if(note) {{
       note.style.display='block';
       note.textContent = withoutHist.length+' unidad'+(withoutHist.length!==1?'es':'')+
-        ' nunca arrendadas — sin contrato previo en el sistema.';
+        ' que nunca han sido arrendadas — sin contrato previo en el sistema.';
     }}
   }} else {{
     if(note) note.style.display='none';
