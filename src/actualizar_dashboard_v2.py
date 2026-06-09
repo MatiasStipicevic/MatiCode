@@ -1750,13 +1750,34 @@ def js_replace(html, var_name, new_value):
     return re.sub(pattern, rf'\g<1>{new_value}\g<3>', html)
 
 
+def _replace_outer_div(html, class_contains, replacement):
+    """Replace the first div whose class contains `class_contains` using balanced tag counting."""
+    import re as _re
+    m = _re.search(r'<div\s[^>]*class="[^"]*' + _re.escape(class_contains) + r'[^"]*"[^>]*>', html)
+    if not m:
+        return html
+    start = m.start()
+    depth = 0
+    i = start
+    while i < len(html):
+        if html[i:i+4] == '<div':
+            depth += 1
+            i += 4
+        elif html[i:i+6] == '</div>':
+            depth -= 1
+            if depth == 0:
+                return html[:start] + replacement + html[i+6:]
+            i += 6
+        else:
+            i += 1
+    return html
+
+
 def update_html(html, m, uf_valor=None):
     # KPI cards superiores (7 cards cliqueables)
     pct = round(m["ocup_global"], 1)
-    old_kg = re.search(r'<div class="kg"[^>]*>.*?</div>\s*</div>', html, re.DOTALL)
-    if old_kg:
-        uf_str_kg = f"${uf_valor:,.2f}" if uf_valor else "—"
-        new_kg = f"""<div class="kg" style="grid-template-columns:repeat(7,1fr)">
+    uf_str_kg = f"${uf_valor:,.2f}" if uf_valor else "—"
+    new_kg = f"""<div class="kg" style="grid-template-columns:repeat(7,1fr)">
   <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas"><div class="kl">Total Unidades</div><div class="kv">{m['total']:,}</div><div class="ks">Departamentos en cartera</div></div>
   <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas"><div class="kl">Arrendadas</div><div class="kv gr">{m['arrendadas']:,}</div><div class="ks">Activas: {m['arrendadas']-m['por_arrendar']:,} &nbsp;&middot;&nbsp; Por arrendar: <b style="color:#D97706">{m['por_arrendar']}</b></div></div>
   <div class="kc kc-link" onclick="irA('sec-disponibles')" title="Ver Disponibles"><div class="kl">Disponibles</div><div class="kv or">{m['disponibles']:,}</div><div class="ks">Libres para arrendar</div></div>
@@ -1765,7 +1786,7 @@ def update_html(html, m, uf_valor=None):
   <div class="kc kc-link" onclick="irA('sec-por-liberar')" title="Ver Por Liberar"><div class="kl">Por Liberar</div><div class="kv re">{m['por_liberar']}</div><div class="ks">{len(m['pol_by_proj'])} proyectos afectados</div></div>
   <div class="kc"><div class="kl">UF Hoy</div><div class="kv" style="color:#0369A1">{uf_str_kg}</div><div class="ks">{DATE_STR}</div></div>
 </div>"""
-        html = html[:old_kg.start()] + new_kg + html[old_kg.end():]
+    html = _replace_outer_div(html, 'kg', new_kg)
 
     # Variables JS numericas
     html = js_replace(html, "gpct", str(round(m["ocup_global"]/100, 4)))
@@ -3915,7 +3936,7 @@ def main():
 
     print("Agregando seccion Reservadas...")
     res_section, res_js = build_res_section(m)
-    marker = '<div class="sec">Evolución Histórica</div>'
+    marker = '<div class="sec">Evoluci&oacute;n Hist&oacute;rica</div>'
     html = html.replace(marker, res_section + marker)
 
     print("Agregando seccion Por Liberar...")
@@ -3940,8 +3961,8 @@ def main():
     proj_section, proj_js = build_projects_section(
         m, vencs, precios=precios, uf_valor=uf_valor, tendencias=tendencias,
         forecast_data=forecast_data, forecast_months=forecast_months)
-    html = html.replace('<div class="sec">Evolución Histórica</div>',
-                        proj_section + '<div class="sec">Evolución Histórica</div>')
+    html = html.replace('<div class="sec">Evoluci&oacute;n Hist&oacute;rica</div>',
+                        proj_section + '<div class="sec">Evoluci&oacute;n Hist&oacute;rica</div>')
     html = html.replace("</body>", "<script>\n" + proj_js + "\n</script>\n</body>", 1)
 
     # ── Agregar sección Vencimientos ──────────────────────────────────────
@@ -3949,13 +3970,13 @@ def main():
         print("Agregando seccion Vencimientos...")
         venc_section, venc_js = build_vencimientos_section(vencs, renov=renov)
         # Insertar antes del Comparador Semanal (antes que Reservadas y PoL)
-        html = html.replace('<div class="sec">Evolución Histórica</div>',
-                            venc_section + '<div class="sec">Evolución Histórica</div>')
+        html = html.replace('<div class="sec">Evoluci&oacute;n Hist&oacute;rica</div>',
+                            venc_section + '<div class="sec">Evoluci&oacute;n Hist&oacute;rica</div>')
         html = html.replace("</body>", f"<script>\n{venc_js}\n</script>\n</body>", 1)
 
     # ── Añadir id a sección Evolución Histórica (después de todas las inserciones) ──
-    html = html.replace('<div class="sec">Evolución Histórica</div>',
-                        '<div id="sec-historico" class="sec">Evolución Histórica</div>')
+    html = html.replace('<div class="sec">Evoluci&oacute;n Hist&oacute;rica</div>',
+                        '<div id="sec-historico" class="sec">Evoluci&oacute;n Hist&oacute;rica</div>')
 
     # ── Eliminar gate (clave de ingreso) ─────────────────────────────────
     print("Eliminando gate de acceso...")
