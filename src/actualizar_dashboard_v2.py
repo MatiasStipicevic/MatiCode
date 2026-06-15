@@ -149,7 +149,7 @@ def load_data_excel_fallback():
 
 # ── 2. CALCULAR METRICAS ───────────────────────────────────────────────────
 def compute(df):
-    ci_by_proj, ci_unit_set = load_cambios_internos()
+    ci_by_proj, ci_unit_set, ci_list = load_cambios_internos()
     total       = len(df)
     # "por arrendar" (estado 100 / sub 600) se contabiliza dentro de Arrendadas
     _is_arr  = (df["_estado"] == "Arrendado") | (df["_sub"] == "por arrendar")
@@ -308,7 +308,7 @@ def compute(df):
         "pol_matrix": pol_matrix,
         "res_by_proj": res_by_proj, "res_by_tipo": res_by_tipo,
         "res_matrix": res_matrix, "res_detalle": res_detalle,
-        "ci_by_proj": ci_by_proj,
+        "ci_by_proj": ci_by_proj, "ci_list": ci_list,
         "cb_pct": cb_pct, "imu_pct": imu_pct, "blend_pct": blend_pct,
         "unidades_disp": unidades_disp,
         "tipo_data": tipo_data,
@@ -316,12 +316,14 @@ def compute(df):
 
 # ── 2b. CAMBIOS INTERNOS ─────────────────────────────────────────────────────
 def load_cambios_internos():
-    """Reservas con monto 30k/60k = Cambios Internos. Retorna (ci_by_proj, ci_unit_set)."""
+    """Reservas con monto 30k/60k = Cambios Internos.
+    Retorna (ci_by_proj dict, ci_list lista de dicts con detalle por unidad)."""
     try:
         conn = psycopg2.connect(**DB)
         cur  = conn.cursor()
         cur.execute("""
-            SELECT p.nombre, u.nombre AS unidad_nombre
+            SELECT p.nombre, u.nombre AS unidad_nombre,
+                   u.tipologia
             FROM contratos c
             JOIN propiedades p ON p.id = c.propiedad_id
             JOIN unidades    u ON u.id = c.unidad_id
@@ -331,16 +333,19 @@ def load_cambios_internos():
         """)
         rows = cur.fetchall()
         conn.close()
-        ci_by_proj  = {}
+        ci_by_proj = {}
+        ci_list    = []
         ci_unit_set = set()
-        for proj, unidad in rows:
+        for proj, unidad, tipologia in rows:
             ci_by_proj[proj] = ci_by_proj.get(proj, 0) + 1
             ci_unit_set.add(unidad)
+            ci_list.append({"Propiedad": proj, "Unidad": unidad,
+                            "Tipologia": tipologia or ""})
         print(f"  Cambios Internos activos: {sum(ci_by_proj.values())} en {len(ci_by_proj)} proyectos")
-        return ci_by_proj, ci_unit_set
+        return ci_by_proj, ci_unit_set, ci_list
     except Exception as e:
         print(f"  [WARN] load_cambios_internos: {e}")
-        return {}, set()
+        return {}, set(), []
 
 
 # ── 2c. CARGAR CONTRATOS (vencimientos) ───────────────────────────────────
@@ -1944,6 +1949,7 @@ def build_res_section(m):
     res_by_tipo = m["res_by_tipo"]
     res_matrix  = m["res_matrix"]
     ci_by_proj  = m.get("ci_by_proj", {})
+    ci_list     = m.get("ci_list", [])
     total_res   = m["reservadas"]
     total_ci    = sum(ci_by_proj.values())
     total_nuevas = total_res - total_ci
@@ -1979,6 +1985,40 @@ def build_res_section(m):
     total_cells  = "".join(
         f'<td style="text-align:center;color:#00A8B4"><b>{int(res_by_tipo.get(t,0))}</b></td>'
         for t in tipos_cols)
+
+    # Tabla detalle Cambios Internos (unidad actual del inquilino)
+    if ci_list:
+        ci_rows = ""
+        for r in sorted(ci_list, key=lambda x: x["Propiedad"]):
+            tip_label = r["Tipologia"] if r["Tipologia"] not in ("nan","","None") else "—"
+            ci_rows += (
+                f'<tr>'
+                f'<td>{r["Propiedad"]}</td>'
+                f'<td style="text-align:center">{tip_label}</td>'
+                f'<td style="text-align:center">{r["Unidad"]}</td>'
+                f'</tr>'
+            )
+        ci_detail_html = f"""
+<div class="cf" style="margin-top:20px">
+  <div style="font-size:.75rem;font-weight:700;color:#92400E;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+    <span style="background:#FEF3C7;color:#92400E;padding:3px 10px;border-radius:99px;font-size:.72rem">&#x1F504; {total_ci} Cambios Internos</span>
+    <span style="color:#94A3B8;font-weight:400">Unidad actual del inquilino (origen del cambio)</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Proyecto</th>
+        <th style="text-align:center">Tipolog&iacute;a</th>
+        <th style="text-align:center">Unidad actual</th>
+      </tr>
+    </thead>
+    <tbody>
+      {ci_rows}
+    </tbody>
+  </table>
+</div>"""
+    else:
+        ci_detail_html = ""
 
     # JS data
     projs_js  = json.dumps(list(res_by_proj.keys()), ensure_ascii=False)
@@ -2026,6 +2066,8 @@ def build_res_section(m):
     </tbody>
   </table>
 </div>
+
+{ci_detail_html}
 
 """
     js = f"""
