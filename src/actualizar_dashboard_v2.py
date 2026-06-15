@@ -149,6 +149,7 @@ def load_data_excel_fallback():
 
 # ── 2. CALCULAR METRICAS ───────────────────────────────────────────────────
 def compute(df):
+    ci_by_proj, ci_unit_set = load_cambios_internos()
     total       = len(df)
     # "por arrendar" (estado 100 / sub 600) se contabiliza dentro de Arrendadas
     _is_arr  = (df["_estado"] == "Arrendado") | (df["_sub"] == "por arrendar")
@@ -176,15 +177,27 @@ def compute(df):
         prv = int((g["_sub"]=="por renovar").sum())
         pli = int(((g["_estado"]=="Arrendado")&(g["_sub"]=="por liberar")).sum())
         pct = round(arr / tot * 100, 4) if tot else 0
-        gap = round(pct - 95, 4)
-        uds_needed = max(0, round(0.95 * tot) - arr)
+        tgt = _proj_target_now(proj)
+        gap = round(pct - tgt, 4)
+        uds_needed = max(0, round(tgt/100 * tot) - arr)
+        # Breakdown por tipología
+        tip_breakdown = {}
+        for grp_name in ["Studio", "1 Dorm", "2 Dorm", "3 Dorm"]:
+            gt = g[g["_tip_grp"] == grp_name]
+            if len(gt) == 0:
+                continue
+            gt_arr  = int(((gt["_estado"]=="Arrendado") | (gt["_sub"]=="por arrendar")).sum())
+            gt_disp = int(((gt["_estado"]=="Disponible") & (gt["_sub"]!="por arrendar")).sum())
+            tip_breakdown[grp_name] = {"total": len(gt), "arr": gt_arr, "disp": gt_disp}
         proj_list.append({
             "Propiedad": proj, "Total": float(tot), "Arrendados": float(arr),
             "Disponibles": float(dis), "No_Disp": float(nod), "En_Obra": float(eob),
             "Reservadas": float(res), "Por_Arrendar": float(paa),
             "Por_Liberar": float(pli), "Por_Renovar": float(prv),
             "Pct_Ocup": round(pct/100, 4), "Gap": round(gap/100, 4),
-            "Uds_Needed": float(uds_needed)
+            "Uds_Needed": float(uds_needed), "Target": tgt,
+            "TipBreakdown": tip_breakdown,
+            "Cambios_Internos": float(ci_by_proj.get(proj, 0))
         })
 
     proj_desc = sorted(proj_list, key=lambda x: -x["Pct_Ocup"])
@@ -256,19 +269,21 @@ def compute(df):
     pol_by_tipo = pol.groupby("_tip").size().sort_values(ascending=False).to_dict()
     pol_matrix  = pol.groupby(["_proj","_tip"]).size().unstack(fill_value=0)
 
-    # Reservadas detalle
+    # Reservadas detalle + Cambios Internos (ci_by_proj/ci_unit_set cargados al inicio)
     res = df[df["_sub"]=="reservada"]
     res_by_proj = res.groupby("_proj").size().sort_values(ascending=False).to_dict()
     res_by_tipo = res.groupby("_tip").size().sort_values(ascending=False).to_dict()
     res_matrix  = res.groupby(["_proj","_tip"]).size().unstack(fill_value=0)
-    # Detalle unit-level con Nombre y Modelo
+    # Detalle unit-level con Nombre, Modelo y flag CambioInterno
     res_detalle = []
     for _, row in res.iterrows():
+        nombre = str(row["Nombre"]) if pd.notna(row["Nombre"]) else ""
         res_detalle.append({
-            "Propiedad": str(row["_proj"]),
-            "Tipologia": str(row["_tip"]),
-            "Modelo":    str(row["Modelo"]) if pd.notna(row["Modelo"]) else "",
-            "Nombre":    str(row["Nombre"]) if pd.notna(row["Nombre"]) else "",
+            "Propiedad":     str(row["_proj"]),
+            "Tipologia":     str(row["_tip"]),
+            "Modelo":        str(row["Modelo"]) if pd.notna(row["Modelo"]) else "",
+            "Nombre":        nombre,
+            "CambioInterno": nombre in ci_unit_set,
         })
 
     # Colectiva y problematicos para historico
@@ -293,12 +308,42 @@ def compute(df):
         "pol_matrix": pol_matrix,
         "res_by_proj": res_by_proj, "res_by_tipo": res_by_tipo,
         "res_matrix": res_matrix, "res_detalle": res_detalle,
+        "ci_by_proj": ci_by_proj,
         "cb_pct": cb_pct, "imu_pct": imu_pct, "blend_pct": blend_pct,
         "unidades_disp": unidades_disp,
         "tipo_data": tipo_data,
     }
 
-# ── 2b. CARGAR CONTRATOS (vencimientos) ───────────────────────────────────
+# ── 2b. CAMBIOS INTERNOS ─────────────────────────────────────────────────────
+def load_cambios_internos():
+    """Reservas con monto 30k/60k = Cambios Internos. Retorna (ci_by_proj, ci_unit_set)."""
+    try:
+        conn = psycopg2.connect(**DB)
+        cur  = conn.cursor()
+        cur.execute("""
+            SELECT p.nombre, u.nombre AS unidad_nombre
+            FROM contratos c
+            JOIN propiedades p ON p.id = c.propiedad_id
+            JOIN unidades    u ON u.id = c.unidad_id
+            WHERE c.cargo_concepto_clasificacion = 'Reserva'
+              AND c.cargo_monto IN (30000, 60000)
+              AND c.estado_id IN ('100','200','201','290','291','300')
+        """)
+        rows = cur.fetchall()
+        conn.close()
+        ci_by_proj  = {}
+        ci_unit_set = set()
+        for proj, unidad in rows:
+            ci_by_proj[proj] = ci_by_proj.get(proj, 0) + 1
+            ci_unit_set.add(unidad)
+        print(f"  Cambios Internos activos: {sum(ci_by_proj.values())} en {len(ci_by_proj)} proyectos")
+        return ci_by_proj, ci_unit_set
+    except Exception as e:
+        print(f"  [WARN] load_cambios_internos: {e}")
+        return {}, set()
+
+
+# ── 2c. CARGAR CONTRATOS (vencimientos) ───────────────────────────────────
 def load_precios_disponibles():
     """Min/Max precio arriendo (UF) + n_disp por (proyecto, tipologia, modelo)."""
     try:
@@ -435,6 +480,12 @@ TARGETS_MENSUALES = {
     "Collective Bustamante": [None,None,20.8,26.6,31.9,37.3,44.4,50.0,55.0,60.7,66.5,72.4],
 }
 MESES_ES = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"]
+
+
+def _proj_target_now(proj):
+    from datetime import date as _d
+    t = TARGETS_MENSUALES.get(proj, [None]*12)[_d.today().month - 1]
+    return t if t is not None else 95.0
 
 
 def build_metas_section(m):
@@ -719,7 +770,7 @@ def build_hero_section(m, uf_valor=None, hist_data=None):
     por_lib    = int(m.get("por_liberar", 0))
     proj_desc  = m.get("proj_desc", [])
     n_total    = len(proj_desc)
-    n_below    = sum(1 for p in proj_desc if p.get("Pct_Ocup", 0) < 0.95)
+    n_below    = sum(1 for p in proj_desc if p.get("Pct_Ocup", 0) * 100 < p.get("Target", 95.0))
     ocup_pct   = round(arrendadas / total * 100, 1) if total else 0
     ocup_clr   = "#16A34A" if ocup_pct >= 95 else "#D97706" if ocup_pct >= 85 else "#DC2626"
     # Trend vs prev month
@@ -1778,6 +1829,8 @@ def _replace_outer_div(html, class_contains, replacement):
 
 def update_html(html, m, uf_valor=None):
     # KPI cards superiores (7 cards cliqueables)
+    proj_desc_kpi = m.get("proj_desc", [])
+    n_below = sum(1 for p in proj_desc_kpi if p.get("Pct_Ocup", 0) * 100 < p.get("Target", 95.0))
     pct = round(m["ocup_global"], 1)
     uf_str_kg = f"${uf_valor:,.2f}" if uf_valor else "—"
     uf_display = f"${uf_valor:,.0f}" if uf_valor else "—"   # sin decimales para que quepa
@@ -1785,7 +1838,7 @@ def update_html(html, m, uf_valor=None):
   <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas"><div class="kl">Arrendadas</div><div class="kv gr">{m['arrendadas']:,}</div><div class="ks">{m['total']:,} total &nbsp;&middot;&nbsp; Por arr: <b style="color:#D97706">{m['por_arrendar']}</b></div></div>
   <div class="kc kc-link" onclick="irA('sec-disponibles')" title="Ver Disponibles"><div class="kl">Disponibles</div><div class="kv or">{m['disponibles']:,}</div><div class="ks">Libres para arrendar</div></div>
   <div class="kc"><div class="kl">No Disponibles</div><div class="kv re">{m['no_disp']:,}</div><div class="ks">Incl. En Obra ({m['en_obra']})</div></div>
-  <div class="kc kc-link" onclick="irA('sec-ocupacion')" title="Ver Ocupaci&oacute;n"><div class="kl">% Ocupaci&oacute;n</div><div class="kv ac">{pct}%</div><div class="ks">Meta: 95% &nbsp;&middot;&nbsp; Gap: {round(pct-95,1)}pp</div></div>
+  <div class="kc kc-link" onclick="irA('sec-ocupacion')" title="Ver Ocupaci&oacute;n"><div class="kl">% Ocupaci&oacute;n</div><div class="kv ac">{pct}%</div><div class="ks"><span id="hero-bajo-meta">{n_below}</span> proy. bajo su meta</div></div>
   <div class="kc kc-link" onclick="irA('sec-por-liberar')" title="Ver Por Liberar"><div class="kl">Por Liberar</div><div class="kv re">{m['por_liberar']}</div><div class="ks">{len(m['pol_by_proj'])} proyectos afectados</div></div>
   <div class="kc"><div class="kl">UF Hoy</div><div class="kv" style="color:#0369A1;font-size:2rem">{uf_display}</div><div class="ks">{DATE_STR}</div></div>
 </div>"""
@@ -1890,7 +1943,10 @@ def build_res_section(m):
     res_by_proj = m["res_by_proj"]
     res_by_tipo = m["res_by_tipo"]
     res_matrix  = m["res_matrix"]
+    ci_by_proj  = m.get("ci_by_proj", {})
     total_res   = m["reservadas"]
+    total_ci    = sum(ci_by_proj.values())
+    total_nuevas = total_res - total_ci
     n_proj      = len(res_by_proj)
     tipo_dom    = list(res_by_tipo.keys())[0]  if res_by_tipo  else "N/A"
     tipo_dom_n  = list(res_by_tipo.values())[0] if res_by_tipo  else 0
@@ -1900,19 +1956,26 @@ def build_res_section(m):
 
     tipos_cols = list(res_matrix.columns) if not res_matrix.empty else []
 
-    # Tabla rows
+    # Tabla rows — con columna Cambio Interno
     table_rows = ""
     for proj, total_p in sorted(res_by_proj.items(), key=lambda x: -x[1]):
         cells = ""
         for t in tipos_cols:
             v = int(res_matrix.loc[proj, t]) if proj in res_matrix.index and t in res_matrix.columns else 0
             cells += f'<td style="text-align:center">{v if v else "-"}</td>'
+        ci_n = ci_by_proj.get(proj, 0)
+        ci_cell = (f'<td style="text-align:center"><span style="background:#FEF3C7;color:#92400E;'
+                   f'font-size:.68rem;font-weight:700;padding:2px 7px;border-radius:99px">'
+                   f'{ci_n}</span></td>') if ci_n else '<td style="text-align:center;color:#CBD5E1">—</td>'
         table_rows += (
-            f'<tr><td>{proj}</td>{cells}'
+            f'<tr><td>{proj}</td>{cells}{ci_cell}'
             f'<td style="text-align:center"><b style="color:#48BB78">{total_p}</b></td></tr>'
         )
 
     tipo_headers = "".join(f'<th style="text-align:center">{t}</th>' for t in tipos_cols)
+    total_ci_cell = (f'<td style="text-align:center"><span style="background:#FEF3C7;color:#92400E;'
+                     f'font-size:.68rem;font-weight:700;padding:2px 7px;border-radius:99px">'
+                     f'{total_ci}</span></td>') if total_ci else '<td style="text-align:center">—</td>'
     total_cells  = "".join(
         f'<td style="text-align:center;color:#00A8B4"><b>{int(res_by_tipo.get(t,0))}</b></td>'
         for t in tipos_cols)
@@ -1935,8 +1998,10 @@ def build_res_section(m):
 <div id="sec-reservadas" class="sec">Reservadas &mdash; Detalle por Proyecto y Tipolog&iacute;a</div>
 <div class="sec-sub">Unidades con subestado Reservada en POP Estate &mdash; Datos al {DATE_STR}</div>
 
-<div class="kg" style="grid-template-columns:repeat(1,1fr);max-width:220px">
+<div class="kg" style="grid-template-columns:repeat(3,1fr);max-width:520px">
   <div class="kc"><div class="kl">Total Reservadas</div><div class="kv gr">{total_res}</div><div class="ks">{n_proj} proyectos</div></div>
+  <div class="kc"><div class="kl">Nuevas Llegadas</div><div class="kv" style="color:#0369A1">{total_nuevas}</div><div class="ks">Arrendatarios nuevos</div></div>
+  <div class="kc"><div class="kl">Cambios Internos</div><div class="kv" style="color:#92400E">{total_ci}</div><div class="ks">Inquilinos existentes</div></div>
 </div>
 
 <div class="ab" style="border-left-color:#48BB78">&#x1F4CB; <span><b>{mayor_proj}</b> lidera con <b>{mayor_n} unidades</b> reservadas. El <b>{tipo_dom_pct}% son tipolog&iacute;a {tipo_dom}</b>.</span></div>
@@ -1950,12 +2015,12 @@ def build_res_section(m):
 <div class="cf" style="margin-top:16px">
   <table>
     <thead>
-      <tr><th>Proyecto</th>{tipo_headers}<th style="text-align:center;color:#16A34A"><b>Total</b></th></tr>
+      <tr><th>Proyecto</th>{tipo_headers}<th style="text-align:center;color:#92400E">Cambio Int.</th><th style="text-align:center;color:#16A34A"><b>Total</b></th></tr>
     </thead>
     <tbody>
       {table_rows}
       <tr style="border-top:2px solid #E2E8F0">
-        <td><b>TOTAL</b></td>{total_cells}
+        <td><b>TOTAL</b></td>{total_cells}{total_ci_cell}
         <td style="text-align:center"><b style="color:#48BB78">{total_res}</b></td>
       </tr>
     </tbody>
@@ -2234,7 +2299,7 @@ def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencia
             delta = None
         proj_trends[name] = delta
 
-    n_below_meta = sum(1 for p in sorted_projs if p["Pct_Ocup"] < 0.95)
+    n_below_meta = sum(1 for p in sorted_projs if p["Pct_Ocup"] * 100 < p.get("Target", 95.0))
     n_projs      = len(sorted_projs)
 
     # ── Sidebar items HTML ────────────────────────────────────────────────────
@@ -2253,8 +2318,9 @@ def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencia
         logo_html_sb = _logo_box(init, color, logo_url, 34)
 
         # Status dot
+        tgt      = p.get("Target", 95.0)
         is_crit  = p["Pct_Ocup"] < 0.85
-        is_below = p["Pct_Ocup"] < 0.95
+        is_below = p["Pct_Ocup"] * 100 < tgt
         dot_clr  = "#DC2626" if is_crit else "#D97706" if is_below else "#16A34A"
         dot_cls  = ' class="proj-dot-pulse"' if is_crit else ""
 
@@ -2289,7 +2355,7 @@ def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencia
 
         sidebar_html += f"""
 <div class="proj-list-item" id="pli-{name_id}" onclick="selectProj('{name_js}')"
-     data-name="{name}" data-pct="{pct}" data-venc="{venc_n}"
+     data-name="{name}" data-pct="{pct}" data-venc="{venc_n}" data-target="{tgt}"
      data-arr="{int(p['Arrendados'])}" data-disp="{int(p['Disponibles'])}"
      data-total="{int(p['Total'])}" data-pol="{int(p['Por_Liberar'])}">
   <div{dot_cls} style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:{dot_clr}"></div>
@@ -2313,7 +2379,8 @@ def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencia
         color   = proj_color_map[name]
         init    = _proj_initials(name)
         pct     = round(p["Pct_Ocup"] * 100, 1)
-        tclr    = "#16A34A" if p["Pct_Ocup"] >= 0.95 else "#D97706" if p["Pct_Ocup"] >= 0.85 else "#DC2626"
+        tgt_c   = p.get("Target", 95.0)
+        tclr    = "#16A34A" if p["Pct_Ocup"] * 100 >= tgt_c else "#D97706" if p["Pct_Ocup"] >= 0.85 else "#DC2626"
         venc_n  = venc_by_proj.get(name, 0)
         pol_n   = int(p["Por_Liberar"])
         bar_w   = min(pct, 100)
@@ -2371,7 +2438,7 @@ def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencia
 
         cards_html += f"""
 <div class="proj-card" onclick="selectProj('{name_js}')"
-     data-name="{name}" data-pct="{pct}" data-venc="{venc_n}"
+     data-name="{name}" data-pct="{pct}" data-venc="{venc_n}" data-target="{tgt_c}"
      data-arr="{int(p['Arrendados'])}" data-disp="{int(p['Disponibles'])}"
      data-total="{int(p['Total'])}" data-pol="{int(p['Por_Liberar'])}"
      style="border-top:4px solid {color}">
@@ -2558,10 +2625,12 @@ function _fmtClp(clp) {{
   if(!clp) return "";
   return clp >= 1000000 ? "$"+(clp/1000000).toFixed(2)+"M" : "$"+Math.round(clp/1000)+"k";
 }}
-function _dkpi(label, val, color) {{
+function _dkpi(label, val, color, sub) {{
   return '<div style="background:#F8FAFC;border-radius:8px;padding:9px 10px;border-bottom:3px solid '+color+'">'
     +'<div style="font-size:.6rem;color:#6B7A8D;font-weight:600;margin-bottom:2px">'+label+'</div>'
-    +'<div style="font-size:1.18rem;font-weight:700;color:'+color+'">'+val+'</div></div>';
+    +'<div style="font-size:1.18rem;font-weight:700;color:'+color+'">'+val+'</div>'
+    +(sub ? '<div style="font-size:.58rem;color:#92400E;font-weight:600;margin-top:2px">'+sub+'</div>' : '')
+    +'</div>';
 }}
 
 // ── Logo fallback ─────────────────────────────────────────────────────────────
@@ -2738,7 +2807,7 @@ function _buildDetailHTML(projName) {{
 
   var color=PROJ_COLORS[projName]||"#00A8B4";
   var pct=(p.Pct_Ocup*100).toFixed(1);
-  var mt=typeof META_TARGET!=="undefined"?META_TARGET:0.95;
+  var mt=(p.Target||95)/100;
   var tgt=(mt*100).toFixed(0);
   var gap=((p.Pct_Ocup-mt)*100).toFixed(1);
   var stClr=p.Pct_Ocup>=mt?"#16A34A":p.Pct_Ocup>=mt-.1?"#D97706":"#DC2626";
@@ -2834,8 +2903,40 @@ function _buildDetailHTML(projName) {{
   h+=_dkpi("Disponibles",  Math.round(p.Disponibles), "#D97706");
   h+=_dkpi("No Disp.",     Math.round(p.No_Disp),     "#DC2626");
   h+=_dkpi("Por Liberar",  Math.round(p.Por_Liberar), "#DC2626");
-  h+=_dkpi("Reservadas",   Math.round(p.Reservadas),  "#0369A1");
+  var ciN = Math.round(p.Cambios_Internos||0);
+  var ciSub = ciN > 0 ? ciN+' cambio'+(ciN>1?'s':'')+' interno'+(ciN>1?'s':'') : '';
+  h+=_dkpi("Reservadas", Math.round(p.Reservadas), "#0369A1", ciSub);
   h+='</div>';
+
+  // ── Stock por Tipología ───────────────────────────────────────────────
+  (function() {{
+    var tb = p.TipBreakdown;
+    if(!tb || !Object.keys(tb).length) return;
+    var order = ['Studio','1 Dorm','2 Dorm','3 Dorm'];
+    var clrs  = {{'Studio':'#7C3AED','1 Dorm':'#00A8B4','2 Dorm':'#0369A1','3 Dorm':'#0F4C81'}};
+    h+='<div style="background:#F8FAFC;border-radius:14px;padding:16px;margin-bottom:16px">';
+    h+='<div style="font-size:.75rem;font-weight:800;color:#0F172A;margin-bottom:14px;letter-spacing:.03em">Stock por Tipolog&iacute;a</div>';
+    order.forEach(function(tip) {{
+      var d = tb[tip]; if(!d) return;
+      var clr  = clrs[tip]||'#00A8B4';
+      var pctT = d.total > 0 ? (d.arr/d.total*100).toFixed(1) : '0.0';
+      var barW = Math.min(parseFloat(pctT), 100);
+      var dispClr = d.disp > 0 ? '#D97706' : '#9CA3AF';
+      h+='<div style="margin-bottom:12px">';
+      h+='<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">';
+      h+='<span style="font-size:.75rem;font-weight:700;color:#374151">'+tip+'</span>';
+      h+='<div style="display:flex;gap:10px;font-size:.68rem;font-weight:600">';
+      h+='<span style="color:#6B7A8D">'+d.total+' total</span>';
+      h+='<span style="color:#16A34A">'+d.arr+' arr.</span>';
+      h+='<span style="color:'+dispClr+'">'+d.disp+' disp.</span>';
+      h+='<span style="color:'+clr+';font-weight:800">'+pctT+'%</span>';
+      h+='</div></div>';
+      h+='<div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">';
+      h+='<div style="height:100%;width:'+barW+'%;background:'+clr+';border-radius:99px;transition:width .4s ease"></div>';
+      h+='</div></div>';
+    }});
+    h+='</div>';
+  }})();
 
   // ── Forecast: Por Liberar / Ingresos / Proyección (3 meses) ─────────
   (function() {{
@@ -2881,8 +2982,9 @@ function _buildDetailHTML(projName) {{
       // Forecast acumulado: A + R - PL
       arrProj = arrProj + ing - pl;
       var pct   = p.Total > 0 ? (arrProj / p.Total * 100).toFixed(1) : '—';
-      var fcClr = arrProj/p.Total >= 0.95 ? '#16A34A' : arrProj/p.Total >= 0.85 ? '#D97706' : '#DC2626';
-      var fcBg  = arrProj/p.Total >= 0.95 ? '#F0FDF4' : arrProj/p.Total >= 0.85 ? '#FFFBEB' : '#FEF2F2';
+      var fcMt  = (p.Target||95)/100;
+      var fcClr = arrProj/p.Total >= fcMt ? '#16A34A' : arrProj/p.Total >= 0.85 ? '#D97706' : '#DC2626';
+      var fcBg  = arrProj/p.Total >= fcMt ? '#F0FDF4' : arrProj/p.Total >= 0.85 ? '#FFFBEB' : '#FEF2F2';
       fcRow += chip(mes, arrProj+' ud<div style="font-size:.7rem;font-weight:600">'+pct+'%</div>', fcClr, fcBg);
     }});
 
@@ -3134,7 +3236,7 @@ function exportProjData(projName) {{
 // ── Badge en nav sidebar (proyectos bajo meta) ────────────────────────────────
 (function() {{
   if(typeof proj_desc==="undefined") return;
-  var nBelow=proj_desc.filter(function(p){{return p.Pct_Ocup<0.95;}}).length;
+  var nBelow=proj_desc.filter(function(p){{return p.Pct_Ocup*100<(p.Target||95);}}).length;
   if(!nBelow) return;
   document.querySelectorAll(".sbl").forEach(function(item) {{
     if(item.textContent.indexOf("Vista Proyectos")>=0) {{
@@ -3153,10 +3255,10 @@ function prevProj(){{if(_PROJ_PREV)selectProj(_PROJ_PREV);}}
 function nextProj(){{if(_PROJ_NEXT)selectProj(_PROJ_NEXT);}}
 
 function refreshSidebarStatus() {{
-  var mt = typeof META_TARGET !== "undefined" ? META_TARGET : 0.95;
   var nBelow = 0;
   document.querySelectorAll(".proj-list-item").forEach(function(item) {{
     var pct = parseFloat(item.dataset.pct || 0) / 100;
+    var mt  = parseFloat(item.dataset.target || 95) / 100;
     var isCrit  = pct < 0.85;
     var isBelow = pct < mt;
     var color   = isCrit ? "#DC2626" : isBelow ? "#D97706" : "#16A34A";
@@ -3404,28 +3506,15 @@ async function gateCheck() {{
     # Insertar gate como PRIMER hijo del body
     html = html.replace('<body>', '<body>\n' + gate_html, 1)
 
-    # ── 1. META SLIDER — antes del primer KPI grid ───────────────────────────
-    meta_html = """
-<div id="meta-bar" style="display:flex;align-items:center;gap:12px;margin:16px 0 8px;
-     flex-wrap:wrap;padding:10px 14px;background:#F0FDFE;border-radius:8px;
-     border:1px solid #BAE6ED">
-  <span style="font-size:.75rem;color:#6B7A8D;font-weight:600">&#127919; Meta de ocupaci&oacute;n:</span>
-  <input type="range" id="meta-slider" min="80" max="100" step="1" value="95"
-         oninput="actualizarMeta(this.value)"
-         style="width:140px;accent-color:#00A8B4;cursor:pointer">
-  <span id="meta-val" style="font-size:.9rem;font-weight:700;color:#00A8B4">95%</span>
-  <span id="meta-feedback" style="font-size:.68rem;color:#0369A1;background:#EFF6FF;border-radius:99px;padding:2px 9px;font-weight:600;display:none"></span>
-  <span style="font-size:.71rem;color:#9CA3AF">| La tabla de alertas se recalcula en tiempo real</span>
-</div>
-"""
+    # ── 1. HERO SECTION — antes del primer KPI grid ──────────────────────────
     hero_html = build_hero_section(m, uf_valor=uf_valor, hist_data=hist_data)
     # Actualizar texto de fuente de datos
     html = html.replace("Fuente: unidades.xlsx", "Fuente: API PostgreSQL")
     html = html.replace("__DATE__", DATE_STR)
-    html = html.replace("Target global: 95%", "Target global: <span id=\"ft-meta-pct\">95</span>%")
+    html = html.replace("Target global: 95%", "Metas por proyecto (mensual)")
     kg_match = re.search(r'<div class="kg"', html)
     if kg_match:
-        html = html[:kg_match.start()] + hero_html + meta_html + html[kg_match.start():]
+        html = html[:kg_match.start()] + hero_html + html[kg_match.start():]
 
     # ── 2. GRAFICO HISTORICO REAL — antes de sec-alertas ────────────────────
     if hist_data is not None and len(hist_data) > 0:
@@ -3503,53 +3592,8 @@ if(hist_meses.length && document.getElementById("hist-ocup-chart")) {{
   }});
 }}
 
-// ── Meta configurable ────────────────────────────────────────────────────────
-var META_TARGET = 0.95;
-function actualizarMeta(v) {{
-  META_TARGET = v / 100;
-  document.getElementById("meta-val").textContent = v + "%";
-  // Live feedback
-  if(typeof proj_desc !== "undefined") {{
-    var nCumple = proj_desc.filter(function(p){{return p.Pct_Ocup >= META_TARGET;}}).length;
-    var fb = document.getElementById("meta-feedback");
-    if(fb) {{ fb.style.display=""; fb.textContent = nCumple+"/"+proj_desc.length+" proyectos cumplen"; }}
-    var hBM = document.getElementById("hero-bajo-meta");
-    var hMP = document.getElementById("hero-meta-pct");
-    if(hBM) hBM.textContent = proj_desc.length - nCumple;
-    if(hMP) hMP.textContent = Math.round(v);
-  }}
-  recalcAlertas();
-  if(typeof refreshSidebarStatus!=="undefined") refreshSidebarStatus();
-  // Actualizar linea de meta en historico
-  var el = document.getElementById("hist-ocup-chart");
-  if(el && el.data && el.data.length > 1) {{
-    Plotly.restyle("hist-ocup-chart", {{y: [hist_meses.map(function(){{return parseFloat(v);}})] }}, [1]);
-  }}
-  // Actualizar Target en bar_proj
-  var bEl = document.getElementById("bar_proj");
-  if(bEl && bEl.data && bEl.data.length > 1) {{
-    var tv = parseFloat(v);
-    var tName = "Target " + Math.round(v) + "%";
-    var tHover = "Target: " + Math.round(v) + "%<extra></extra>";
-    Plotly.restyle("bar_proj", {{
-      y: [bEl.data[0].x.map(function(){{ return tv; }})],
-      name: [tName],
-      "hovertemplate": [tHover]
-    }}, [1]);
-  }}
-  // Actualizar footer meta
-  var ftmp = document.getElementById("ft-meta-pct");
-  if(ftmp) ftmp.textContent = Math.round(v);
-  // Actualizar Brecha Meta en KPI grid
-  var bGap = document.getElementById("kpi-brecha-meta");
-  var bTgt = document.getElementById("kpi-brecha-target");
-  if(bGap) {{
-    var gap = (gpct * 100 - parseFloat(v));
-    bGap.textContent = gap.toFixed(1) + "pp";
-    bGap.style.color = gap >= 0 ? "#16A34A" : "#DC2626";
-  }}
-  if(bTgt) bTgt.textContent = Math.round(v);
-}}
+// ── Metas por proyecto (no hay meta genérica global) ─────────────────────────
+// Las metas se leen desde p.Target en proj_desc (definidas en TARGETS_MENSUALES)
 
 function globalSearch(q) {{
   q = (q||"").toLowerCase().trim();
@@ -3583,13 +3627,14 @@ function recalcAlertas() {{
     // Aplicar filtro de proyecto si esta activo
     if(PROJ_FILTER && p.Propiedad !== PROJ_FILTER) return;
     var pct  = (p.Pct_Ocup * 100).toFixed(1);
-    var gap  = ((p.Pct_Ocup - META_TARGET) * 100);
-    var needed = Math.max(0, Math.round(META_TARGET * p.Total) - p.Arrendados);
+    var mt   = (p.Target||95)/100;
+    var gap  = ((p.Pct_Ocup - mt) * 100);
+    var needed = Math.max(0, Math.round(mt * p.Total) - p.Arrendados);
     var badge, gapStr, neededStr;
-    if(p.Pct_Ocup >= META_TARGET) {{
+    if(p.Pct_Ocup >= mt) {{
       badge = "<span class='badge badge-green'>&#x2705; Cumple</span>";
       gapStr = "&mdash;"; neededStr = "&mdash;";
-    }} else if(p.Pct_Ocup >= META_TARGET - 0.10) {{
+    }} else if(p.Pct_Ocup >= mt - 0.10) {{
       badge = "<span class='badge badge-orange'>&#x1F7E1; En seguimiento</span>";
       gapStr = "+" + Math.abs(gap).toFixed(1) + "pp";
       neededStr = needed + " uds.";
@@ -3598,7 +3643,7 @@ function recalcAlertas() {{
       gapStr = "+" + Math.abs(gap).toFixed(1) + "pp";
       neededStr = needed + " uds.";
     }}
-    var dotCls = p.Pct_Ocup >= META_TARGET ? "sem-g" : p.Pct_Ocup >= (META_TARGET-0.1) ? "sem-y" : "sem-r";
+    var dotCls = p.Pct_Ocup >= mt ? "sem-g" : p.Pct_Ocup >= (mt-0.1) ? "sem-y" : "sem-r";
     var projEsc = p.Propiedad.replace(/'/g, "\\\\'");
     rows += "<tr style='cursor:pointer' onclick='showProjModal(\\\"" + p.Propiedad.replace(/"/g,"&quot;") + "\\\")'>" +
       "<td style='font-weight:500'><span class='sem " + dotCls + "' title='" + pct + "%'></span>" + p.Propiedad + "</td>" +
