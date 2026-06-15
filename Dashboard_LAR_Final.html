@@ -682,7 +682,7 @@ async function gateCheck() {
 </div>
 <div class="header">
   <h1>Panel de <span>Ocupación</span></h1>
-  <div class="sub">Datos al 15/06/2026 | Fuente: API PostgreSQL | Metas por proyecto (mensual)</div>
+  <div class="sub">Datos al 15/06/2026 | Fuente: API PostgreSQL | Target global: <span id="ft-meta-pct">95</span>%</div>
 </div>
 
 
@@ -696,11 +696,23 @@ async function gateCheck() {
   </div>
   <span id="search-count" style="font-size:.71rem;color:#6B7A8D;white-space:nowrap;background:#F1F5F9;padding:3px 9px;border-radius:99px"></span>
 </div>
+
+<div id="meta-bar" style="display:flex;align-items:center;gap:12px;margin:16px 0 8px;
+     flex-wrap:wrap;padding:10px 14px;background:#F0FDFE;border-radius:8px;
+     border:1px solid #BAE6ED">
+  <span style="font-size:.75rem;color:#6B7A8D;font-weight:600">&#127919; Meta de ocupaci&oacute;n:</span>
+  <input type="range" id="meta-slider" min="80" max="100" step="1" value="95"
+         oninput="actualizarMeta(this.value)"
+         style="width:140px;accent-color:#00A8B4;cursor:pointer">
+  <span id="meta-val" style="font-size:.9rem;font-weight:700;color:#00A8B4">95%</span>
+  <span id="meta-feedback" style="font-size:.68rem;color:#0369A1;background:#EFF6FF;border-radius:99px;padding:2px 9px;font-weight:600;display:none"></span>
+  <span style="font-size:.71rem;color:#9CA3AF">| La tabla de alertas se recalcula en tiempo real</span>
+</div>
 <div class="kg" style="grid-template-columns:repeat(6,1fr)">
   <div class="kc kc-link" onclick="irA('sec-alertas')" title="Ver Alertas"><div class="kl">Arrendadas</div><div class="kv gr">2,960</div><div class="ks">3,576 total &nbsp;&middot;&nbsp; Por arr: <b style="color:#D97706">32</b></div></div>
   <div class="kc kc-link" onclick="irA('sec-disponibles')" title="Ver Disponibles"><div class="kl">Disponibles</div><div class="kv or">423</div><div class="ks">Libres para arrendar</div></div>
   <div class="kc"><div class="kl">No Disponibles</div><div class="kv re">193</div><div class="ks">Incl. En Obra (1)</div></div>
-  <div class="kc kc-link" onclick="irA('sec-ocupacion')" title="Ver Ocupaci&oacute;n"><div class="kl">% Ocupaci&oacute;n</div><div class="kv ac">82.8%</div><div class="ks"><span id="hero-bajo-meta">10</span> proy. bajo su meta</div></div>
+  <div class="kc kc-link" onclick="irA('sec-ocupacion')" title="Ver Ocupaci&oacute;n"><div class="kl">% Ocupaci&oacute;n</div><div class="kv ac">82.8%</div><div class="ks">Meta: 95% &nbsp;&middot;&nbsp; Gap: -12.2pp</div></div>
   <div class="kc kc-link" onclick="irA('sec-por-liberar')" title="Ver Por Liberar"><div class="kl">Por Liberar</div><div class="kv re">122</div><div class="ks">11 proyectos afectados</div></div>
   <div class="kc"><div class="kl">UF Hoy</div><div class="kv" style="color:#0369A1;font-size:2rem">$40,780</div><div class="ks">15/06/2026</div></div>
 </div>
@@ -1555,7 +1567,7 @@ function vacSetProj(proj, grp) {
     <div id="proj-list-items" style="flex:1;overflow-y:auto">
       
 <div class="proj-list-item" id="pli-blend-apoquindo" onclick="selectProj('Blend Apoquindo')"
-     data-name="Blend Apoquindo" data-pct="66.3" data-venc="0" data-target="95.0"
+     data-name="Blend Apoquindo" data-pct="66.3" data-venc="0"
      data-arr="63" data-disp="12"
      data-total="95" data-pol="0">
   <div class="proj-dot-pulse" style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#DC2626"></div>
@@ -1567,7 +1579,7 @@ function vacSetProj(proj, grp) {
   </div>
 </div>
 <div class="proj-list-item" id="pli-boldo-club-de-campo" onclick="selectProj('Boldo Club de Campo')"
-     data-name="Boldo Club de Campo" data-pct="95.2" data-venc="21" data-target="95.2"
+     data-name="Boldo Club de Campo" data-pct="95.2" data-venc="21"
      data-arr="120" data-disp="5"
      data-total="126" data-pol="1">
   <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#16A34A"></div>
@@ -1579,7 +1591,7 @@ function vacSetProj(proj, grp) {
   </div>
 </div>
 <div class="proj-list-item" id="pli-brooklyn-la-florida" onclick="selectProj('Brooklyn La Florida')"
-     data-name="Brooklyn La Florida" data-pct="90.8" data-venc="60" data-target="95.0"
+     data-name="Brooklyn La Florida" data-pct="90.8" data-venc="60"
      data-arr="434" data-disp="33"
      data-total="478" data-pol="40">
   <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#D97706"></div>
@@ -1591,7 +1603,7 @@ function vacSetProj(proj, grp) {
   </div>
 </div>
 <div class="proj-list-item" id="pli-central-santiago" onclick="selectProj('Central Santiago')"
-     data-name="Central Santiago" data-pct="93.8" data-venc="56" data-target="95.0"
+     data-name="Central Santiago" data-pct="93.8" data-venc="56"
      data-arr="527" data-disp="31"
      data-total="562" data-pol="22">
   <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#D97706"></div>
@@ -1603,7 +1615,7 @@ function vacSetProj(proj, grp) {
   </div>
 </div>
 <div class="proj-list-item" id="pli-collective-bustamante" onclick="selectProj('Collective Bustamante')"
-     data-name="Collective Bustamante" data-pct="25.3" data-venc="0" data-target="37.3"
+     data-name="Collective Bustamante" data-pct="25.3" data-venc="0"
      data-arr="94" data-disp="190"
      data-total="371" data-pol="0">
   <div class="proj-dot-pulse" style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#DC2626"></div>
@@ -1615,7 +1627,7 @@ function vacSetProj(proj, grp) {
   </div>
 </div>
 <div class="proj-list-item" id="pli-imu-san-cristóbal" onclick="selectProj('IMU San Cristóbal')"
-     data-name="IMU San Cristóbal" data-pct="74.0" data-venc="19" data-target="82.5"
+     data-name="IMU San Cristóbal" data-pct="74.0" data-venc="19"
      data-arr="335" data-disp="65"
      data-total="453" data-pol="8">
   <div class="proj-dot-pulse" style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#DC2626"></div>
@@ -1627,7 +1639,7 @@ function vacSetProj(proj, grp) {
   </div>
 </div>
 <div class="proj-list-item" id="pli-nativo-riesco" onclick="selectProj('Nativo Riesco')"
-     data-name="Nativo Riesco" data-pct="96.1" data-venc="37" data-target="95.3"
+     data-name="Nativo Riesco" data-pct="96.1" data-venc="37"
      data-arr="245" data-disp="9"
      data-total="255" data-pol="12">
   <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#16A34A"></div>
@@ -1639,7 +1651,7 @@ function vacSetProj(proj, grp) {
   </div>
 </div>
 <div class="proj-list-item" id="pli-nomad-bellet" onclick="selectProj('Nomad Bellet')"
-     data-name="Nomad Bellet" data-pct="93.3" data-venc="11" data-target="95.5"
+     data-name="Nomad Bellet" data-pct="93.3" data-venc="11"
      data-arr="125" data-disp="7"
      data-total="134" data-pol="9">
   <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#D97706"></div>
@@ -1651,7 +1663,7 @@ function vacSetProj(proj, grp) {
   </div>
 </div>
 <div class="proj-list-item" id="pli-nomad-holley" onclick="selectProj('Nomad Holley')"
-     data-name="Nomad Holley" data-pct="93.3" data-venc="17" data-target="95.5"
+     data-name="Nomad Holley" data-pct="93.3" data-venc="17"
      data-arr="194" data-disp="11"
      data-total="208" data-pol="12">
   <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#D97706"></div>
@@ -1663,7 +1675,7 @@ function vacSetProj(proj, grp) {
   </div>
 </div>
 <div class="proj-list-item" id="pli-park-santiago" onclick="selectProj('Park Santiago')"
-     data-name="Park Santiago" data-pct="94.6" data-venc="24" data-target="95.5"
+     data-name="Park Santiago" data-pct="94.6" data-venc="24"
      data-arr="297" data-disp="16"
      data-total="314" data-pol="11">
   <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#D97706"></div>
@@ -1675,7 +1687,7 @@ function vacSetProj(proj, grp) {
   </div>
 </div>
 <div class="proj-list-item" id="pli-soho-barrio-italia" onclick="selectProj('Soho Barrio Italia')"
-     data-name="Soho Barrio Italia" data-pct="94.8" data-venc="14" data-target="97.0"
+     data-name="Soho Barrio Italia" data-pct="94.8" data-venc="14"
      data-arr="91" data-disp="5"
      data-total="96" data-pol="3">
   <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#D97706"></div>
@@ -1687,7 +1699,7 @@ function vacSetProj(proj, grp) {
   </div>
 </div>
 <div class="proj-list-item" id="pli-spot-nueva-kennedy" onclick="selectProj('Spot Nueva Kennedy')"
-     data-name="Spot Nueva Kennedy" data-pct="91.9" data-venc="30" data-target="94.0"
+     data-name="Spot Nueva Kennedy" data-pct="91.9" data-venc="30"
      data-arr="272" data-disp="21"
      data-total="296" data-pol="3">
   <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#D97706"></div>
@@ -1699,10 +1711,10 @@ function vacSetProj(proj, grp) {
   </div>
 </div>
 <div class="proj-list-item" id="pli-spot-residence" onclick="selectProj('Spot Residence')"
-     data-name="Spot Residence" data-pct="86.7" data-venc="17" data-target="82.5"
+     data-name="Spot Residence" data-pct="86.7" data-venc="17"
      data-arr="163" data-disp="18"
      data-total="188" data-pol="1">
-  <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#16A34A"></div>
+  <div style="margin-top:4px;width:9px;height:9px;flex-shrink:0;border-radius:99px;background:#D97706"></div>
   <div class="proj-logo-box" data-init="SR" data-color="#1D4ED8" style="width:34px;height:34px;flex-shrink:0;border-radius:6px;background:#F8FAFC;overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="https://largroup.cl/wp-content/uploads/2024/12/logo-spot-residence-1.png" width="30" height="30" style="object-fit:contain" onerror="projLogoFallback(this)"></div>
   <div style="flex:1;min-width:0;overflow:hidden">
     <div style="font-size:.76rem;font-weight:700;color:#1E2A38;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3">Spot Residence</div>
@@ -1716,7 +1728,7 @@ function vacSetProj(proj, grp) {
     <div style="padding:8px 13px;border-top:1px solid #E2E8F0;background:#fff;
                 font-size:.65rem;color:#9CA3AF;display:flex;justify-content:space-between">
       <span>13 proyectos</span>
-      <span style="color:#DC2626;font-weight:600">10 bajo meta</span>
+      <span style="color:#DC2626;font-weight:600">11 bajo meta</span>
     </div>
   </div>
 
@@ -1733,7 +1745,7 @@ function vacSetProj(proj, grp) {
            style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px">
         
 <div class="proj-card" onclick="selectProj('Blend Apoquindo')"
-     data-name="Blend Apoquindo" data-pct="66.3" data-venc="0" data-target="95.0"
+     data-name="Blend Apoquindo" data-pct="66.3" data-venc="0"
      data-arr="63" data-disp="12"
      data-total="95" data-pol="0"
      style="border-top:4px solid #00A8B4">
@@ -1761,7 +1773,7 @@ function vacSetProj(proj, grp) {
   <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><table class="pct" cellspacing="0"><thead><tr><th>Tipo</th><th>Disp</th><th class="pct-h-desde">Desde</th><th class="pct-h-hasta">Hasta</th><th>F.Renta</th></tr></thead><tbody><tr class="pct-row" data-mn-uf="18.19" data-mx-uf="18.56" data-mn-clp="741780" data-mx-clp="756868" data-fr-mn-uf="54.57" data-fr-mx-uf="55.68" data-fr-mn-clp="2225340" data-fr-mx-clp="2270604" data-div="UF"><td class="pct-tip">1D1B</td><td class="pct-nd">4</td><td class="pct-desde">18.2&nbsp;UF<span class="pct-sub">$742k</span></td><td class="pct-hasta">18.6&nbsp;UF<span class="pct-sub">$757k</span></td><td class="pct-fr">54.6&ndash;55.7&nbsp;UF<span class="pct-sub">$2.23M–$2.27M</span></td></tr><tr class="pct-row" data-mn-uf="31.56" data-mx-uf="37.45" data-mn-clp="1287003" data-mx-clp="1527194" data-fr-mn-uf="94.68" data-fr-mx-uf="112.35" data-fr-mn-clp="3861009" data-fr-mx-clp="4581582" data-div="UF"><td class="pct-tip">2D2B</td><td class="pct-nd">8</td><td class="pct-desde">31.6&nbsp;UF<span class="pct-sub">$1.29M</span></td><td class="pct-hasta">37.5&nbsp;UF<span class="pct-sub">$1.53M</span></td><td class="pct-fr">94.7&ndash;112.4&nbsp;UF<span class="pct-sub">$3.86M–$4.58M</span></td></tr></tbody></table></div>
 </div>
 <div class="proj-card" onclick="selectProj('Boldo Club de Campo')"
-     data-name="Boldo Club de Campo" data-pct="95.2" data-venc="21" data-target="95.2"
+     data-name="Boldo Club de Campo" data-pct="95.2" data-venc="21"
      data-arr="120" data-disp="5"
      data-total="126" data-pol="1"
      style="border-top:4px solid #0369A1">
@@ -1789,7 +1801,7 @@ function vacSetProj(proj, grp) {
   <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><table class="pct" cellspacing="0"><thead><tr><th>Tipo</th><th>Disp</th><th class="pct-h-desde">Desde</th><th class="pct-h-hasta">Hasta</th><th>F.Renta</th></tr></thead><tbody><tr class="pct-row" data-mn-uf="37.66" data-mx-uf="40.50" data-mn-clp="1535758" data-mx-clp="1651572" data-fr-mn-uf="112.98" data-fr-mx-uf="121.50" data-fr-mn-clp="4607274" data-fr-mx-clp="4954716" data-div="UF"><td class="pct-tip">2D2B</td><td class="pct-nd">6</td><td class="pct-desde">37.7&nbsp;UF<span class="pct-sub">$1.54M</span></td><td class="pct-hasta">40.5&nbsp;UF<span class="pct-sub">$1.65M</span></td><td class="pct-fr">113.0&ndash;121.5&nbsp;UF<span class="pct-sub">$4.61M–$4.95M</span></td></tr></tbody></table></div>
 </div>
 <div class="proj-card" onclick="selectProj('Brooklyn La Florida')"
-     data-name="Brooklyn La Florida" data-pct="90.8" data-venc="60" data-target="95.0"
+     data-name="Brooklyn La Florida" data-pct="90.8" data-venc="60"
      data-arr="434" data-disp="33"
      data-total="478" data-pol="40"
      style="border-top:4px solid #7C3AED">
@@ -1817,7 +1829,7 @@ function vacSetProj(proj, grp) {
   <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><table class="pct" cellspacing="0"><thead><tr><th>Tipo</th><th>Disp</th><th class="pct-h-desde">Desde</th><th class="pct-h-hasta">Hasta</th><th>F.Renta</th></tr></thead><tbody><tr class="pct-row" data-mn-uf="7.46" data-mx-uf="9.85" data-mn-clp="304215" data-mx-clp="401679" data-fr-mn-uf="22.38" data-fr-mx-uf="29.55" data-fr-mn-clp="912645" data-fr-mx-clp="1205037" data-div="UF"><td class="pct-tip">1D1B</td><td class="pct-nd">13</td><td class="pct-desde">7.5&nbsp;UF<span class="pct-sub">$304k</span></td><td class="pct-hasta">9.8&nbsp;UF<span class="pct-sub">$402k</span></td><td class="pct-fr">22.4&ndash;29.5&nbsp;UF<span class="pct-sub">$913k–$1.21M</span></td></tr><tr class="pct-row" data-mn-uf="11.82" data-mx-uf="14.50" data-mn-clp="482014" data-mx-clp="591303" data-fr-mn-uf="35.46" data-fr-mx-uf="43.50" data-fr-mn-clp="1446042" data-fr-mx-clp="1773909" data-div="UF"><td class="pct-tip">2D2B</td><td class="pct-nd">26</td><td class="pct-desde">11.8&nbsp;UF<span class="pct-sub">$482k</span></td><td class="pct-hasta">14.5&nbsp;UF<span class="pct-sub">$591k</span></td><td class="pct-fr">35.5&ndash;43.5&nbsp;UF<span class="pct-sub">$1.45M–$1.77M</span></td></tr></tbody></table></div>
 </div>
 <div class="proj-card" onclick="selectProj('Central Santiago')"
-     data-name="Central Santiago" data-pct="93.8" data-venc="56" data-target="95.0"
+     data-name="Central Santiago" data-pct="93.8" data-venc="56"
      data-arr="527" data-disp="31"
      data-total="562" data-pol="22"
      style="border-top:4px solid #DB2777">
@@ -1845,7 +1857,7 @@ function vacSetProj(proj, grp) {
   <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><table class="pct" cellspacing="0"><thead><tr><th>Tipo</th><th>Disp</th><th class="pct-h-desde">Desde</th><th class="pct-h-hasta">Hasta</th><th>F.Renta</th></tr></thead><tbody><tr class="pct-row" data-mn-uf="7.10" data-mx-uf="10.60" data-mn-clp="289535" data-mx-clp="432263" data-fr-mn-uf="21.30" data-fr-mx-uf="31.80" data-fr-mn-clp="868605" data-fr-mx-clp="1296789" data-div="UF"><td class="pct-tip">1D1B</td><td class="pct-nd">29</td><td class="pct-desde">7.1&nbsp;UF<span class="pct-sub">$290k</span></td><td class="pct-hasta">10.6&nbsp;UF<span class="pct-sub">$432k</span></td><td class="pct-fr">21.3&ndash;31.8&nbsp;UF<span class="pct-sub">$869k–$1.30M</span></td></tr><tr class="pct-row" data-mn-uf="11.60" data-mx-uf="12.55" data-mn-clp="473043" data-mx-clp="511783" data-fr-mn-uf="34.80" data-fr-mx-uf="37.65" data-fr-mn-clp="1419129" data-fr-mx-clp="1535349" data-div="UF"><td class="pct-tip">2D1B</td><td class="pct-nd">3</td><td class="pct-desde">11.6&nbsp;UF<span class="pct-sub">$473k</span></td><td class="pct-hasta">12.6&nbsp;UF<span class="pct-sub">$512k</span></td><td class="pct-fr">34.8&ndash;37.7&nbsp;UF<span class="pct-sub">$1.42M–$1.54M</span></td></tr><tr class="pct-row" data-mn-uf="15.15" data-mx-uf="15.52" data-mn-clp="617810" data-mx-clp="632899" data-fr-mn-uf="45.45" data-fr-mx-uf="46.56" data-fr-mn-clp="1853430" data-fr-mx-clp="1898697" data-div="UF"><td class="pct-tip">2D2B</td><td class="pct-nd">3</td><td class="pct-desde">15.2&nbsp;UF<span class="pct-sub">$618k</span></td><td class="pct-hasta">15.5&nbsp;UF<span class="pct-sub">$633k</span></td><td class="pct-fr">45.5&ndash;46.6&nbsp;UF<span class="pct-sub">$1.85M–$1.90M</span></td></tr></tbody></table></div>
 </div>
 <div class="proj-card" onclick="selectProj('Collective Bustamante')"
-     data-name="Collective Bustamante" data-pct="25.3" data-venc="0" data-target="37.3"
+     data-name="Collective Bustamante" data-pct="25.3" data-venc="0"
      data-arr="94" data-disp="190"
      data-total="371" data-pol="0"
      style="border-top:4px solid #059669">
@@ -1873,7 +1885,7 @@ function vacSetProj(proj, grp) {
   <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><table class="pct" cellspacing="0"><thead><tr><th>Tipo</th><th>Disp</th><th class="pct-h-desde">Desde</th><th class="pct-h-hasta">Hasta</th><th>F.Renta</th></tr></thead><tbody><tr class="pct-row" data-mn-uf="10.69" data-mx-uf="16.39" data-mn-clp="435933" data-mx-clp="668377" data-fr-mn-uf="32.07" data-fr-mx-uf="49.17" data-fr-mn-clp="1307799" data-fr-mx-clp="2005131" data-div="UF"><td class="pct-tip">1D1B</td><td class="pct-nd">153</td><td class="pct-desde">10.7&nbsp;UF<span class="pct-sub">$436k</span></td><td class="pct-hasta">16.4&nbsp;UF<span class="pct-sub">$668k</span></td><td class="pct-fr">32.1&ndash;49.2&nbsp;UF<span class="pct-sub">$1.31M–$2.01M</span></td></tr><tr class="pct-row" data-mn-uf="15.33" data-mx-uf="20.17" data-mn-clp="625151" data-mx-clp="822524" data-fr-mn-uf="45.99" data-fr-mx-uf="60.51" data-fr-mn-clp="1875453" data-fr-mx-clp="2467572" data-div="UF"><td class="pct-tip">2D1B</td><td class="pct-nd">32</td><td class="pct-desde">15.3&nbsp;UF<span class="pct-sub">$625k</span></td><td class="pct-hasta">20.2&nbsp;UF<span class="pct-sub">$823k</span></td><td class="pct-fr">46.0&ndash;60.5&nbsp;UF<span class="pct-sub">$1.88M–$2.47M</span></td></tr><tr class="pct-row" data-mn-uf="17.93" data-mx-uf="21.57" data-mn-clp="731177" data-mx-clp="879615" data-fr-mn-uf="53.79" data-fr-mx-uf="64.71" data-fr-mn-clp="2193531" data-fr-mx-clp="2638845" data-div="UF"><td class="pct-tip">2D2B</td><td class="pct-nd">10</td><td class="pct-desde">17.9&nbsp;UF<span class="pct-sub">$731k</span></td><td class="pct-hasta">21.6&nbsp;UF<span class="pct-sub">$880k</span></td><td class="pct-fr">53.8&ndash;64.7&nbsp;UF<span class="pct-sub">$2.19M–$2.64M</span></td></tr></tbody></table></div>
 </div>
 <div class="proj-card" onclick="selectProj('IMU San Cristóbal')"
-     data-name="IMU San Cristóbal" data-pct="74.0" data-venc="19" data-target="82.5"
+     data-name="IMU San Cristóbal" data-pct="74.0" data-venc="19"
      data-arr="335" data-disp="65"
      data-total="453" data-pol="8"
      style="border-top:4px solid #D97706">
@@ -1901,7 +1913,7 @@ function vacSetProj(proj, grp) {
   <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><table class="pct" cellspacing="0"><thead><tr><th>Tipo</th><th>Disp</th><th class="pct-h-desde">Desde</th><th class="pct-h-hasta">Hasta</th><th>F.Renta</th></tr></thead><tbody><tr class="pct-row" data-mn-uf="12.81" data-mx-uf="18.53" data-mn-clp="522386" data-mx-clp="755645" data-fr-mn-uf="38.43" data-fr-mx-uf="55.59" data-fr-mn-clp="1567158" data-fr-mx-clp="2266935" data-div="UF"><td class="pct-tip">1D1B</td><td class="pct-nd">16</td><td class="pct-desde">12.8&nbsp;UF<span class="pct-sub">$522k</span></td><td class="pct-hasta">18.5&nbsp;UF<span class="pct-sub">$756k</span></td><td class="pct-fr">38.4&ndash;55.6&nbsp;UF<span class="pct-sub">$1.57M–$2.27M</span></td></tr><tr class="pct-row" data-mn-uf="19.25" data-mx-uf="19.37" data-mn-clp="785006" data-mx-clp="789900" data-fr-mn-uf="57.75" data-fr-mx-uf="58.11" data-fr-mn-clp="2355018" data-fr-mx-clp="2369700" data-div="UF"><td class="pct-tip">2D1B</td><td class="pct-nd">2</td><td class="pct-desde">19.2&nbsp;UF<span class="pct-sub">$785k</span></td><td class="pct-hasta">19.4&nbsp;UF<span class="pct-sub">$790k</span></td><td class="pct-fr">57.8&ndash;58.1&nbsp;UF<span class="pct-sub">$2.36M–$2.37M</span></td></tr><tr class="pct-row" data-mn-uf="19.09" data-mx-uf="23.21" data-mn-clp="778482" data-mx-clp="946493" data-fr-mn-uf="57.27" data-fr-mx-uf="69.63" data-fr-mn-clp="2335446" data-fr-mx-clp="2839479" data-div="UF"><td class="pct-tip">2D2B</td><td class="pct-nd">49</td><td class="pct-desde">19.1&nbsp;UF<span class="pct-sub">$778k</span></td><td class="pct-hasta">23.2&nbsp;UF<span class="pct-sub">$946k</span></td><td class="pct-fr">57.3&ndash;69.6&nbsp;UF<span class="pct-sub">$2.34M–$2.84M</span></td></tr><tr class="pct-row" data-mn-uf="35.56" data-mx-uf="35.95" data-mn-clp="1450121" data-mx-clp="1466025" data-fr-mn-uf="106.68" data-fr-mx-uf="107.85" data-fr-mn-clp="4350363" data-fr-mx-clp="4398075" data-div="UF"><td class="pct-tip">3D3B</td><td class="pct-nd">5</td><td class="pct-desde">35.6&nbsp;UF<span class="pct-sub">$1.45M</span></td><td class="pct-hasta">36.0&nbsp;UF<span class="pct-sub">$1.47M</span></td><td class="pct-fr">106.7&ndash;107.9&nbsp;UF<span class="pct-sub">$4.35M–$4.40M</span></td></tr></tbody></table></div>
 </div>
 <div class="proj-card" onclick="selectProj('Nativo Riesco')"
-     data-name="Nativo Riesco" data-pct="96.1" data-venc="37" data-target="95.3"
+     data-name="Nativo Riesco" data-pct="96.1" data-venc="37"
      data-arr="245" data-disp="9"
      data-total="255" data-pol="12"
      style="border-top:4px solid #DC2626">
@@ -1929,7 +1941,7 @@ function vacSetProj(proj, grp) {
   <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><table class="pct" cellspacing="0"><thead><tr><th>Tipo</th><th>Disp</th><th class="pct-h-desde">Desde</th><th class="pct-h-hasta">Hasta</th><th>F.Renta</th></tr></thead><tbody><tr class="pct-row" data-mn-uf="26.00" data-mx-uf="26.54" data-mn-clp="1060268" data-mx-clp="1082289" data-fr-mn-uf="78.00" data-fr-mx-uf="79.62" data-fr-mn-clp="3180804" data-fr-mx-clp="3246867" data-div="UF"><td class="pct-tip">1D1B</td><td class="pct-nd">4</td><td class="pct-desde">26.0&nbsp;UF<span class="pct-sub">$1.06M</span></td><td class="pct-hasta">26.5&nbsp;UF<span class="pct-sub">$1.08M</span></td><td class="pct-fr">78.0&ndash;79.6&nbsp;UF<span class="pct-sub">$3.18M–$3.25M</span></td></tr><tr class="pct-row" data-mn-uf="30.08" data-mx-uf="44.90" data-mn-clp="1226649" data-mx-clp="1831002" data-fr-mn-uf="90.24" data-fr-mx-uf="134.70" data-fr-mn-clp="3679947" data-fr-mx-clp="5493006" data-div="UF"><td class="pct-tip">2D2B</td><td class="pct-nd">7</td><td class="pct-desde">30.1&nbsp;UF<span class="pct-sub">$1.23M</span></td><td class="pct-hasta">44.9&nbsp;UF<span class="pct-sub">$1.83M</span></td><td class="pct-fr">90.2&ndash;134.7&nbsp;UF<span class="pct-sub">$3.68M–$5.49M</span></td></tr></tbody></table></div>
 </div>
 <div class="proj-card" onclick="selectProj('Nomad Bellet')"
-     data-name="Nomad Bellet" data-pct="93.3" data-venc="11" data-target="95.5"
+     data-name="Nomad Bellet" data-pct="93.3" data-venc="11"
      data-arr="125" data-disp="7"
      data-total="134" data-pol="9"
      style="border-top:4px solid #0891B2">
@@ -1957,7 +1969,7 @@ function vacSetProj(proj, grp) {
   <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><table class="pct" cellspacing="0"><thead><tr><th>Tipo</th><th>Disp</th><th class="pct-h-desde">Desde</th><th class="pct-h-hasta">Hasta</th><th>F.Renta</th></tr></thead><tbody><tr class="pct-row" data-mn-uf="13.75" data-mx-uf="19.95" data-mn-clp="560719" data-mx-clp="813552" data-fr-mn-uf="41.25" data-fr-mx-uf="59.85" data-fr-mn-clp="1682157" data-fr-mx-clp="2440656" data-div="UF"><td class="pct-tip">1D1B</td><td class="pct-nd">3</td><td class="pct-desde">13.8&nbsp;UF<span class="pct-sub">$561k</span></td><td class="pct-hasta">19.9&nbsp;UF<span class="pct-sub">$814k</span></td><td class="pct-fr">41.2&ndash;59.8&nbsp;UF<span class="pct-sub">$1.68M–$2.44M</span></td></tr><tr class="pct-row" data-mn-uf="25.10" data-mx-uf="27.60" data-mn-clp="1023567" data-mx-clp="1125516" data-fr-mn-uf="75.30" data-fr-mx-uf="82.80" data-fr-mn-clp="3070701" data-fr-mx-clp="3376548" data-div="UF"><td class="pct-tip">2D2B</td><td class="pct-nd">4</td><td class="pct-desde">25.1&nbsp;UF<span class="pct-sub">$1.02M</span></td><td class="pct-hasta">27.6&nbsp;UF<span class="pct-sub">$1.13M</span></td><td class="pct-fr">75.3&ndash;82.8&nbsp;UF<span class="pct-sub">$3.07M–$3.38M</span></td></tr></tbody></table></div>
 </div>
 <div class="proj-card" onclick="selectProj('Nomad Holley')"
-     data-name="Nomad Holley" data-pct="93.3" data-venc="17" data-target="95.5"
+     data-name="Nomad Holley" data-pct="93.3" data-venc="17"
      data-arr="194" data-disp="11"
      data-total="208" data-pol="12"
      style="border-top:4px solid #4F46E5">
@@ -1985,7 +1997,7 @@ function vacSetProj(proj, grp) {
   <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><table class="pct" cellspacing="0"><thead><tr><th>Tipo</th><th>Disp</th><th class="pct-h-desde">Desde</th><th class="pct-h-hasta">Hasta</th><th>F.Renta</th></tr></thead><tbody><tr class="pct-row" data-mn-uf="17.33" data-mx-uf="25.52" data-mn-clp="706710" data-mx-clp="1040694" data-fr-mn-uf="51.99" data-fr-mx-uf="76.56" data-fr-mn-clp="2120130" data-fr-mx-clp="3122082" data-div="UF"><td class="pct-tip">1D1B</td><td class="pct-nd">7</td><td class="pct-desde">17.3&nbsp;UF<span class="pct-sub">$707k</span></td><td class="pct-hasta">25.5&nbsp;UF<span class="pct-sub">$1.04M</span></td><td class="pct-fr">52.0&ndash;76.6&nbsp;UF<span class="pct-sub">$2.12M–$3.12M</span></td></tr><tr class="pct-row" data-mn-uf="23.74" data-mx-uf="29.42" data-mn-clp="968107" data-mx-clp="1199734" data-fr-mn-uf="71.22" data-fr-mx-uf="88.26" data-fr-mn-clp="2904321" data-fr-mx-clp="3599202" data-div="UF"><td class="pct-tip">2D2B</td><td class="pct-nd">4</td><td class="pct-desde">23.7&nbsp;UF<span class="pct-sub">$968k</span></td><td class="pct-hasta">29.4&nbsp;UF<span class="pct-sub">$1.20M</span></td><td class="pct-fr">71.2&ndash;88.3&nbsp;UF<span class="pct-sub">$2.90M–$3.60M</span></td></tr></tbody></table></div>
 </div>
 <div class="proj-card" onclick="selectProj('Park Santiago')"
-     data-name="Park Santiago" data-pct="94.6" data-venc="24" data-target="95.5"
+     data-name="Park Santiago" data-pct="94.6" data-venc="24"
      data-arr="297" data-disp="16"
      data-total="314" data-pol="11"
      style="border-top:4px solid #BE123C">
@@ -2013,7 +2025,7 @@ function vacSetProj(proj, grp) {
   <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><table class="pct" cellspacing="0"><thead><tr><th>Tipo</th><th>Disp</th><th class="pct-h-desde">Desde</th><th class="pct-h-hasta">Hasta</th><th>F.Renta</th></tr></thead><tbody><tr class="pct-row" data-mn-uf="12.14" data-mx-uf="13.73" data-mn-clp="495064" data-mx-clp="559903" data-fr-mn-uf="36.42" data-fr-mx-uf="41.19" data-fr-mn-clp="1485192" data-fr-mx-clp="1679709" data-div="UF"><td class="pct-tip">1D1B</td><td class="pct-nd">8</td><td class="pct-desde">12.1&nbsp;UF<span class="pct-sub">$495k</span></td><td class="pct-hasta">13.7&nbsp;UF<span class="pct-sub">$560k</span></td><td class="pct-fr">36.4&ndash;41.2&nbsp;UF<span class="pct-sub">$1.49M–$1.68M</span></td></tr><tr class="pct-row" data-mn-uf="17.95" data-mx-uf="21.00" data-mn-clp="731993" data-mx-clp="856371" data-fr-mn-uf="53.85" data-fr-mx-uf="63.00" data-fr-mn-clp="2195979" data-fr-mx-clp="2569113" data-div="UF"><td class="pct-tip">2D2B</td><td class="pct-nd">9</td><td class="pct-desde">17.9&nbsp;UF<span class="pct-sub">$732k</span></td><td class="pct-hasta">21.0&nbsp;UF<span class="pct-sub">$856k</span></td><td class="pct-fr">53.8&ndash;63.0&nbsp;UF<span class="pct-sub">$2.20M–$2.57M</span></td></tr></tbody></table></div>
 </div>
 <div class="proj-card" onclick="selectProj('Soho Barrio Italia')"
-     data-name="Soho Barrio Italia" data-pct="94.8" data-venc="14" data-target="97.0"
+     data-name="Soho Barrio Italia" data-pct="94.8" data-venc="14"
      data-arr="91" data-disp="5"
      data-total="96" data-pol="3"
      style="border-top:4px solid #15803D">
@@ -2041,7 +2053,7 @@ function vacSetProj(proj, grp) {
   <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><table class="pct" cellspacing="0"><thead><tr><th>Tipo</th><th>Disp</th><th class="pct-h-desde">Desde</th><th class="pct-h-hasta">Hasta</th><th>F.Renta</th></tr></thead><tbody><tr class="pct-row" data-mn-uf="13.74" data-mx-uf="15.11" data-mn-clp="560311" data-mx-clp="616179" data-fr-mn-uf="41.22" data-fr-mx-uf="45.33" data-fr-mn-clp="1680933" data-fr-mx-clp="1848537" data-div="UF"><td class="pct-tip">1D1B</td><td class="pct-nd">4</td><td class="pct-desde">13.7&nbsp;UF<span class="pct-sub">$560k</span></td><td class="pct-hasta">15.1&nbsp;UF<span class="pct-sub">$616k</span></td><td class="pct-fr">41.2&ndash;45.3&nbsp;UF<span class="pct-sub">$1.68M–$1.85M</span></td></tr><tr class="pct-row" data-mn-uf="20.55" data-mx-uf="21.06" data-mn-clp="838020" data-mx-clp="858817" data-fr-mn-uf="61.65" data-fr-mx-uf="63.18" data-fr-mn-clp="2514060" data-fr-mx-clp="2576451" data-div="UF"><td class="pct-tip">2D2B</td><td class="pct-nd">2</td><td class="pct-desde">20.6&nbsp;UF<span class="pct-sub">$838k</span></td><td class="pct-hasta">21.1&nbsp;UF<span class="pct-sub">$859k</span></td><td class="pct-fr">61.7&ndash;63.2&nbsp;UF<span class="pct-sub">$2.51M–$2.58M</span></td></tr></tbody></table></div>
 </div>
 <div class="proj-card" onclick="selectProj('Spot Nueva Kennedy')"
-     data-name="Spot Nueva Kennedy" data-pct="91.9" data-venc="30" data-target="94.0"
+     data-name="Spot Nueva Kennedy" data-pct="91.9" data-venc="30"
      data-arr="272" data-disp="21"
      data-total="296" data-pol="3"
      style="border-top:4px solid #B45309">
@@ -2069,7 +2081,7 @@ function vacSetProj(proj, grp) {
   <div style="margin-top:9px;padding-top:8px;border-top:1px solid #F1F5F9"><table class="pct" cellspacing="0"><thead><tr><th>Tipo</th><th>Disp</th><th class="pct-h-desde">Desde</th><th class="pct-h-hasta">Hasta</th><th>F.Renta</th></tr></thead><tbody><tr class="pct-row" data-mn-uf="20.79" data-mx-uf="27.76" data-mn-clp="847807" data-mx-clp="1132040" data-fr-mn-uf="62.37" data-fr-mx-uf="83.28" data-fr-mn-clp="2543421" data-fr-mx-clp="3396120" data-div="UF"><td class="pct-tip">1D1B</td><td class="pct-nd">7</td><td class="pct-desde">20.8&nbsp;UF<span class="pct-sub">$848k</span></td><td class="pct-hasta">27.8&nbsp;UF<span class="pct-sub">$1.13M</span></td><td class="pct-fr">62.4&ndash;83.3&nbsp;UF<span class="pct-sub">$2.54M–$3.40M</span></td></tr><tr class="pct-row" data-mn-uf="27.12" data-mx-uf="40.45" data-mn-clp="1105941" data-mx-clp="1649533" data-fr-mn-uf="81.36" data-fr-mx-uf="121.35" data-fr-mn-clp="3317823" data-fr-mx-clp="4948599" data-div="UF"><td class="pct-tip">2D2B</td><td class="pct-nd">16</td><td class="pct-desde">27.1&nbsp;UF<span class="pct-sub">$1.11M</span></td><td class="pct-hasta">40.5&nbsp;UF<span class="pct-sub">$1.65M</span></td><td class="pct-fr">81.4&ndash;121.4&nbsp;UF<span class="pct-sub">$3.32M–$4.95M</span></td></tr></tbody></table></div>
 </div>
 <div class="proj-card" onclick="selectProj('Spot Residence')"
-     data-name="Spot Residence" data-pct="86.7" data-venc="17" data-target="82.5"
+     data-name="Spot Residence" data-pct="86.7" data-venc="17"
      data-arr="163" data-disp="18"
      data-total="188" data-pol="1"
      style="border-top:4px solid #1D4ED8">
@@ -2083,7 +2095,7 @@ function vacSetProj(proj, grp) {
   <div style="margin-bottom:9px">
     <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
       <span style="font-size:.67rem;color:#6B7A8D">Ocupaci&oacute;n</span>
-      <span class="proj-pct-val" style="font-size:.86rem;font-weight:800;color:#16A34A">86.7%</span>
+      <span class="proj-pct-val" style="font-size:.86rem;font-weight:800;color:#D97706">86.7%</span>
     </div>
     <div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">
       <div class="proj-bar-fill" style="height:100%;width:86.7%;background:#1D4ED8;border-radius:99px"></div>
@@ -2491,7 +2503,7 @@ function vacSetProj(proj, grp) {
 <div id="sec-historico" class="sec">Evoluci&oacute;n Hist&oacute;rica</div>
 <div class="cf"><div id="hist_line" style="height:350px"></div></div>
 
-<div class="ft">Datos al 15/06/2026 | Fuente: API PostgreSQL | Metas por proyecto (mensual) | LAR GROUP — Tu nueva forma de arrendar</div>
+<div class="ft">Datos al 15/06/2026 | Fuente: API PostgreSQL | Target global: <span id="ft-meta-pct">95</span>% | LAR GROUP — Tu nueva forma de arrendar</div>
 
 <script>
 var P=[{"Propiedad": "Nativo Riesco", "Total": 255.0, "Arrendados": 245.0, "Disponibles": 9.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 6.0, "Por_Arrendar": 2.0, "Por_Liberar": 12.0, "Por_Renovar": 4.0, "Pct_Ocup": 0.9608, "Gap": 0.0078, "Uds_Needed": 0.0, "Target": 95.3, "TipBreakdown": {"1 Dorm": {"total": 150, "arr": 148, "disp": 2}, "2 Dorm": {"total": 105, "arr": 97, "disp": 7}}, "Cambios_Internos": 0.0}, {"Propiedad": "Boldo Club de Campo", "Total": 126.0, "Arrendados": 120.0, "Disponibles": 5.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 0.0, "Por_Arrendar": 1.0, "Por_Liberar": 1.0, "Por_Renovar": 1.0, "Pct_Ocup": 0.9524, "Gap": 0.0004, "Uds_Needed": 0.0, "Target": 95.2, "TipBreakdown": {"1 Dorm": {"total": 56, "arr": 56, "disp": 0}, "2 Dorm": {"total": 70, "arr": 64, "disp": 5}}, "Cambios_Internos": 0.0}, {"Propiedad": "Soho Barrio Italia", "Total": 96.0, "Arrendados": 91.0, "Disponibles": 5.0, "No_Disp": 0.0, "En_Obra": 0.0, "Reservadas": 2.0, "Por_Arrendar": 1.0, "Por_Liberar": 3.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9479, "Gap": -0.0221, "Uds_Needed": 2.0, "Target": 97.0, "TipBreakdown": {"Studio": {"total": 22, "arr": 22, "disp": 0}, "1 Dorm": {"total": 54, "arr": 51, "disp": 3}, "2 Dorm": {"total": 20, "arr": 18, "disp": 2}}, "Cambios_Internos": 0.0}, {"Propiedad": "Park Santiago", "Total": 314.0, "Arrendados": 297.0, "Disponibles": 16.0, "No_Disp": 1.0, "En_Obra": 0.0, "Reservadas": 1.0, "Por_Arrendar": 1.0, "Por_Liberar": 11.0, "Por_Renovar": 2.0, "Pct_Ocup": 0.9459, "Gap": -0.0091, "Uds_Needed": 3.0, "Target": 95.5, "TipBreakdown": {"1 Dorm": {"total": 227, "arr": 219, "disp": 7}, "2 Dorm": {"total": 87, "arr": 78, "disp": 9}}, "Cambios_Internos": 2.0}, {"Propiedad": "Central Santiago", "Total": 562.0, "Arrendados": 527.0, "Disponibles": 31.0, "No_Disp": 4.0, "En_Obra": 0.0, "Reservadas": 4.0, "Por_Arrendar": 4.0, "Por_Liberar": 22.0, "Por_Renovar": 4.0, "Pct_Ocup": 0.9377, "Gap": -0.0123, "Uds_Needed": 7.0, "Target": 95.0, "TipBreakdown": {"Studio": {"total": 263, "arr": 261, "disp": 1}, "1 Dorm": {"total": 277, "arr": 249, "disp": 26}, "2 Dorm": {"total": 22, "arr": 17, "disp": 4}}, "Cambios_Internos": 4.0}, {"Propiedad": "Nomad Bellet", "Total": 134.0, "Arrendados": 125.0, "Disponibles": 7.0, "No_Disp": 2.0, "En_Obra": 0.0, "Reservadas": 3.0, "Por_Arrendar": 0.0, "Por_Liberar": 9.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.9328, "Gap": -0.0222, "Uds_Needed": 3.0, "Target": 95.5, "TipBreakdown": {"Studio": {"total": 45, "arr": 43, "disp": 2}, "1 Dorm": {"total": 65, "arr": 62, "disp": 1}, "2 Dorm": {"total": 24, "arr": 20, "disp": 4}}, "Cambios_Internos": 0.0}, {"Propiedad": "Nomad Holley", "Total": 208.0, "Arrendados": 194.0, "Disponibles": 11.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 3.0, "Por_Arrendar": 0.0, "Por_Liberar": 12.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.9327, "Gap": -0.0223, "Uds_Needed": 5.0, "Target": 95.5, "TipBreakdown": {"Studio": {"total": 59, "arr": 57, "disp": 1}, "1 Dorm": {"total": 76, "arr": 68, "disp": 6}, "2 Dorm": {"total": 73, "arr": 69, "disp": 4}}, "Cambios_Internos": 2.0}, {"Propiedad": "Spot Nueva Kennedy", "Total": 296.0, "Arrendados": 272.0, "Disponibles": 21.0, "No_Disp": 3.0, "En_Obra": 0.0, "Reservadas": 6.0, "Por_Arrendar": 2.0, "Por_Liberar": 3.0, "Por_Renovar": 4.0, "Pct_Ocup": 0.9189, "Gap": -0.0211, "Uds_Needed": 6.0, "Target": 94.0, "TipBreakdown": {"1 Dorm": {"total": 148, "arr": 142, "disp": 5}, "2 Dorm": {"total": 148, "arr": 130, "disp": 16}}, "Cambios_Internos": 1.0}, {"Propiedad": "Brooklyn La Florida", "Total": 478.0, "Arrendados": 434.0, "Disponibles": 33.0, "No_Disp": 11.0, "En_Obra": 0.0, "Reservadas": 4.0, "Por_Arrendar": 6.0, "Por_Liberar": 40.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.908, "Gap": -0.0421, "Uds_Needed": 20.0, "Target": 95.0, "TipBreakdown": {"Studio": {"total": 43, "arr": 42, "disp": 1}, "1 Dorm": {"total": 218, "arr": 206, "disp": 9}, "2 Dorm": {"total": 217, "arr": 186, "disp": 23}}, "Cambios_Internos": 3.0}, {"Propiedad": "Spot Residence", "Total": 188.0, "Arrendados": 163.0, "Disponibles": 18.0, "No_Disp": 7.0, "En_Obra": 1.0, "Reservadas": 7.0, "Por_Arrendar": 3.0, "Por_Liberar": 1.0, "Por_Renovar": 2.0, "Pct_Ocup": 0.867, "Gap": 0.042, "Uds_Needed": 0.0, "Target": 82.5, "TipBreakdown": {"Studio": {"total": 20, "arr": 18, "disp": 2}, "1 Dorm": {"total": 90, "arr": 79, "disp": 7}, "2 Dorm": {"total": 78, "arr": 66, "disp": 9}}, "Cambios_Internos": 2.0}, {"Propiedad": "IMU San Cristóbal", "Total": 453.0, "Arrendados": 335.0, "Disponibles": 65.0, "No_Disp": 53.0, "En_Obra": 0.0, "Reservadas": 4.0, "Por_Arrendar": 7.0, "Por_Liberar": 8.0, "Por_Renovar": 3.0, "Pct_Ocup": 0.7395, "Gap": -0.0855, "Uds_Needed": 39.0, "Target": 82.5, "TipBreakdown": {"1 Dorm": {"total": 244, "arr": 232, "disp": 11}, "2 Dorm": {"total": 184, "arr": 103, "disp": 49}, "3 Dorm": {"total": 25, "arr": 0, "disp": 5}}, "Cambios_Internos": 1.0}, {"Propiedad": "Blend Apoquindo", "Total": 95.0, "Arrendados": 63.0, "Disponibles": 12.0, "No_Disp": 20.0, "En_Obra": 0.0, "Reservadas": 3.0, "Por_Arrendar": 0.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.6632, "Gap": -0.2868, "Uds_Needed": 27.0, "Target": 95.0, "TipBreakdown": {"Studio": {"total": 22, "arr": 15, "disp": 4}, "1 Dorm": {"total": 40, "arr": 35, "disp": 0}, "2 Dorm": {"total": 33, "arr": 13, "disp": 8}}, "Cambios_Internos": 0.0}, {"Propiedad": "Collective Bustamante", "Total": 371.0, "Arrendados": 94.0, "Disponibles": 190.0, "No_Disp": 87.0, "En_Obra": 0.0, "Reservadas": 5.0, "Por_Arrendar": 5.0, "Por_Liberar": 0.0, "Por_Renovar": 0.0, "Pct_Ocup": 0.2534, "Gap": -0.1196, "Uds_Needed": 44.0, "Target": 37.3, "TipBreakdown": {"Studio": {"total": 76, "arr": 24, "disp": 45}, "1 Dorm": {"total": 226, "arr": 59, "disp": 105}, "2 Dorm": {"total": 69, "arr": 11, "disp": 40}}, "Cambios_Internos": 0.0}];
@@ -3399,7 +3411,7 @@ function _buildDetailHTML(projName) {
 
   var color=PROJ_COLORS[projName]||"#00A8B4";
   var pct=(p.Pct_Ocup*100).toFixed(1);
-  var mt=(p.Target||95)/100;
+  var mt=typeof META_TARGET!=="undefined"?META_TARGET:0.95;
   var tgt=(mt*100).toFixed(0);
   var gap=((p.Pct_Ocup-mt)*100).toFixed(1);
   var stClr=p.Pct_Ocup>=mt?"#16A34A":p.Pct_Ocup>=mt-.1?"#D97706":"#DC2626";
@@ -3500,36 +3512,6 @@ function _buildDetailHTML(projName) {
   h+=_dkpi("Reservadas", Math.round(p.Reservadas), "#0369A1", ciSub);
   h+='</div>';
 
-  // ── Stock por Tipología ───────────────────────────────────────────────
-  (function() {
-    var tb = p.TipBreakdown;
-    if(!tb || !Object.keys(tb).length) return;
-    var order = ['Studio','1 Dorm','2 Dorm','3 Dorm'];
-    var clrs  = {'Studio':'#7C3AED','1 Dorm':'#00A8B4','2 Dorm':'#0369A1','3 Dorm':'#0F4C81'};
-    h+='<div style="background:#F8FAFC;border-radius:14px;padding:16px;margin-bottom:16px">';
-    h+='<div style="font-size:.75rem;font-weight:800;color:#0F172A;margin-bottom:14px;letter-spacing:.03em">Stock por Tipolog&iacute;a</div>';
-    order.forEach(function(tip) {
-      var d = tb[tip]; if(!d) return;
-      var clr  = clrs[tip]||'#00A8B4';
-      var pctT = d.total > 0 ? (d.arr/d.total*100).toFixed(1) : '0.0';
-      var barW = Math.min(parseFloat(pctT), 100);
-      var dispClr = d.disp > 0 ? '#D97706' : '#9CA3AF';
-      h+='<div style="margin-bottom:12px">';
-      h+='<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">';
-      h+='<span style="font-size:.75rem;font-weight:700;color:#374151">'+tip+'</span>';
-      h+='<div style="display:flex;gap:10px;font-size:.68rem;font-weight:600">';
-      h+='<span style="color:#6B7A8D">'+d.total+' total</span>';
-      h+='<span style="color:#16A34A">'+d.arr+' arr.</span>';
-      h+='<span style="color:'+dispClr+'">'+d.disp+' disp.</span>';
-      h+='<span style="color:'+clr+';font-weight:800">'+pctT+'%</span>';
-      h+='</div></div>';
-      h+='<div style="height:6px;background:#E2E8F0;border-radius:99px;overflow:hidden">';
-      h+='<div style="height:100%;width:'+barW+'%;background:'+clr+';border-radius:99px;transition:width .4s ease"></div>';
-      h+='</div></div>';
-    });
-    h+='</div>';
-  })();
-
   // ── Forecast: Por Liberar / Ingresos / Proyección (3 meses) ─────────
   (function() {
     var fd  = (PROJ_FORECAST[projName] || {});
@@ -3574,9 +3556,8 @@ function _buildDetailHTML(projName) {
       // Forecast acumulado: A + R - PL
       arrProj = arrProj + ing - pl;
       var pct   = p.Total > 0 ? (arrProj / p.Total * 100).toFixed(1) : '—';
-      var fcMt  = (p.Target||95)/100;
-      var fcClr = arrProj/p.Total >= fcMt ? '#16A34A' : arrProj/p.Total >= 0.85 ? '#D97706' : '#DC2626';
-      var fcBg  = arrProj/p.Total >= fcMt ? '#F0FDF4' : arrProj/p.Total >= 0.85 ? '#FFFBEB' : '#FEF2F2';
+      var fcClr = arrProj/p.Total >= 0.95 ? '#16A34A' : arrProj/p.Total >= 0.85 ? '#D97706' : '#DC2626';
+      var fcBg  = arrProj/p.Total >= 0.95 ? '#F0FDF4' : arrProj/p.Total >= 0.85 ? '#FFFBEB' : '#FEF2F2';
       fcRow += chip(mes, arrProj+' ud<div style="font-size:.7rem;font-weight:600">'+pct+'%</div>', fcClr, fcBg);
     });
 
@@ -3828,7 +3809,7 @@ function exportProjData(projName) {
 // ── Badge en nav sidebar (proyectos bajo meta) ────────────────────────────────
 (function() {
   if(typeof proj_desc==="undefined") return;
-  var nBelow=proj_desc.filter(function(p){return p.Pct_Ocup*100<(p.Target||95);}).length;
+  var nBelow=proj_desc.filter(function(p){return p.Pct_Ocup<0.95;}).length;
   if(!nBelow) return;
   document.querySelectorAll(".sbl").forEach(function(item) {
     if(item.textContent.indexOf("Vista Proyectos")>=0) {
@@ -3847,10 +3828,10 @@ function prevProj(){if(_PROJ_PREV)selectProj(_PROJ_PREV);}
 function nextProj(){if(_PROJ_NEXT)selectProj(_PROJ_NEXT);}
 
 function refreshSidebarStatus() {
+  var mt = typeof META_TARGET !== "undefined" ? META_TARGET : 0.95;
   var nBelow = 0;
   document.querySelectorAll(".proj-list-item").forEach(function(item) {
     var pct = parseFloat(item.dataset.pct || 0) / 100;
-    var mt  = parseFloat(item.dataset.target || 95) / 100;
     var isCrit  = pct < 0.85;
     var isBelow = pct < mt;
     var color   = isCrit ? "#DC2626" : isBelow ? "#D97706" : "#16A34A";
@@ -4042,8 +4023,53 @@ if(hist_meses.length && document.getElementById("hist-ocup-chart")) {
   });
 }
 
-// ── Metas por proyecto (no hay meta genérica global) ─────────────────────────
-// Las metas se leen desde p.Target en proj_desc (definidas en TARGETS_MENSUALES)
+// ── Meta configurable ────────────────────────────────────────────────────────
+var META_TARGET = 0.95;
+function actualizarMeta(v) {
+  META_TARGET = v / 100;
+  document.getElementById("meta-val").textContent = v + "%";
+  // Live feedback
+  if(typeof proj_desc !== "undefined") {
+    var nCumple = proj_desc.filter(function(p){return p.Pct_Ocup >= META_TARGET;}).length;
+    var fb = document.getElementById("meta-feedback");
+    if(fb) { fb.style.display=""; fb.textContent = nCumple+"/"+proj_desc.length+" proyectos cumplen"; }
+    var hBM = document.getElementById("hero-bajo-meta");
+    var hMP = document.getElementById("hero-meta-pct");
+    if(hBM) hBM.textContent = proj_desc.length - nCumple;
+    if(hMP) hMP.textContent = Math.round(v);
+  }
+  recalcAlertas();
+  if(typeof refreshSidebarStatus!=="undefined") refreshSidebarStatus();
+  // Actualizar linea de meta en historico
+  var el = document.getElementById("hist-ocup-chart");
+  if(el && el.data && el.data.length > 1) {
+    Plotly.restyle("hist-ocup-chart", {y: [hist_meses.map(function(){return parseFloat(v);})] }, [1]);
+  }
+  // Actualizar Target en bar_proj
+  var bEl = document.getElementById("bar_proj");
+  if(bEl && bEl.data && bEl.data.length > 1) {
+    var tv = parseFloat(v);
+    var tName = "Target " + Math.round(v) + "%";
+    var tHover = "Target: " + Math.round(v) + "%<extra></extra>";
+    Plotly.restyle("bar_proj", {
+      y: [bEl.data[0].x.map(function(){ return tv; })],
+      name: [tName],
+      "hovertemplate": [tHover]
+    }, [1]);
+  }
+  // Actualizar footer meta
+  var ftmp = document.getElementById("ft-meta-pct");
+  if(ftmp) ftmp.textContent = Math.round(v);
+  // Actualizar Brecha Meta en KPI grid
+  var bGap = document.getElementById("kpi-brecha-meta");
+  var bTgt = document.getElementById("kpi-brecha-target");
+  if(bGap) {
+    var gap = (gpct * 100 - parseFloat(v));
+    bGap.textContent = gap.toFixed(1) + "pp";
+    bGap.style.color = gap >= 0 ? "#16A34A" : "#DC2626";
+  }
+  if(bTgt) bTgt.textContent = Math.round(v);
+}
 
 function globalSearch(q) {
   q = (q||"").toLowerCase().trim();
@@ -4077,14 +4103,13 @@ function recalcAlertas() {
     // Aplicar filtro de proyecto si esta activo
     if(PROJ_FILTER && p.Propiedad !== PROJ_FILTER) return;
     var pct  = (p.Pct_Ocup * 100).toFixed(1);
-    var mt   = (p.Target||95)/100;
-    var gap  = ((p.Pct_Ocup - mt) * 100);
-    var needed = Math.max(0, Math.round(mt * p.Total) - p.Arrendados);
+    var gap  = ((p.Pct_Ocup - META_TARGET) * 100);
+    var needed = Math.max(0, Math.round(META_TARGET * p.Total) - p.Arrendados);
     var badge, gapStr, neededStr;
-    if(p.Pct_Ocup >= mt) {
+    if(p.Pct_Ocup >= META_TARGET) {
       badge = "<span class='badge badge-green'>&#x2705; Cumple</span>";
       gapStr = "&mdash;"; neededStr = "&mdash;";
-    } else if(p.Pct_Ocup >= mt - 0.10) {
+    } else if(p.Pct_Ocup >= META_TARGET - 0.10) {
       badge = "<span class='badge badge-orange'>&#x1F7E1; En seguimiento</span>";
       gapStr = "+" + Math.abs(gap).toFixed(1) + "pp";
       neededStr = needed + " uds.";
@@ -4093,7 +4118,7 @@ function recalcAlertas() {
       gapStr = "+" + Math.abs(gap).toFixed(1) + "pp";
       neededStr = needed + " uds.";
     }
-    var dotCls = p.Pct_Ocup >= mt ? "sem-g" : p.Pct_Ocup >= (mt-0.1) ? "sem-y" : "sem-r";
+    var dotCls = p.Pct_Ocup >= META_TARGET ? "sem-g" : p.Pct_Ocup >= (META_TARGET-0.1) ? "sem-y" : "sem-r";
     var projEsc = p.Propiedad.replace(/'/g, "\\'");
     rows += "<tr style='cursor:pointer' onclick='showProjModal(\"" + p.Propiedad.replace(/"/g,"&quot;") + "\")'>" +
       "<td style='font-weight:500'><span class='sem " + dotCls + "' title='" + pct + "%'></span>" + p.Propiedad + "</td>" +
