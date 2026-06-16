@@ -150,7 +150,11 @@ def load_data_excel_fallback():
 # ── 2. CALCULAR METRICAS ───────────────────────────────────────────────────
 def compute(df):
     ci_by_proj, ci_unit_set, ci_list = load_cambios_internos()
-    total       = len(df)
+    # Total ajustado por bases arrendables (descuenta unidades dadas de baja)
+    raw_total = len(df)
+    base_adj  = sum(BASES_ARRENDABLES.get(p, len(df[df["_proj"]==p]))
+                    for p in df["_proj"].unique())
+    total = base_adj
     # "por arrendar" (estado 100 / sub 600) se contabiliza dentro de Arrendadas
     _is_arr  = (df["_estado"] == "Arrendado") | (df["_sub"] == "por arrendar")
     _is_disp = (df["_estado"] == "Disponible") & (df["_sub"] != "por arrendar")
@@ -167,7 +171,7 @@ def compute(df):
     # Por proyecto
     proj_list = []
     for proj, g in df.groupby("_proj"):
-        tot = len(g)
+        tot = BASES_ARRENDABLES.get(proj, len(g))
         arr = int(((g["_estado"]=="Arrendado") | (g["_sub"]=="por arrendar")).sum())
         dis = int(((g["_estado"]=="Disponible") & (g["_sub"]!="por arrendar")).sum())
         nod = int((g["_estado"]=="No Disponible").sum())
@@ -483,6 +487,10 @@ TARGETS_MENSUALES = {
     "Nomad Bellet":          [91.0,94.4,95.0,95.5,95.5,95.5,95.5,95.5,95.5,95.5,95.5,95.5],
     "IMU San Cristóbal":     [56.9,64.7,70.0,74.5,78.5,82.5,86.5,90.5,94.5,95.0,95.0,95.0],
     "Collective Bustamante": [None,None,20.8,26.6,31.9,37.3,44.4,50.0,55.0,60.7,66.5,72.4],
+}
+# Base arrendable real por proyecto (sobreescribe el conteo de DB cuando hay unidades dadas de baja)
+BASES_ARRENDABLES = {
+    "Blend Apoquindo": 75,
 }
 MESES_ES = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"]
 
