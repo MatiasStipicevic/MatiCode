@@ -748,7 +748,8 @@ async function gateCheck() {
 
 <div id="sec-vacancia" class="sec">D&iacute;as de Vacancia &mdash; Departamentos</div>
 <div class="sec-sub">
-  D&iacute;as transcurridos desde el fin del &uacute;ltimo contrato por unidad disponible &mdash;
+  D&iacute;as = Hoy &minus; <b>Fecha fin real</b> del &uacute;ltimo contrato &mdash;
+  usa <code>fecha_termino_real</code> si existe, si no <code>fecha_fin</code> &mdash;
   solo proyectos en BBDD &mdash; excluye Collective Bustamante
 </div>
 
@@ -831,7 +832,7 @@ async function gateCheck() {
           <th style="text-align:left">Tipolog&iacute;a</th>
           <th style="text-align:left">Modelo</th>
           <th style="text-align:left">Proyecto</th>
-          <th style="text-align:center">&Uacute;ltimo contrato</th>
+          <th style="text-align:center">Fecha fin real <span style="font-weight:400;color:#B0BAC8;font-size:.6rem">(base del cálculo)</span></th>
           <th style="text-align:center;min-width:100px">D&iacute;as vacante</th>
         </tr>
       </thead>
@@ -942,11 +943,12 @@ function vacSetProj(proj, grp) {
       ? '<span style="font-size:.66rem;font-weight:700;color:#2563EB;background:#EFF6FF;'
         +'border-radius:5px;padding:2px 7px;margin-left:5px">Reservada</span>'
       : '';
-    // Mostrar fecha real de salida; si difiere del fin contractual, indicar ambas
-    var fechaLabel = u.f || '—';
+    // Fecha fin real: fecha_termino_real si existe, si no fecha_fin
+    var fechaLabel = u.f
+      ? '<span style="font-weight:600;color:#1A2332">'+u.f+'</span>'
+      : '<span style="color:#8896A6">—</span>';
     if(u.fc && u.f && u.fc !== u.f)
-      fechaLabel = u.f
-        +'<div style="font-size:.68rem;color:#8896A6;margin-top:2px">'
+      fechaLabel += '<div style="font-size:.67rem;color:#8896A6;margin-top:2px">'
         +'<span style="background:#F1F5F9;border-radius:4px;padding:1px 5px">Fin ctto: '+u.fc+'</span></div>';
     var tr = document.createElement('tr');
     tr.innerHTML =
