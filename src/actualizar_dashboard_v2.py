@@ -1010,7 +1010,7 @@ def build_vencimientos_section(df, renov=None):
   </div>
   <div class="kc" style="border-left:4px solid #16A34A">
     <div class="kl">Renovados &uacute;lt. 30 d&iacute;as</div>
-    <div class="kv" style="color:#16A34A">{(renov or {{}}).get('r30', '—')}</div>
+    <div class="kv" style="color:#00A8B4">{(renov or {{}}).get('r30', '—')}</div>
     <div class="ks">{(renov or {{}}).get('p30', '—')} proyectos &middot; 90d: {(renov or {{}}).get('r90', '—')}</div>
   </div>
 </div>
@@ -2086,13 +2086,13 @@ def build_res_section(m):
 <div class="cf" style="margin-top:16px">
   <table>
     <thead>
-      <tr><th>Proyecto</th>{tipo_headers}<th style="text-align:center;color:#92400E">Cambio Int.</th><th style="text-align:center;color:#16A34A"><b>Total</b></th></tr>
+      <tr><th>Proyecto</th>{tipo_headers}<th style="text-align:center;color:#92400E">Cambio Int.</th><th style="text-align:center;color:#00A8B4"><b>Total</b></th></tr>
     </thead>
     <tbody>
       {table_rows}
       <tr style="border-top:2px solid #E2E8F0">
         <td><b>TOTAL</b></td>{total_cells}{total_ci_cell}
-        <td style="text-align:center"><b style="color:#48BB78">{total_res}</b></td>
+        <td style="text-align:center"><b style="color:#00A8B4">{total_res}</b></td>
       </tr>
     </tbody>
   </table>
@@ -2121,13 +2121,13 @@ Plotly.newPlot("res_bar_proj",[
 Plotly.newPlot("res_donut_tipo",[
   {{type:"pie",hole:0.6,
    values:{tipo_vals},labels:{tipo_lbls},
-   marker:{{colors:["#48BB78","#68D391","#9AE6B4","#00A8B4","#F6AD55"]}},
+   marker:{{colors:["#00A8B4","#4DD9E3","#007A84","#B0D8DB","#747678"]}},
    textinfo:"label+percent",
    hovertemplate:"%{{label}}: %{{value}} uds (%{{percent}})<extra></extra>"}}
 ],{{...base,
   title:{{text:"Distribuci\\u00f3n por Tipolog\\u00eda",font:{{size:13}}}},
   annotations:[{{x:0.5,y:0.5,showarrow:false,align:"center",
-    text:"<b><span style='font-size:24px;color:#16A34A'>{total_res}</span></b><br><span style='font-size:10px;color:#64748B'>total</span>"}}],
+    text:"<b><span style='font-size:24px;color:#00A8B4'>{total_res}</span></b><br><span style='font-size:10px;color:#64748B'>total</span>"}}],
   showlegend:true,legend:{{orientation:"h",y:-0.1}},
   margin:{{t:50,b:60,l:20,r:20}},height:420
 }});
@@ -2532,7 +2532,7 @@ def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencia
     </div>
   </div>
   <div class="proj-stats-row" style="display:flex;gap:5px;flex-wrap:wrap">
-    <div class="proj-stat"><span class="proj-arr-val" style="color:#16A34A;font-weight:700">{int(p['Arrendados'])}</span> arr.</div>
+    <div class="proj-stat"><span class="proj-arr-val" style="color:#00A8B4;font-weight:700">{int(p['Arrendados'])}</span> arr.</div>
     <div class="proj-stat"><span class="proj-disp-val" style="color:#D97706;font-weight:700">{int(p['Disponibles'])}</span> disp.</div>
     {pol_b}{venc_b}
   </div>
@@ -2594,9 +2594,9 @@ def build_projects_section(m, vencs=None, precios=None, uf_valor=None, tendencia
      style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:28px 0 4px">
   <span>Vista por Proyecto&nbsp;<span class="sec-chevron">&#9650;</span></span>
   <button onclick="exportToExcel();event.stopPropagation();" title="Exportar tabla a Excel"
-    style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:#16A34A;color:#fff;
+    style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:#00A8B4;color:#fff;
            border:none;border-radius:8px;cursor:pointer;font-size:.78rem;font-weight:700;
-           box-shadow:0 2px 8px rgba(22,163,74,.25);transition:opacity .15s"
+           box-shadow:0 2px 8px rgba(0,168,180,.25);transition:opacity .15s"
     onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
     &#128229; Exportar Excel
   </button>
@@ -2972,7 +2972,7 @@ function _buildDetailHTML(projName) {{
   // KPIs 3x2
   h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px">';
   h+=_dkpi("Total",        Math.round(p.Total),       "#6B7A8D");
-  h+=_dkpi("Arrendadas",   Math.round(p.Arrendados),  "#16A34A");
+  h+=_dkpi("Arrendadas",   Math.round(p.Arrendados),  "#00A8B4");
   h+=_dkpi("Disponibles",  Math.round(p.Disponibles), "#D97706");
   h+=_dkpi("No Disp.",     Math.round(p.No_Disp),     "#DC2626");
   h+=_dkpi("Por Liberar",  Math.round(p.Por_Liberar), "#DC2626");
@@ -3000,7 +3000,7 @@ function _buildDetailHTML(projName) {{
       h+='<span style="font-size:.75rem;font-weight:700;color:#374151">'+tip+'</span>';
       h+='<div style="display:flex;gap:10px;font-size:.68rem;font-weight:600">';
       h+='<span style="color:#6B7A8D">'+d.total+' total</span>';
-      h+='<span style="color:#16A34A">'+d.arr+' arr.</span>';
+      h+='<span style="color:#00A8B4">'+d.arr+' arr.</span>';
       h+='<span style="color:'+dispClr+'">'+d.disp+' disp.</span>';
       h+='<span style="color:'+clr+';font-weight:800">'+pctT+'%</span>';
       h+='</div></div>';
@@ -3049,9 +3049,9 @@ function _buildDetailHTML(projName) {{
       var plBg    = pl >= 10 ? '#FEF2F2' : pl >= 5  ? '#FFF7ED' : pl > 0 ? '#FFFBEB' : '#F8FAFC';
       plRow += chip(mes, pl, plColor, plBg);
 
-      // Ingresos — verde
-      var ingColor = ing > 0 ? '#16A34A' : '#CBD5E1';
-      var ingBg    = ing > 0 ? '#F0FDF4' : '#F8FAFC';
+      // Ingresos — turquesa brand
+      var ingColor = ing > 0 ? '#00A8B4' : '#CBD5E1';
+      var ingBg    = ing > 0 ? '#E0F7FA' : '#F8FAFC';
       var resSC    = (d.res_sin_c || 0);
       var ingLabel = ing + (resSC > 0
         ? '<div style="font-size:.6rem;font-weight:600;margin-top:2px">incl. '+resSC+' reservada'+(resSC>1?'s':'')+' s/c</div>'
@@ -3062,8 +3062,8 @@ function _buildDetailHTML(projName) {{
       arrProj = arrProj + ing - pl;
       var pct  = p.Total > 0 ? (arrProj / p.Total * 100).toFixed(1) : '—';
       var fcMt = (p.Target||95)/100;
-      var fcClr = arrProj/p.Total >= fcMt ? '#16A34A' : arrProj/p.Total >= 0.85 ? '#D97706' : '#DC2626';
-      var fcBg  = arrProj/p.Total >= fcMt ? '#F0FDF4' : arrProj/p.Total >= 0.85 ? '#FFFBEB' : '#FEF2F2';
+      var fcClr = arrProj/p.Total >= fcMt ? '#00A8B4' : arrProj/p.Total >= 0.85 ? '#D97706' : '#DC2626';
+      var fcBg  = arrProj/p.Total >= fcMt ? '#E0F7FA' : arrProj/p.Total >= 0.85 ? '#FFFBEB' : '#FEF2F2';
       fcRow += chip(mes, arrProj+' ud<div style="font-size:.7rem;font-weight:600">'+pct+'%</div>', fcClr, fcBg);
     }});
 
@@ -3198,12 +3198,12 @@ function _renderPriceTable(projName) {{
 function _renderDetailCharts(projName) {{
   _renderPriceTable(projName);
   var color=PROJ_COLORS[projName]||"#00A8B4";
-  var base={{paper_bgcolor:"#FFFFFF",plot_bgcolor:"#FFFFFF",
-    font:{{family:"Arial,sans-serif",size:11,color:"#1A202C"}},
+  var base={{paper_bgcolor:"rgba(0,0,0,0)",plot_bgcolor:"rgba(0,0,0,0)",
+    font:{{family:"'Aileron',Arial,sans-serif",size:11,color:"#4B5A6A"}},
     margin:{{t:10,b:55,l:40,r:10}},
-    xaxis:{{gridcolor:"#E2E8F0",linecolor:"#E2E8F0",tickfont:{{size:10}}}},
-    yaxis:{{gridcolor:"#E2E8F0",linecolor:"#E2E8F0",tickfont:{{size:10}}}},
-    hoverlabel:{{bgcolor:"#1E2A38",font:{{color:"#fff",size:11}}}}
+    xaxis:{{gridcolor:"#EEF2F7",linecolor:"#EEF2F7",tickfont:{{size:10,color:"#8896A6"}}}},
+    yaxis:{{gridcolor:"#EEF2F7",linecolor:"#EEF2F7",tickfont:{{size:10,color:"#8896A6"}}}},
+    hoverlabel:{{bgcolor:"#1A2332",font:{{color:"#fff",size:11,family:"'Aileron',Arial,sans-serif"}}}}
   }};
 
   // Tipologia chart
@@ -3427,6 +3427,9 @@ def add_extra_features(html, m, hist_data, uf_valor=None):
 .sec-toggle{cursor:pointer;user-select:none}
 .sec-toggle:hover .sec{opacity:.85}
 
+/* — Section header override (brand accent) — */
+.sec{border-left:4px solid #00A8B4!important;padding-left:14px!important}
+
 /* — Tables (override to modern) — */
 #disp-table th,#venc-table th,#res-table th{
   background:transparent;color:#8896A6;font-weight:700;
@@ -3500,7 +3503,29 @@ button[style*="background:#00A8B4"],button[style*="background: #00A8B4"]{
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:99px}
 ::-webkit-scrollbar-thumb:hover{background:#94A3B8}
-</style>"""
+
+/* — Reduced motion — */
+@media(prefers-reduced-motion:reduce){
+  *{transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
+</style>
+<script>
+/* Plotly global font — LAR brand typography */
+document.addEventListener('DOMContentLoaded',function(){
+  if(typeof Plotly==='undefined') return;
+  var _orig=Plotly.newPlot;
+  Plotly.newPlot=function(div,data,layout,config){
+    layout=layout||{};
+    if(!layout.font) layout.font={};
+    if(!layout.font.family) layout.font.family="'Aileron',Arial,sans-serif";
+    if(!layout.font.color)  layout.font.color="#4B5A6A";
+    if(!layout.font.size)   layout.font.size=12;
+    layout.paper_bgcolor=layout.paper_bgcolor||"rgba(0,0,0,0)";
+    layout.plot_bgcolor =layout.plot_bgcolor ||"rgba(0,0,0,0)";
+    return _orig.call(this,div,data,layout,config);
+  };
+});
+</script>"""
     html = html.replace('</head>', modern_css + '\n</head>', 1)
 
     # ── 0b. GATE DE ACCESO ────────────────────────────────────────────────────
@@ -3803,7 +3828,7 @@ function showProjModal(projName) {{
     "<h2 style='margin:4px 0 0;font-size:1.2rem;color:#1E2A38'>" + projName + "</h2></div>" +
     "<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px'>" +
     mkCard("% Ocupacion", pct+"%", clr) +
-    mkCard("Arrendadas", p.Arrendados, "#16A34A") +
+    mkCard("Arrendadas", p.Arrendados, "#00A8B4") +
     mkCard("Disponibles", p.Disponibles, "#D97706") +
     mkCard("No Disponibles", p.No_Disp, "#DC2626") +
     mkCard("Por Liberar", p.Por_Liberar, "#DC2626") +
