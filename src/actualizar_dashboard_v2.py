@@ -650,14 +650,16 @@ def build_metas_section(m):
 
 def load_forecast_data():
     """
-    Por Liberar e Ingresos por proyecto para el mes en curso, siguiente y sub-siguiente.
+    Vencimientos, Por Liberar confirmado e Ingresos por proyecto (3 meses).
+    - venc: contratos que expiran (pueden renovarse)
+    - pl:   contratos con sub_estado='700' (salida confirmada, no renueva)
+    - ing:  contratos que inician
     Devuelve:
-      {proyecto: {"Jun 2026": {"pl": N, "ing": N}, "Jul 2026": {...}, "Aug 2026": {...}}}
+      {proyecto: {"Jun 2026": {"venc": N, "pl": N, "ing": N}, ...}}
     """
     from datetime import date
     import calendar
 
-    # Calcular los 3 meses
     today = date.today()
     months = []
     for offset in range(3):
@@ -665,13 +667,13 @@ def load_forecast_data():
         if m > 12: y, m = y + 1, m - 12
         months.append((y, m, f"{calendar.month_abbr[m]} {y}"))
 
-    data = {}   # {proj: {mes_label: {"pl": 0, "ing": 0}}}
+    data = {}   # {proj: {mes_label: {"venc": 0, "pl": 0, "ing": 0}}}
 
     try:
         conn = psycopg2.connect(**DB)
         cur  = conn.cursor()
 
-        # ── Por Liberar: contratos venciendo por mes ──────────────────────
+        # ── Vencimientos: todos los contratos que expiran (pueden renovar) ──
         cur.execute("""
             SELECT proyecto,
                    to_char(date_trunc('month', fecha_fin), 'Mon YYYY') AS mes,
@@ -682,7 +684,27 @@ def load_forecast_data():
             GROUP BY proyecto, date_trunc('month', fecha_fin)
         """)
         for proj, mes, n in cur.fetchall():
-            data.setdefault(proj, {}).setdefault(mes, {"pl": 0, "ing": 0})
+            data.setdefault(proj, {}).setdefault(mes, {"venc": 0, "pl": 0, "ing": 0})
+            data[proj][mes]["venc"] = int(n)
+
+        # ── Por Liberar confirmado: sub_estado=700 (salida confirmada) ────
+        cur.execute("""
+            SELECT p.nombre,
+                   to_char(date_trunc('month', c.fecha_fin), 'Mon YYYY') AS mes,
+                   COUNT(DISTINCT c.contrato_id) AS n
+            FROM public.contratos c
+            JOIN public.unidades    u ON u.id = c.unidad_id
+            JOIN public.propiedades p ON p.id = c.propiedad_id
+            WHERE c.cargo_concepto = 'Arriendo'
+              AND u.nombre ILIKE '%%-DEPA-%%'
+              AND c.estado_id = '300'
+              AND u.raw->>'sub_estado' = '700'
+              AND c.fecha_fin >= date_trunc('month', CURRENT_DATE)
+              AND c.fecha_fin <  date_trunc('month', CURRENT_DATE) + INTERVAL '3 months'
+            GROUP BY p.nombre, date_trunc('month', c.fecha_fin)
+        """)
+        for proj, mes, n in cur.fetchall():
+            data.setdefault(proj, {}).setdefault(mes, {"venc": 0, "pl": 0, "ing": 0})
             data[proj][mes]["pl"] = int(n)
 
         # ── Ingresos: contratos iniciando por mes ─────────────────────────
@@ -722,7 +744,7 @@ def load_forecast_data():
         """)
         reserv_sin_contrato = 0
         for proj, n in cur.fetchall():
-            data.setdefault(proj, {}).setdefault(mes_actual, {"pl": 0, "ing": 0})
+            data.setdefault(proj, {}).setdefault(mes_actual, {"venc": 0, "pl": 0, "ing": 0})
             data[proj][mes_actual]["ing"]  += int(n)
             data[proj][mes_actual]["res_sin_c"] = int(n)   # flag para tooltip
             reserv_sin_contrato += int(n)
@@ -735,7 +757,7 @@ def load_forecast_data():
     # Rellenar meses faltantes con cero para todos los proyectos conocidos
     for proj in data:
         for _, _, lbl in months:
-            data[proj].setdefault(lbl, {"pl": 0, "ing": 0})
+            data[proj].setdefault(lbl, {"venc": 0, "pl": 0, "ing": 0})
 
     return data, [lbl for _, _, lbl in months]
 
@@ -2665,7 +2687,7 @@ var PROJ_LOGOS   = {logos_js};
 var PROJ_VENC_MO = {venc_mo_js};
 var PROJ_PRECIOS = {precios_js};
 var PROJ_TRENDS    = {trends_js};
-var PROJ_FORECAST  = {forecast_js};   // {{proj: {{mes: {{pl, ing}}}}}}
+var PROJ_FORECAST  = {forecast_js};   // {{proj: {{mes: {{venc, pl, ing}}}}}}
 var FORECAST_MONTHS = {fmonths_js};   // ["Jun 2026","Jul 2026","Aug 2026"]
 var UF_VALOR       = {uf_js};
 var _projUFMode  = true;   // true=UF primero, false=CLP primero
@@ -3009,20 +3031,26 @@ function _buildDetailHTML(projName) {{
       return '<div style="font-size:.65rem;font-weight:700;color:#8896A6;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">'+txt+'</div>';
     }}
 
-    var plRow='', ingRow='', fcRow='';
+    var vencRow='', plRow='', ingRow='', fcRow='';
     var arrProj = arrBase;
     ms.forEach(function(mes) {{
-      var d   = fd[mes] || {{pl:0, ing:0}};
-      var pl  = d.pl  || 0;
-      var ing = d.ing || 0;
+      var d    = fd[mes] || {{venc:0, pl:0, ing:0}};
+      var venc = d.venc || 0;
+      var pl   = d.pl   || 0;
+      var ing  = d.ing  || 0;
 
-      // PL chips — rojo si hay muchas salidas
-      var plColor = pl >= 20 ? '#DC2626' : pl >= 10 ? '#EA580C' : pl > 0 ? '#D97706' : '#8896A6';
-      var plBg    = pl >= 20 ? '#FEF2F2' : pl >= 10 ? '#FFF7ED' : pl > 0 ? '#FFFBEB' : '#F8FAFC';
+      // Vencimientos — pueden renovar (gris/naranja informativo)
+      var vencColor = venc >= 20 ? '#EA580C' : venc >= 10 ? '#D97706' : venc > 0 ? '#64748B' : '#CBD5E1';
+      var vencBg    = venc >= 20 ? '#FFF7ED' : venc >= 10 ? '#FFFBEB' : '#F8FAFC';
+      vencRow += chip(mes, venc, vencColor, vencBg);
+
+      // Por Liberar confirmado — sub=700, no renueva (rojo)
+      var plColor = pl >= 10 ? '#DC2626' : pl >= 5 ? '#EA580C' : pl > 0 ? '#D97706' : '#CBD5E1';
+      var plBg    = pl >= 10 ? '#FEF2F2' : pl >= 5  ? '#FFF7ED' : pl > 0 ? '#FFFBEB' : '#F8FAFC';
       plRow += chip(mes, pl, plColor, plBg);
 
-      // Ingresos chips — verde (incluye reservadas sin contrato)
-      var ingColor = ing > 0 ? '#16A34A' : '#8896A6';
+      // Ingresos — verde
+      var ingColor = ing > 0 ? '#16A34A' : '#CBD5E1';
       var ingBg    = ing > 0 ? '#F0FDF4' : '#F8FAFC';
       var resSC    = (d.res_sin_c || 0);
       var ingLabel = ing + (resSC > 0
@@ -3030,10 +3058,10 @@ function _buildDetailHTML(projName) {{
         : '');
       ingRow += chip(mes, ingLabel, ingColor, ingBg);
 
-      // Forecast acumulado: A + R - PL
+      // Forecast: usa solo pl confirmado (no vencimientos)
       arrProj = arrProj + ing - pl;
-      var pct   = p.Total > 0 ? (arrProj / p.Total * 100).toFixed(1) : '—';
-      var fcMt  = (p.Target||95)/100;
+      var pct  = p.Total > 0 ? (arrProj / p.Total * 100).toFixed(1) : '—';
+      var fcMt = (p.Target||95)/100;
       var fcClr = arrProj/p.Total >= fcMt ? '#16A34A' : arrProj/p.Total >= 0.85 ? '#D97706' : '#DC2626';
       var fcBg  = arrProj/p.Total >= fcMt ? '#F0FDF4' : arrProj/p.Total >= 0.85 ? '#FFFBEB' : '#FEF2F2';
       fcRow += chip(mes, arrProj+' ud<div style="font-size:.7rem;font-weight:600">'+pct+'%</div>', fcClr, fcBg);
@@ -3042,7 +3070,10 @@ function _buildDetailHTML(projName) {{
     h+='<div style="background:#F8FAFC;border-radius:14px;padding:16px;margin-bottom:16px">';
     h+='<div style="font-size:.75rem;font-weight:800;color:#0F172A;margin-bottom:14px">Proyección 3 Meses</div>';
 
-    h+=rowLabel('Por Liberar (contratos que vencen)');
+    h+=rowLabel('Vencimientos (pueden renovarse)');
+    h+='<div style="display:flex;gap:8px;margin-bottom:14px">'+vencRow+'</div>';
+
+    h+=rowLabel('Por Liberar — Salida confirmada');
     h+='<div style="display:flex;gap:8px;margin-bottom:14px">'+plRow+'</div>';
 
     h+=rowLabel('Ingresos (contratos que inician)');
