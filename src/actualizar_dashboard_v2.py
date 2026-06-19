@@ -31,7 +31,7 @@ _HERE  = Path(__file__).parent  # directorio del script
 ESTADO_MAP  = {"100": "Disponible", "200": "Arrendado", "400": "No Disponible"}
 SUBEST_MAP  = {               # (estado_raw, sub_estado_raw) → sub label
     ("100", "800"): "reservada",
-    ("100", "600"): "por arrendar",   # contrato en proceso → cuenta como arrendada
+    ("100", "600"): "por arrendar",   # contrato en proceso → cuenta como reservada
     ("100", "510"): "en obra",
     ("100", ""):    "disponible",     # libre sin sub-estado → disponible real
     ("200", "700"): "por liberar",
@@ -155,14 +155,15 @@ def compute(df):
     base_adj  = sum(BASES_ARRENDABLES.get(p, len(df[df["_proj"]==p]))
                     for p in df["_proj"].unique())
     total = base_adj
-    # "por arrendar" (estado 100 / sub 600) se contabiliza dentro de Arrendadas
-    _is_arr  = (df["_estado"] == "Arrendado") | (df["_sub"] == "por arrendar")
-    _is_disp = (df["_estado"] == "Disponible") & (df["_sub"] != "por arrendar")
+    # "por arrendar" (estado 100/sub 600) = reservada, NO cuenta como arrendada
+    _is_arr  = (df["_estado"] == "Arrendado")
+    _is_res  = (df["_sub"] == "reservada") | (df["_sub"] == "por arrendar")
+    _is_disp = (df["_estado"] == "Disponible") & ~_is_res
     arrendadas  = int(_is_arr.sum())
     disponibles = int(_is_disp.sum())
     no_disp     = int((df["_estado"] == "No Disponible").sum())
     en_obra     = int((df["_sub"] == "en obra").sum())
-    reservadas  = int((df["_sub"] == "reservada").sum())
+    reservadas  = int(_is_res.sum())
     por_arrendar= int((df["_sub"] == "por arrendar").sum())
     por_renovar = int((df["_sub"] == "por renovar").sum())
     por_liberar = int(((df["_estado"]=="Arrendado") & (df["_sub"]=="por liberar")).sum())
@@ -172,11 +173,11 @@ def compute(df):
     proj_list = []
     for proj, g in df.groupby("_proj"):
         tot = BASES_ARRENDABLES.get(proj, len(g))
-        arr = int(((g["_estado"]=="Arrendado") | (g["_sub"]=="por arrendar")).sum())
-        dis = int(((g["_estado"]=="Disponible") & (g["_sub"]!="por arrendar")).sum())
+        arr = int((g["_estado"]=="Arrendado").sum())
+        res = int(((g["_sub"]=="reservada") | (g["_sub"]=="por arrendar")).sum())
+        dis = int(((g["_estado"]=="Disponible") & (g["_sub"]!="reservada") & (g["_sub"]!="por arrendar")).sum())
         nod = int((g["_estado"]=="No Disponible").sum())
         eob = int((g["_sub"]=="en obra").sum())
-        res = int((g["_sub"]=="reservada").sum())
         paa = int((g["_sub"]=="por arrendar").sum())
         prv = int((g["_sub"]=="por renovar").sum())
         pli = int(((g["_estado"]=="Arrendado")&(g["_sub"]=="por liberar")).sum())
@@ -274,7 +275,7 @@ def compute(df):
     pol_matrix  = pol.groupby(["_proj","_tip"]).size().unstack(fill_value=0)
 
     # Reservadas detalle + Cambios Internos (ci_by_proj/ci_unit_set cargados al inicio)
-    res = df[df["_sub"]=="reservada"]
+    res = df[(df["_sub"]=="reservada") | (df["_sub"]=="por arrendar")]
     res_by_proj = res.groupby("_proj").size().sort_values(ascending=False).to_dict()
     res_by_tipo = res.groupby("_tip").size().sort_values(ascending=False).to_dict()
     res_matrix  = res.groupby(["_proj","_tip"]).size().unstack(fill_value=0)
